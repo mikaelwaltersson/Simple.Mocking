@@ -1,0 +1,106 @@
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F1C6C9A6-1D30-4CDC-8AFA-E6DBC0B7980A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Simple.Mocking.UnitTests</RootNamespace>
+    <AssemblyName>Simple.Mocking.UnitTests</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Actions\ActionTestsBase.cs" />
+    <Compile Include="Actions\ExecutesActionTests.cs" />
+    <Compile Include="Actions\ReturnsActionTests.cs" />
+    <Compile Include="Actions\SetsOutOrRefParameterActionTests.cs" />
+    <Compile Include="Actions\ThrowsActionTests.cs" />
+    <Compile Include="ExpectationScopeTests.cs" />
+    <Compile Include="ExpectationsExceptionTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetUp\ExpectationTests.cs" />
+    <Compile Include="SetUp\InvocationMatcherTests.cs" />
+    <Compile Include="SetUp\MockInvocationInterceptorTests.cs" />
+    <Compile Include="SetUp\NumberOfInvocationsConstraintTests.cs" />
+    <Compile Include="SetUp\Proxies\ByRefTypeTests.cs" />
+    <Compile Include="SetUp\Proxies\InvocationFactoryTests.cs" />
+    <Compile Include="SetUp\Proxies\InvocationFormatterTests.cs" />
+    <Compile Include="SetUp\Proxies\InvocationInterceptor.cs" />
+    <Compile Include="SetUp\Proxies\InvocationTests.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTests.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsBase.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithBoolArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithByteArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithCharArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithClassTypeArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithDoubleArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithEnumArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithFloatArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithIntArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithLongArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithShortArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithSignedByteArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithStructTypeArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithUnsignedIntArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithUnsignedLongArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithUnsignedShortArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithValueTypeArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyTypeCacheTests.cs" />
+    <Compile Include="Syntax\ParameterValueConstraintTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Simple.Mocking.csproj">
+      <Project>{CDA82EDE-6D38-4BB6-BF67-294CFED5850C}</Project>
+      <Name>Simple.Mocking</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

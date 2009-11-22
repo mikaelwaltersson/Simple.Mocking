@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking", "Simple.Mocking.csproj", "{CDA82EDE-6D38-4BB6-BF67-294CFED5850C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking.UnitTests", "UnitTests\Simple.Mocking.UnitTests.csproj", "{F1C6C9A6-1D30-4CDC-8AFA-E6DBC0B7980A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking.AcceptanceTests", "AcceptanceTests\Simple.Mocking.AcceptanceTests.csproj", "{506C205C-E934-426A-AB94-4CF999770B1B}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 4
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs03.codeplex.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = AcceptanceTests\\Simple.Mocking.AcceptanceTests.csproj
+		SccProjectName1 = AcceptanceTests
+		SccLocalPath1 = AcceptanceTests
+		SccProjectUniqueName2 = Simple.Mocking.csproj
+		SccLocalPath2 = .
+		SccProjectUniqueName3 = UnitTests\\Simple.Mocking.UnitTests.csproj
+		SccProjectName3 = UnitTests
+		SccLocalPath3 = UnitTests
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CDA82EDE-6D38-4BB6-BF67-294CFED5850C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDA82EDE-6D38-4BB6-BF67-294CFED5850C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDA82EDE-6D38-4BB6-BF67-294CFED5850C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDA82EDE-6D38-4BB6-BF67-294CFED5850C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1C6C9A6-1D30-4CDC-8AFA-E6DBC0B7980A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1C6C9A6-1D30-4CDC-8AFA-E6DBC0B7980A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1C6C9A6-1D30-4CDC-8AFA-E6DBC0B7980A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1C6C9A6-1D30-4CDC-8AFA-E6DBC0B7980A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{506C205C-E934-426A-AB94-4CF999770B1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{506C205C-E934-426A-AB94-4CF999770B1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{506C205C-E934-426A-AB94-4CF999770B1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{506C205C-E934-426A-AB94-4CF999770B1B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
