@@ -314,9 +314,9 @@ namespace Simple.Mocking.SetUp
 				member.Name == fieldName);
 		}
 
-		public static InvocationMatcher ForAnyInvocationOn<T>(T target)
+		public static InvocationMatcher ForAnyInvocationOn(object target)
 		{
-			return new AnyInvocationOnTargetMatcher<T>(target);
+			return new AnyInvocationOnTargetMatcher(target);
 		}
 
 		internal class DelegateInvocationMatcher : InvocationMatcher
@@ -337,16 +337,16 @@ namespace Simple.Mocking.SetUp
 			}
 		}
 
-		internal class AnyInvocationOnTargetMatcher<T> : InvocationMatcher
+		internal class AnyInvocationOnTargetMatcher : InvocationMatcher
 		{			
-			public AnyInvocationOnTargetMatcher(T target)
+			public AnyInvocationOnTargetMatcher(object target)
 				: base(target, null, null)
 			{
 			}
 		
 			protected override bool MatchesMethod(MethodInfo invocationMethod, IList<Type> genericArguments)
 			{
-				return (invocationMethod.DeclaringType == typeof(T));
+				return (invocationMethod.DeclaringType != typeof(object));
 			}
 
 			protected override bool MatchesParameters(IList<object> invocationParameterValues)

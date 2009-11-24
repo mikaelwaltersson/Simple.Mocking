@@ -223,7 +223,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 		{
 			var invocationMatcher = InvocationMatcher.ForAnyInvocationOn(myObject);
 
-			Assert.IsInstanceOf(typeof(InvocationMatcher.AnyInvocationOnTargetMatcher<IMyObject>), invocationMatcher);
+			Assert.IsInstanceOf(typeof(InvocationMatcher.AnyInvocationOnTargetMatcher), invocationMatcher);
 			Assert.IsNull(invocationMatcher.Method);
 			Assert.IsNull(invocationMatcher.ParameterValueConstraints);
 			Assert.AreEqual(myObject + ".*", invocationMatcher.ToString());
@@ -295,12 +295,25 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var target1 = new MyObject();
 			var target2 = new MyObject();
 
-			var invocationMatcher = new InvocationMatcher.AnyInvocationOnTargetMatcher<IMyObject>(target1);
+			var invocationMatcher = new InvocationMatcher.AnyInvocationOnTargetMatcher(target1);
 
 			Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(target1, "Method")));
 			Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(target1, "MethodWithReturnValue")));
 
 			Assert.IsFalse(invocationMatcher.Matches(CreateMethodInvocation(target2, "MethodWithReturnValue")));
+		}
+
+		[Test]
+		public void MatchesAnyInvocationOnTargetDoesNotIncludesMethodsDeclaredOnObject()
+		{
+			var target = new MyDerivedObject();
+
+			var objectMethodInvocation =
+				new Invocation(target, typeof(object).GetMethod("ToString"), null, new object[0], null);
+						
+			var invocationMatcher = new InvocationMatcher.AnyInvocationOnTargetMatcher(target);
+
+			Assert.IsFalse(invocationMatcher.Matches(objectMethodInvocation));
 		}
 		
 
@@ -321,7 +334,10 @@ namespace Simple.Mocking.UnitTests.SetUp
 		}
 
 
+
+
 		delegate int MyDelegate(int value);
+
 
 		interface IMyObject
 		{
@@ -331,6 +347,11 @@ namespace Simple.Mocking.UnitTests.SetUp
 			string this[int i] { get; set; }
 			int Property { get; set; }
 			event EventHandler Event;
+		}
+
+		interface IMyDerivedObject : IMyObject
+		{
+
 		}
 
 		class MyObject : IMyObject, IProxy
@@ -369,5 +390,8 @@ namespace Simple.Mocking.UnitTests.SetUp
 			}
 		}
 
+		class MyDerivedObject : MyObject, IMyDerivedObject
+		{			
+		}
 	}
 }

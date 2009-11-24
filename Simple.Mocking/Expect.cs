@@ -78,7 +78,7 @@ namespace Simple.Mocking
 			return BeginExpectation().EventRemove(target, eventName, handler);
 		}
 
-		public static void AnyInvocationOn<T>(T target)
+		public static void AnyInvocationOn(object target)
 		{
 			CreateExpectation(InvocationMatcher.ForAnyInvocationOn(target), new NumberOfInvocationsConstraint(null, null));
 		}
