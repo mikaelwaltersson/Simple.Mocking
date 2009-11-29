@@ -284,7 +284,7 @@ namespace Simple.Mocking.AcceptanceTests
 		[Test]
 		public void ExpectInvokedExactlyNTimes()
 		{
-			Expect.AtMost(2).MethodCall(() => myObject.MyEmptyMethod());
+			Expect.Exactly(2).MethodCall(() => myObject.MyEmptyMethod());
 
 			myObject.MyEmptyMethod();
 			myObject.MyEmptyMethod();
