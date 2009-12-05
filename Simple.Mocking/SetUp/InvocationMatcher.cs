@@ -284,24 +284,31 @@ namespace Simple.Mocking.SetUp
 			if (argumentExpression is MemberExpression && argumentExpression.NodeType == ExpressionType.MemberAccess)
 			{
 				var memberExpression = (MemberExpression)argumentExpression;
-				
-				if (IsAsRefOrOutExpression(memberExpression)) 
-				{
-					if (!parameter.ParameterType.IsByRef)
-						throw new ArgumentException(string.Format("Cant set '{0}' as an value constraint for non ref/out parameter {1}", argumentExpression, parameter.Name));
 
+				if (IsAsRefOrOutExpression(memberExpression))
+				{
+					AssertParameterTypeIsByRef(memberExpression, parameter);
 					argumentExpression = memberExpression.Expression;
-				}					
+				}
+				else if (IsAsInterfaceExpression(memberExpression))
+				{
+					AssertGenericArgumentIsInterface(memberExpression);
+					argumentExpression = memberExpression.Expression;
+				}
 			}
 
 			return ResolveObjectFromExpression(argumentExpression);
 		}
-	
+
 		static bool IsAsRefOrOutExpression(MemberExpression memberExpression)
 		{
 			return IsFieldInGenericTypeDefinition(memberExpression.Member, typeof(ParameterValueConstraint<>), "AsRefOrOut");
 		}
 
+		static bool IsAsInterfaceExpression(MemberExpression memberExpression)
+		{
+			return IsFieldInGenericTypeDefinition(memberExpression.Member, typeof(ParameterValueConstraint<>), "AsInterface");
+		}
 
 		static bool IsFieldInGenericTypeDefinition(MemberInfo member, Type genericType, string fieldName)
 		{
@@ -312,6 +319,21 @@ namespace Simple.Mocking.SetUp
 				declaringType.GetGenericTypeDefinition() == genericType && 
 				member is FieldInfo && 
 				member.Name == fieldName);
+		}
+
+		static void AssertParameterTypeIsByRef(MemberExpression memberExpression, ParameterInfo parameter)
+		{
+			if (!parameter.ParameterType.IsByRef)
+				throw new ArgumentException(
+					string.Format("Cant set '{0}' as an value constraint for non ref/out parameter {1}", memberExpression, parameter.Name));
+		}
+
+		static void AssertGenericArgumentIsInterface(MemberExpression memberExpression)
+		{
+			var genericArgument = memberExpression.Member.DeclaringType.GetGenericArguments()[0];
+
+			if (!genericArgument.IsInterface)
+				throw new ArgumentException(string.Format("Cant set '{0}' as an value constraint for non interface type {1}", memberExpression, genericArgument));
 		}
 
 		public static InvocationMatcher ForAnyInvocationOn(object target)

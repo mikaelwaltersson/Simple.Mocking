@@ -32,6 +32,16 @@ namespace Simple.Mocking.UnitTests.SetUp
 		}
 
 		[Test]
+		public void ForMethodCallWithAnyValueAsValueAsRefOrOut()
+		{
+			Expression<Action> expression = () => myObject.MethodWithRefValue(ref Any<int>.Value.AsRefOrOut);
+
+			var invocationMatcher = InvocationMatcher.ForMethodCall(expression);
+
+			CollectionAssert.AreEqual(new[] { Any<int>.Value }, invocationMatcher.ParameterValueConstraints);
+		}
+
+		[Test]
 		public void ForMethodCallWithInvalidUsageOfAnyValueAsRefOrOut()
 		{
 			Expression<Action> expression = () => myObject.Method(Any<int>.Value.AsRefOrOut);
@@ -44,6 +54,33 @@ namespace Simple.Mocking.UnitTests.SetUp
 			{				
 			}
 		}
+
+		[Test]
+		public void ForMethodCallWithAnyValueAsInterface()
+		{
+			Expression<Action> expression = () => myObject.Method(Any<IComparable<int>>.Value.AsInterface);
+
+			var invocationMatcher = InvocationMatcher.ForMethodCall(expression);
+
+			CollectionAssert.AreEqual(new[] { Any<IComparable<int>>.Value }, invocationMatcher.ParameterValueConstraints);
+		}
+
+
+		[Test]
+		public void ForMethodCallWithInvalidUsageOfAnyValueAsInterface()
+		{
+			Expression<Action> expression = () => myObject.Method(Any<int>.Value.AsInterface);
+
+			try
+			{
+				InvocationMatcher.ForMethodCall(expression);
+			}
+			catch (ArgumentException)
+			{
+			}
+		}
+
+
 
 		[Test]
 		public void ForMethodCallWithParameterValueConstraint()
@@ -343,6 +380,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 		{
 			void Method(object value);
 			int MethodWithReturnValue(int value);
+			void MethodWithRefValue(ref int value);
 			void GenericMethod<A, B>(A a, B b);
 			string this[int i] { get; set; }
 			int Property { get; set; }
@@ -365,6 +403,10 @@ namespace Simple.Mocking.UnitTests.SetUp
 				return value;
 			}
 
+			public void MethodWithRefValue(ref int value)
+			{
+			}
+
 			public void GenericMethod<A, B>(A a, B b)
 			{				
 			}
@@ -372,7 +414,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 
 			public string this[int i] { get { return string.Empty; } set { } }
 			public int Property { get; set; }
-			public event EventHandler Event;
+			public event EventHandler Event { add { } remove { } }
 
 			Type IProxy.ProxiedType
 			{

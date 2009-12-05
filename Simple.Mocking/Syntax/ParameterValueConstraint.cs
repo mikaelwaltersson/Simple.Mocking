@@ -11,6 +11,8 @@ namespace Simple.Mocking.Syntax
 	{
 		public T AsRefOrOut;
 
+		public T AsInterface;
+
 		public static implicit operator T(ParameterValueConstraint<T> value)
 		{
 			throw new InvalidOperationException();

@@ -17,6 +17,8 @@ namespace Simple.Mocking.AcceptanceTests.Interfaces
 
 		void MyMethodWithRefParameter(ref int value);
 
+		void MyMethodWithInterfaceParameter(IComparable<int> value);
+
 		void MyMethodWithOverload(int value);
 
 		void MyMethodWithOverload(string value);

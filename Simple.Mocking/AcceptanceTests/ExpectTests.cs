@@ -84,6 +84,14 @@ namespace Simple.Mocking.AcceptanceTests
 		}
 
 		[Test]
+		public void ExpectMethodWithInterfaceParameterCalled()
+		{
+			Expect.MethodCall(() => myObject.MyMethodWithInterfaceParameter(Any<IComparable<int>>.Value.AsInterface));
+
+			myObject.MyMethodWithInterfaceParameter(123);			
+		}
+
+		[Test]
 		public void ExpectGenericMethodCalled()
 		{
 			Expect.MethodCall(() => myObject.MyGenericMethod(Any<string>.Value));
