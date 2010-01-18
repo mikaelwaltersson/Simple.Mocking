@@ -27,5 +27,15 @@ namespace Simple.Mocking.AcceptanceTests
 			{
 			}
 		}
+
+		[Test]
+		public void EqualsComparesBaseObjectNotProxyInstance()
+		{
+			var myObject1 = Mock.Interface<IMyObject>();
+			var myObject2 = Mock.Interface<IMyObject>();
+
+			Assert.IsTrue(myObject1.Equals(myObject1));
+			Assert.IsFalse(myObject1.Equals(myObject2));
+		}
 	}
 }

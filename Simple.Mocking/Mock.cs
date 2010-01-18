@@ -53,5 +53,13 @@ namespace Simple.Mocking
 		{
 			return name;
 		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj is IProxy)
+				obj = ((IProxy)obj).BaseObject;
+
+			return base.Equals(obj);
+		}
 	}
 }
