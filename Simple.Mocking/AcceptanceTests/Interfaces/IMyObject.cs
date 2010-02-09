@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Simple.Mocking.AcceptanceTests.Classes;
+
 namespace Simple.Mocking.AcceptanceTests.Interfaces
 {
 	public interface IMyObject
-	{
+	{	
 		void MyEmptyMethod();
 
 		void MyMethod(int value);
+
+		void MyMethod(ABaseClass value);
 
 		int MyMethodWithReturnValue(int value);
 

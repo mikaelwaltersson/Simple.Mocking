@@ -5,6 +5,7 @@ using System.Text;
 
 using NUnit.Framework;
 
+using Simple.Mocking.AcceptanceTests.Classes;
 using Simple.Mocking.AcceptanceTests.Delegates;
 using Simple.Mocking.AcceptanceTests.Interfaces;
 
@@ -416,5 +417,23 @@ namespace Simple.Mocking.AcceptanceTests
 
 			myObject.MyGenericMethod(1.0);
 		}
+
+		[Test]
+		public void ExpectMethodCalledWithSubClassOfArgument()
+		{
+			Expect.MethodCall(() => myObject.MyMethod(Any<ASubClass>.Value));
+
+			myObject.MyMethod(new ASubClass());
+
+			try
+			{
+				myObject.MyMethod(new ABaseClass());
+				Assert.Fail();
+			}
+			catch (ExpectationsException)
+			{				
+			}			
+		}
+
 	}
 }

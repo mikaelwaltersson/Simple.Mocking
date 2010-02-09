@@ -270,15 +270,15 @@ namespace Simple.Mocking.SetUp
 		}
 
 		static object ParseParameterConstraint(Expression argumentExpression, ParameterInfo parameter)
-		{		
-			if (argumentExpression is UnaryExpression && argumentExpression.NodeType == ExpressionType.Convert)
-			{
-				var convertExpression = (UnaryExpression)argumentExpression;
-				var operandExpression = convertExpression.Operand;
-				var operandType = operandExpression.Type;
+		{
+			UnaryExpression convertExpression;
 
-				if (typeof(IParameterValueConstraint).IsAssignableFrom(operandType) || convertExpression.Method == null)
-					argumentExpression = operandExpression;
+			while (
+				(convertExpression = argumentExpression as UnaryExpression) != null && 
+				convertExpression.NodeType == ExpressionType.Convert &&
+				!(typeof(IParameterValueConstraint).IsAssignableFrom(convertExpression.Type)))
+			{
+				argumentExpression = convertExpression.Operand;
 			}
 			
 			if (argumentExpression is MemberExpression && argumentExpression.NodeType == ExpressionType.MemberAccess)

@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssertExpectationsTests.cs" />
+    <Compile Include="Classes\ABaseClass.cs" />
+    <Compile Include="Classes\ASubClass.cs" />
     <Compile Include="Delegates\MyDelegateWithRefParameter.cs" />
     <Compile Include="Delegates\MyDelegateWithOutParameter.cs" />
     <Compile Include="Delegates\MyDelegate.cs" />

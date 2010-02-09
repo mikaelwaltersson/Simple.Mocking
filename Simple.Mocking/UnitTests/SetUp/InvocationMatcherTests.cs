@@ -49,6 +49,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 			try
 			{
 				InvocationMatcher.ForMethodCall(expression);
+				Assert.Fail();
 			}
 			catch (ArgumentException)
 			{				
@@ -74,6 +75,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 			try
 			{
 				InvocationMatcher.ForMethodCall(expression);
+				Assert.Fail();
 			}
 			catch (ArgumentException)
 			{
