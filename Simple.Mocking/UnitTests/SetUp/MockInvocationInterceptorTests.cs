@@ -206,6 +206,10 @@ namespace Simple.Mocking.UnitTests.SetUp
 			{
 				AddedExpectation = expectation;
 			}
+
+			public void OnUnexpectedInvocation(IInvocation invocation)
+			{
+			}
 		}
 	}
 }

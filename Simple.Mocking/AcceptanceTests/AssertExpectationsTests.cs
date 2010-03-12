@@ -60,5 +60,31 @@ namespace Simple.Mocking.AcceptanceTests
 				Assert.IsTrue(ex.Message.StartsWith("All expectations has not been met, expected:"));
 			}
 		}
+
+		[Test]
+		public void NumberOfCallsExceededButExceptionCatchedByUserCode()
+		{
+			var myObject = Mock.Interface<IMyObject>();
+
+			Expect.Once.MethodCall(() => myObject.MyMethod(1));
+
+			try
+			{
+				myObject.MyMethod(1);
+				myObject.MyMethod(1);
+			}
+			catch (ExpectationsException)
+			{				
+			}
+
+			try
+			{
+				AssertExpectations.IsMetFor(myObject);
+				Assert.Fail();
+			}
+			catch (ExpectationsException)
+			{
+			}
+		}
 	}
 }

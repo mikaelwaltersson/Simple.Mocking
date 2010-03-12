@@ -434,6 +434,5 @@ namespace Simple.Mocking.AcceptanceTests
 			{				
 			}			
 		}
-
 	}
 }

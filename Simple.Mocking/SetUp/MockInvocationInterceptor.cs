@@ -40,7 +40,16 @@ namespace Simple.Mocking.SetUp
 				return;
 			}
 
-			throw new ExpectationsException(expectationScope, "Unexpected invocation '{0}', expected:", invocation);
+			OnUnexpectedInvocation(invocation);
+		}
+
+		void OnUnexpectedInvocation(IInvocation invocation)
+		{
+			var exception = new ExpectationsException(expectationScope, "Unexpected invocation '{0}', expected:", invocation);
+
+			expectationScope.OnUnexpectedInvocation(invocation);
+
+			throw exception;
 		}
 
 		public void AddExpectation(IExpectation expectation)

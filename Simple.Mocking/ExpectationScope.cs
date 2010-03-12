@@ -13,11 +13,13 @@ namespace Simple.Mocking
 	{
 		Stack<ChildScope> scopeStack;
 		HashSet<string> mockNames;
+		List<IInvocation> unexpectedInvocations;
 
 		public ExpectationScope()
 		{
 			this.scopeStack = new Stack<ChildScope>();
 			this.mockNames = new HashSet<string>();
+			this.unexpectedInvocations = new List<IInvocation>();
 
 			scopeStack.Push(new UnorderedChildScope(null));
 		}
@@ -60,7 +62,7 @@ namespace Simple.Mocking
 
 		bool IExpectation.HasBeenMet
 		{
-			get { return RootScope.HasBeenMet; }
+			get { return RootScope.HasBeenMet && (unexpectedInvocations.Count == 0); }
 		}
 
 		void IExpectationScope.Add(IExpectation expectation)
@@ -69,6 +71,11 @@ namespace Simple.Mocking
 				throw new ArgumentNullException("expectation");
 
 			CurrentScope.Add(expectation);
+		}
+
+		void IExpectationScope.OnUnexpectedInvocation(IInvocation invocation)
+		{
+			unexpectedInvocations.Add(invocation);
 		}
 
 		bool IMockNameScope.Register(string name)
@@ -80,10 +87,22 @@ namespace Simple.Mocking
 		{			
 			using (var writer = new StringWriter())
 			{
-				RootScope.DescribeContent(writer, 0);
-
+				RootScope.DescribeContent(writer, 0);				
+				DescribeUnexpectedInvocations(writer, 0);
+				
 				return writer.GetStringBuilder().ToString();
 			}						
+		}
+
+		void DescribeUnexpectedInvocations(StringWriter writer, int indentLevel)
+		{
+			if (unexpectedInvocations.Count == 0)
+				return;
+
+			writer.WriteLine();
+			WriteLine(writer, indentLevel, "Unexpected invocations {");
+			unexpectedInvocations.ForEach(invocation => WriteLine(writer, indentLevel + 1, invocation));			
+			WriteLine(writer, indentLevel, "}");
 		}
 
 		void ExitChildScope(ChildScope scope)
@@ -94,11 +113,18 @@ namespace Simple.Mocking
 			scopeStack.Pop();
 		}
 
-		abstract class ChildScope : IExpectationScope, IDisposable
+
+		static void WriteLine(TextWriter writer, int indentLevel, object obj)
 		{
 			const char IndentationChar = ' ';
 			const int IndentationLength = 2;
 
+			writer.Write(new string(IndentationChar, IndentationLength * indentLevel));
+			writer.WriteLine(obj);
+		}
+
+		abstract class ChildScope : IExpectation, IDisposable
+		{
 			ExpectationScope parent;
 			protected List<IExpectation> expectationList = new List<IExpectation>();
 
@@ -131,13 +157,7 @@ namespace Simple.Mocking
 			void DescribeFooter(TextWriter writer, int indentLevel)
 			{
 				WriteLine(writer, indentLevel, "}");
-			}
-
-			protected void WriteLine(TextWriter writer, int indentLevel, object obj)
-			{
-				writer.Write(new string(IndentationChar, IndentationLength * indentLevel));
-				writer.WriteLine(obj);
-			}
+			}	
 
 			public void DescribeContent(TextWriter writer, int indentLevel)
 			{
