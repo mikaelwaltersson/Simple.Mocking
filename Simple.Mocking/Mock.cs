@@ -6,6 +6,8 @@ using System.Text;
 using Simple.Mocking.SetUp;
 using Simple.Mocking.SetUp.Proxies;
 
+#pragma warning disable 659
+
 namespace Simple.Mocking
 {
 	public sealed class Mock
@@ -54,6 +56,9 @@ namespace Simple.Mocking
 			return name;
 		}
 
+
+
+
 		public override bool Equals(object obj)
 		{
 			if (obj is IProxy)
@@ -63,3 +68,4 @@ namespace Simple.Mocking
 		}
 	}
 }
+

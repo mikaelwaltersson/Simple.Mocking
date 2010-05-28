@@ -19,7 +19,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var invocationInterceptor = new MockInvocationInterceptor(new TestExpectationScope());
 			
 			var expectation = new TestExpectation();
-			invocationInterceptor.AddExpectation(expectation);
+			invocationInterceptor.AddExpectation(expectation, false);
 
 			Assert.AreSame(expectation, ((TestExpectationScope)invocationInterceptor.ExpectationScope).AddedExpectation);
 		}
@@ -30,7 +30,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var expectationScope = new TestExpectationScope();
 			var invocationInterceptor = new MockInvocationInterceptor(expectationScope);
 			var target = new Target(invocationInterceptor);
-			var invocation = CreateMethodInvocation<IExpectationScope>(target, "Add", new[] { typeof(IExpectation) }, new object[1]);
+			var invocation = CreateMethodInvocation<IExpectationScope>(target, "Add", new[] { typeof(IExpectation), typeof(bool) }, new object[2]);
 
 			try
 			{
@@ -137,7 +137,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 		{			
 			try
 			{
-				new MockInvocationInterceptor(new TestExpectationScope()).AddExpectation(null);
+				new MockInvocationInterceptor(new TestExpectationScope()).AddExpectation(null, false);
 				Assert.Fail();
 			}
 			catch (ArgumentNullException)
@@ -202,7 +202,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 		{
 			public IExpectation AddedExpectation;
 
-			public void Add(IExpectation expectation)
+			public void Add(IExpectation expectation, bool hasHigherPrecedence)
 			{
 				AddedExpectation = expectation;
 			}

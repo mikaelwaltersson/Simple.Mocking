@@ -9,7 +9,7 @@ namespace Simple.Mocking.SetUp
 {
 	interface IExpectationScope : IExpectation
 	{
-		void Add(IExpectation expectation);
+		void Add(IExpectation expectation, bool hasHigherPrecedence);
 
 		void OnUnexpectedInvocation(IInvocation invocation);
 	}

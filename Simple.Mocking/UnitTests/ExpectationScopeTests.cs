@@ -231,7 +231,7 @@ namespace Simple.Mocking.UnitTests
 		{
 			try
 			{
-				((IExpectationScope)expectationScope).Add(null);
+				((IExpectationScope)expectationScope).Add(null, false);
 				Assert.Fail();
 			}
 			catch (ArgumentNullException)
@@ -262,7 +262,7 @@ namespace Simple.Mocking.UnitTests
 
 		void AddExpectation(IExpectation expectation)
 		{
-			((IExpectationScope)expectationScope).Add(expectation);
+			((IExpectationScope)expectationScope).Add(expectation, false);
 		}
 		
 

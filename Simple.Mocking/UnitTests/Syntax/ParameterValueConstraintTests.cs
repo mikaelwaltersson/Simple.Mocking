@@ -21,7 +21,7 @@ namespace Simple.Mocking.UnitTests.Syntax
 			Assert.AreEqual(new AnyValueConstraint<string>().ToString(), "Any<String>.Value");
 			Assert.AreEqual(new AnyValueConstraint<int>().ToString(), "Any<Int32>.Value");
 
-			Assert.AreEqual(new MatchingPredicateValueConstraint<int>(p => (p%2) == 0).ToString(), "Any<Int32>.Value.Matching(p => ((p % 2) = 0))");
+			Assert.AreEqual(new MatchingPredicateValueConstraint<int>(p => (p%2) == 0).ToString(), "Any<Int32>.Value.Matching(p => ((p % 2) == 0))");
 		}
 
 		[Test]

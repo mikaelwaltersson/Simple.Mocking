@@ -12,37 +12,37 @@ namespace Simple.Mocking
 {
 	public static class Expect
 	{
-		public static ISpecifyInvocation Once
+		public static ISpecifyInvocationWithPrecedence Once
 		{
 			get { return Exactly(1); }
 		}
 
-		public static ISpecifyInvocation AtLeastOnce
+		public static ISpecifyInvocationWithPrecedence AtLeastOnce
 		{
 			get { return AtLeast(1); }
 		}
 
-		public static ISpecifyInvocation AtMostOnce
+		public static ISpecifyInvocationWithPrecedence AtMostOnce
 		{
 			get { return AtMost(1); }
 		}
 
-		public static ISpecifyInvocation Exactly(int times)
+		public static ISpecifyInvocationWithPrecedence Exactly(int times)
 		{
 			return BeginExpectationWithNumberOfInvocationsConstraint(times, times);
 		}
 
-		public static ISpecifyInvocation AtLeast(int times)
+		public static ISpecifyInvocationWithPrecedence AtLeast(int times)
 		{
 			return BeginExpectationWithNumberOfInvocationsConstraint(times, null);
 		}
 
-		public static ISpecifyInvocation AtMost(int times)
+		public static ISpecifyInvocationWithPrecedence AtMost(int times)
 		{
 			return BeginExpectationWithNumberOfInvocationsConstraint(null, times);
 		}
 
-		public static ISpecifyInvocation Between(int fromInclusive, int toInclusive)
+		public static ISpecifyInvocationWithPrecedence Between(int fromInclusive, int toInclusive)
 		{
 			return BeginExpectationWithNumberOfInvocationsConstraint(fromInclusive, toInclusive);
 		}
@@ -80,32 +80,40 @@ namespace Simple.Mocking
 
 		public static void AnyInvocationOn(object target)
 		{
-			CreateExpectation(InvocationMatcher.ForAnyInvocationOn(target), new NumberOfInvocationsConstraint(null, null));
+			CreateExpectation(InvocationMatcher.ForAnyInvocationOn(target), new NumberOfInvocationsConstraint(null, null), false);
 		}
 
-		static ISpecifyInvocation BeginExpectation()
+		public static ISpecifyInvocation WithHigherPrecedence
+		{
+			get { return BeginExpectationWithNumberOfInvocationsConstraint(null, null).WithHigherPrecedence; }
+		}
+
+
+		static ISpecifyInvocationWithPrecedence BeginExpectation()
 		{
 			return BeginExpectationWithNumberOfInvocationsConstraint(null, null);
 		}
 
-		static ISpecifyInvocation BeginExpectationWithNumberOfInvocationsConstraint(int? fromInclusive, int? toInclusive)
+		static ISpecifyInvocationWithPrecedence BeginExpectationWithNumberOfInvocationsConstraint(int? fromInclusive, int? toInclusive)
 		{
 			return new SpecifyInvocation(new NumberOfInvocationsConstraint(fromInclusive, toInclusive));
 		}
 
-		static Expectation CreateExpectation(InvocationMatcher invocationMatcher, NumberOfInvocationsConstraint numberOfInvocationsConstraint)
+
+		static Expectation CreateExpectation(InvocationMatcher invocationMatcher, NumberOfInvocationsConstraint numberOfInvocationsConstraint, bool hasHigherPrecedence)
 		{
 			var expectation = new Expectation(invocationMatcher, numberOfInvocationsConstraint);
 
-			MockInvocationInterceptor.GetFromTarget(invocationMatcher.Target).AddExpectation(expectation);
+			MockInvocationInterceptor.GetFromTarget(invocationMatcher.Target).AddExpectation(expectation, hasHigherPrecedence);
 
 			return expectation;
 		}
 
 		
-		class SpecifyInvocation : ISpecifyInvocation
+		class SpecifyInvocation : ISpecifyInvocationWithPrecedence
 		{
 			NumberOfInvocationsConstraint numberOfInvocationsConstraint;
+			bool hasHigherPrecedence;
 
 			public SpecifyInvocation(NumberOfInvocationsConstraint numberOfInvocationsConstraint)
 			{
@@ -144,13 +152,18 @@ namespace Simple.Mocking
 
 			ISpecifyAction ActionInvoked(InvocationMatcher invocationMatcher)
 			{
-				return new SpecifyAction(CreateExpectation(invocationMatcher, numberOfInvocationsConstraint));
+				return new SpecifyAction(CreateExpectation(invocationMatcher, numberOfInvocationsConstraint, hasHigherPrecedence));
 			}
 
 			ISpecifyAction<T> ActionInvoked<T>(InvocationMatcher invocationMatcher)
 			{
-				return new SpecifyAction<T>(CreateExpectation(invocationMatcher, numberOfInvocationsConstraint));
-			}		
+				return new SpecifyAction<T>(CreateExpectation(invocationMatcher, numberOfInvocationsConstraint, hasHigherPrecedence));
+			}
+
+			public ISpecifyInvocation WithHigherPrecedence
+			{
+				get { return new SpecifyInvocation(numberOfInvocationsConstraint) { hasHigherPrecedence = true }; }
+			}
 		}
 
 		abstract class SpecifyActionBase

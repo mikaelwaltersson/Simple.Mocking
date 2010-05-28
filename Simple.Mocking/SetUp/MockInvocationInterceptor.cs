@@ -34,13 +34,10 @@ namespace Simple.Mocking.SetUp
 			if (expectationScope.TryMeet(invocation))
 				return;
 
-			if (invocation.Method.DeclaringType == typeof(object))
-			{			
-				invocation.ReturnValue = invocation.Method.Invoke(invocation.Target.BaseObject, invocation.ParameterValues.ToArray());
-				return;
-			}
-
-			OnUnexpectedInvocation(invocation);
+			if (invocation.Method.DeclaringType != typeof(object))					
+				OnUnexpectedInvocation(invocation);
+				
+			invocation.ReturnValue = invocation.Method.Invoke(invocation.Target.BaseObject, invocation.ParameterValues.ToArray());				
 		}
 
 		void OnUnexpectedInvocation(IInvocation invocation)
@@ -52,12 +49,12 @@ namespace Simple.Mocking.SetUp
 			throw exception;
 		}
 
-		public void AddExpectation(IExpectation expectation)
+		public void AddExpectation(IExpectation expectation, bool hasHigherPrecedence)
 		{
 			if (expectation == null)
 				throw new ArgumentNullException("expectation");
 
-			expectationScope.Add(expectation);
+			expectationScope.Add(expectation, hasHigherPrecedence);
 		}
     
 
@@ -79,6 +76,7 @@ namespace Simple.Mocking.SetUp
 
 			return mockInvocationInterceptor;
 		}
+
 	}
 
 	

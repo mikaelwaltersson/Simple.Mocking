@@ -36,7 +36,7 @@ namespace Simple.Mocking
 
 		IDisposable BeginChildScope(ChildScope childScope)
 		{
-			RootScope.Add(childScope);
+			RootScope.Add(childScope, false);
 			scopeStack.Push(childScope);
 			return childScope;
 		}
@@ -65,12 +65,12 @@ namespace Simple.Mocking
 			get { return RootScope.HasBeenMet && (unexpectedInvocations.Count == 0); }
 		}
 
-		void IExpectationScope.Add(IExpectation expectation)
+		void IExpectationScope.Add(IExpectation expectation, bool hasHigherPrecedence)
 		{
 			if (expectation == null)
 				throw new ArgumentNullException("expectation");
 
-			CurrentScope.Add(expectation);
+			CurrentScope.Add(expectation, hasHigherPrecedence);
 		}
 
 		void IExpectationScope.OnUnexpectedInvocation(IInvocation invocation)
@@ -147,14 +147,17 @@ namespace Simple.Mocking
 			}
 
 		
-			public void Add(IExpectation expectation)
+			public void Add(IExpectation expectation, bool hasHigherPrecedence)
 			{
-				expectationList.Add(expectation);
+				if (hasHigherPrecedence)
+					expectationList.Insert(0, expectation);
+				else
+					expectationList.Add(expectation);
 			}
 
 			protected abstract void DescribeHeader(TextWriter writer, int indentLevel);
 
-			void DescribeFooter(TextWriter writer, int indentLevel)
+			static void DescribeFooter(TextWriter writer, int indentLevel)
 			{
 				WriteLine(writer, indentLevel, "}");
 			}	
@@ -169,7 +172,7 @@ namespace Simple.Mocking
 
 						childScope.DescribeHeader(writer, indentLevel);
 						childScope.DescribeContent(writer, indentLevel + 1);
-						childScope.DescribeFooter(writer, indentLevel);
+						DescribeFooter(writer, indentLevel);
 					}
 					else
 						WriteLine(writer, indentLevel, expectation);

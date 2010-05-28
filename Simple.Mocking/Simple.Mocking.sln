@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking", "Simple.Mocking.csproj", "{CDA82EDE-6D38-4BB6-BF67-294CFED5850C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking.UnitTests", "UnitTests\Simple.Mocking.UnitTests.csproj", "{F1C6C9A6-1D30-4CDC-8AFA-E6DBC0B7980A}"

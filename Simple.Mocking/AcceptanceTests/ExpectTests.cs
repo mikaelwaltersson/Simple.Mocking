@@ -434,5 +434,26 @@ namespace Simple.Mocking.AcceptanceTests
 			{				
 			}			
 		}
+
+		[Test]
+		public void ExpectWithHigherPrecedence()
+		{	
+			Expect.Once.MethodCall(() => myObject.MyMethodWithReturnValue(Any<int>.Value)).Returns(1);
+			Expect.Once.WithHigherPrecedence.MethodCall(() => myObject.MyMethodWithReturnValue(Any<int>.Value)).Returns(2);
+			Expect.Once.MethodCall(() => myObject.MyMethodWithReturnValue(Any<int>.Value)).Returns(3);
+			Expect.Once.WithHigherPrecedence.MethodCall(() => myObject.MyMethodWithReturnValue(Any<int>.Value)).Returns(4);
+			
+			Expect.WithHigherPrecedence.MethodCall(() => myObject.MyMethodWithReturnValue(42)).Returns(5);
+
+			Assert.AreEqual(5, myObject.MyMethodWithReturnValue(42));
+			Assert.AreEqual(5, myObject.MyMethodWithReturnValue(42));
+
+			Assert.AreEqual(4, myObject.MyMethodWithReturnValue(0));
+			Assert.AreEqual(2, myObject.MyMethodWithReturnValue(0));
+			Assert.AreEqual(1, myObject.MyMethodWithReturnValue(0));
+			Assert.AreEqual(3, myObject.MyMethodWithReturnValue(0));
+
+			Assert.AreEqual(5, myObject.MyMethodWithReturnValue(42));
+		}
 	}
 }
