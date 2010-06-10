@@ -362,18 +362,38 @@ namespace Simple.Mocking.UnitTests.SetUp
 			new InvocationMatcher(null, null, null).ToString();
 		}
 
-		IInvocation CreateMethodInvocation(object target, string methodName, params object[] parameterValues)
+		[Test]
+		public void MatchesCastedNonConstantStructParameterValues()
+		{
+			var value = MyEnumX.X3;
+			Expression<Action> expression = () => myObject.Method((MyEnumY)(value - 1));
+
+			var matcher = InvocationMatcher.ForMethodCall(expression);
+
+			Assert.IsTrue(matcher.Matches(CreateMethodInvocation(myObject, "Method", MyEnumY.Y2)));
+		}
+
+		static IInvocation CreateMethodInvocation(object target, string methodName, params object[] parameterValues)
 		{
 			return new Invocation(target as IProxy, typeof(IMyObject).GetMethod(methodName), null, parameterValues, null);
 		}
 
-		IInvocation CreateGenericMethodInvocation(object target, string methodName, Type[] genericArguments, params object[] parameterValues)
+		static IInvocation CreateGenericMethodInvocation(object target, string methodName, Type[] genericArguments, params object[] parameterValues)
 		{
 			return new Invocation(target as IProxy, typeof(IMyObject).GetMethod(methodName), genericArguments, parameterValues, null);
 		}
 
 
 
+		enum MyEnumX
+		{
+			X1, X2, X3
+		}
+
+		enum MyEnumY
+		{
+			Y1, Y2, Y3
+		}
 
 		delegate int MyDelegate(int value);
 

@@ -271,33 +271,37 @@ namespace Simple.Mocking.SetUp
 
 		static object ParseParameterConstraint(Expression argumentExpression, ParameterInfo parameter)
 		{
-			UnaryExpression convertExpression;
+			return ResolveObjectFromExpression(GetReducedParameterValueConstraintExpression(argumentExpression, parameter));
+		}
 
-			while (
-				(convertExpression = argumentExpression as UnaryExpression) != null && 
-				convertExpression.NodeType == ExpressionType.Convert &&
-				!(typeof(IParameterValueConstraint).IsAssignableFrom(convertExpression.Type)))
+		static Expression GetReducedParameterValueConstraintExpression(Expression argumentExpression, ParameterInfo parameter)
+		{
+			var reducedExpression = argumentExpression;
+
+			while (reducedExpression.NodeType == ExpressionType.Convert && reducedExpression is UnaryExpression)			
+				reducedExpression = ((UnaryExpression)reducedExpression).Operand;			
+
+			if (reducedExpression.NodeType == ExpressionType.MemberAccess && reducedExpression is MemberExpression)
 			{
-				argumentExpression = convertExpression.Operand;
-			}
-			
-			if (argumentExpression is MemberExpression && argumentExpression.NodeType == ExpressionType.MemberAccess)
-			{
-				var memberExpression = (MemberExpression)argumentExpression;
+				var memberExpression = (MemberExpression)reducedExpression;
 
 				if (IsAsRefOrOutExpression(memberExpression))
 				{
 					AssertParameterTypeIsByRef(memberExpression, parameter);
-					argumentExpression = memberExpression.Expression;
+					return memberExpression.Expression;
 				}
-				else if (IsAsInterfaceExpression(memberExpression))
+				
+				if (IsAsInterfaceExpression(memberExpression))
 				{
 					AssertGenericArgumentIsInterface(memberExpression);
-					argumentExpression = memberExpression.Expression;
+					return memberExpression.Expression;
 				}
 			}
 
-			return ResolveObjectFromExpression(argumentExpression);
+			if (typeof(IParameterValueConstraint).IsAssignableFrom(reducedExpression.Type))
+				return reducedExpression;
+
+			return argumentExpression;
 		}
 
 		static bool IsAsRefOrOutExpression(MemberExpression memberExpression)
