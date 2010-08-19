@@ -80,6 +80,7 @@
     <Compile Include="SetUp\Actions\ReturnsAction.cs" />
     <Compile Include="SetUp\Actions\SetsOutOrRefParameterAction.cs" />
     <Compile Include="SetUp\Actions\ThrowsAction.cs" />
+    <Compile Include="SetUp\IInvocationHistory.cs" />
     <Compile Include="SetUp\IExpectationScope.cs" />
     <Compile Include="SetUp\IInvocationMatcher.cs" />
     <Compile Include="SetUp\IMockNameScope.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="SetUp\Proxies\ProxyTypeCache.cs" />
     <Compile Include="Syntax\AnyValueConstraint.cs" />
     <Compile Include="Syntax\FuncWithParameters.cs" />
+    <Compile Include="Syntax\IAssertExpectationsIsMetForCallTo.cs" />
     <Compile Include="Syntax\ISpecifyInvocation.cs" />
     <Compile Include="Syntax\ISpecifyInvocationWithPrecedence.cs" />
     <Compile Include="Syntax\ISpecifyAction.cs" />

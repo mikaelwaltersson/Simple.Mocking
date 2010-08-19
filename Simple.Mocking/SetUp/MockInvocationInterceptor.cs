@@ -31,23 +31,32 @@ namespace Simple.Mocking.SetUp
 			if (invocation == null)
 				throw new ArgumentNullException("invocation");
 
-			if (expectationScope.TryMeet(invocation))
-				return;
-
-			if (invocation.Method.DeclaringType != typeof(object))					
-				OnUnexpectedInvocation(invocation);
-				
-			invocation.ReturnValue = invocation.Method.Invoke(invocation.Target.BaseObject, invocation.ParameterValues.ToArray());				
+			bool wasMet = 
+				expectationScope.TryMeet(invocation) || 
+				TryMeetDefaultObjectMethodInvocation(invocation);
+			
+			try
+			{
+				if (!wasMet)
+					throw new ExpectationsException(expectationScope, "Unexpected invocation '{0}', expected:", invocation);
+			}
+			finally
+			{
+				expectationScope.InvocationHistory.RegisterInvocation(invocation, wasMet);
+			}
 		}
 
-		void OnUnexpectedInvocation(IInvocation invocation)
+		static bool TryMeetDefaultObjectMethodInvocation(IInvocation invocation)
 		{
-			var exception = new ExpectationsException(expectationScope, "Unexpected invocation '{0}', expected:", invocation);
+			if (invocation.Method.DeclaringType == typeof(object))
+			{
+				invocation.ReturnValue = invocation.Method.Invoke(invocation.Target.BaseObject, invocation.ParameterValues.ToArray());
+				return true;
+			}
 
-			expectationScope.OnUnexpectedInvocation(invocation);
-
-			throw exception;
+			return false;
 		}
+
 
 		public void AddExpectation(IExpectation expectation, bool hasHigherPrecedence)
 		{

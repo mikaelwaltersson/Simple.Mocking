@@ -13,13 +13,13 @@ namespace Simple.Mocking
 	{
 		Stack<ChildScope> scopeStack;
 		HashSet<string> mockNames;
-		List<IInvocation> unexpectedInvocations;
+		IInvocationHistory invocationHistory;
 
 		public ExpectationScope()
 		{
 			this.scopeStack = new Stack<ChildScope>();
 			this.mockNames = new HashSet<string>();
-			this.unexpectedInvocations = new List<IInvocation>();
+			this.invocationHistory = new InvocationHistory();
 
 			scopeStack.Push(new UnorderedChildScope(null));
 		}
@@ -62,7 +62,7 @@ namespace Simple.Mocking
 
 		bool IExpectation.HasBeenMet
 		{
-			get { return RootScope.HasBeenMet && (unexpectedInvocations.Count == 0); }
+			get { return RootScope.HasBeenMet && !invocationHistory.UnexpectedInvocations.Any(); }
 		}
 
 		void IExpectationScope.Add(IExpectation expectation, bool hasHigherPrecedence)
@@ -73,10 +73,12 @@ namespace Simple.Mocking
 			CurrentScope.Add(expectation, hasHigherPrecedence);
 		}
 
-		void IExpectationScope.OnUnexpectedInvocation(IInvocation invocation)
+
+		IInvocationHistory IExpectationScope.InvocationHistory
 		{
-			unexpectedInvocations.Add(invocation);
+			get { return invocationHistory; }
 		}
+
 
 		bool IMockNameScope.Register(string name)
 		{
@@ -94,8 +96,10 @@ namespace Simple.Mocking
 			}						
 		}
 
-		void DescribeUnexpectedInvocations(StringWriter writer, int indentLevel)
+		void DescribeUnexpectedInvocations(TextWriter writer, int indentLevel)
 		{
+			var unexpectedInvocations = invocationHistory.UnexpectedInvocations.ToList();
+
 			if (unexpectedInvocations.Count == 0)
 				return;
 
@@ -104,6 +108,9 @@ namespace Simple.Mocking
 			unexpectedInvocations.ForEach(invocation => WriteLine(writer, indentLevel + 1, invocation));			
 			WriteLine(writer, indentLevel, "}");
 		}
+
+	
+
 
 		void ExitChildScope(ChildScope scope)
 		{
@@ -121,6 +128,50 @@ namespace Simple.Mocking
 
 			writer.Write(new string(IndentationChar, IndentationLength * indentLevel));
 			writer.WriteLine(obj);
+		}
+
+		class InvocationHistory : IInvocationHistory
+		{
+			List<InvocationHistoryEntry> entries = new List<InvocationHistoryEntry>();
+
+			public void RegisterInvocation(IInvocation invocation, bool wasExpected)
+			{
+				entries.Add(
+					new InvocationHistoryEntry
+					{
+						Invocation = invocation,
+						WasExpected = wasExpected
+					});
+			}
+
+			public IEnumerable<IInvocation> ExpectedInvocations
+			{
+				get { return GetEntries(true); }
+			}
+
+			public IEnumerable<IInvocation> UnexpectedInvocations
+			{
+				get { return GetEntries(false); }
+			}
+
+			IEnumerable<IInvocation> GetEntries(bool wasExpected)
+			{
+				return
+					from entry in entries
+					where entry.WasExpected == wasExpected
+					select entry.Invocation;
+			}
+
+			public override string ToString()
+			{
+				return string.Join(Environment.NewLine, entries.Select(entry => entry.ToString()).ToArray());
+			}
+		}
+
+		class InvocationHistoryEntry
+		{
+			public IInvocation Invocation;
+			public bool WasExpected;
 		}
 
 		abstract class ChildScope : IExpectation, IDisposable
