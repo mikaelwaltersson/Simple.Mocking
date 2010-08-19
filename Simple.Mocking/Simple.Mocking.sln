@@ -13,17 +13,17 @@ Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 5
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs03.codeplex.com/
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs03
+		SccProjectUniqueName0 = Simple.Mocking.csproj
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = AcceptanceTests\\Simple.Mocking.AcceptanceTests.csproj
-		SccProjectName1 = AcceptanceTests
-		SccLocalPath1 = AcceptanceTests
-		SccProjectUniqueName2 = Simple.Mocking.csproj
-		SccLocalPath2 = .
+		SccProjectUniqueName1 = Simple.Mocking-3.5.csproj
+		SccLocalPath1 = .
+		SccProjectUniqueName2 = AcceptanceTests\\Simple.Mocking.AcceptanceTests.csproj
+		SccProjectName2 = AcceptanceTests
+		SccLocalPath2 = AcceptanceTests
 		SccProjectUniqueName3 = UnitTests\\Simple.Mocking.UnitTests.csproj
 		SccProjectName3 = UnitTests
 		SccLocalPath3 = UnitTests
-		SccProjectUniqueName4 = Simple.Mocking-3.5.csproj
 		SccLocalPath4 = .
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
