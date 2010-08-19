@@ -62,6 +62,50 @@ namespace Simple.Mocking.AcceptanceTests
 		}
 
 		[Test]
+		public void ForStub()
+		{
+			var myObject = Mock.Interface<IMyObject>();
+
+			Expect.PropertyGet(() => myObject.MyProperty).Returns(41);
+			Expect.AnyInvocationOn(myObject);
+			
+
+			myObject.MyMethod(1);
+			myObject.MyMethod(2);
+			myObject.MyMethod(3);
+			
+			myObject.MyGenericMethod("hello world");
+			myObject.MyGenericMethod("Hello World!!!");
+			myObject.MyGenericMethod(4311077043);
+			
+			myObject.MyProperty = (int)myObject.MyProperty + 1;
+
+			var eventHandler = (EventHandler)delegate { };
+
+			myObject.MyEvent -= eventHandler;
+			myObject.MyEvent += eventHandler;
+
+			AssertExpectations.
+				IsMetForCallTo.
+				MethodCall(() => myObject.MyMethod(Any<int>.Value)).
+				MethodCall(() => myObject.MyGenericMethod(Any<string>.Value.Matching(s => s.StartsWith("Hel")))).
+				PropertyGet(() => myObject.MyProperty).
+				PropertySet(() => myObject.MyProperty, 42).
+				EventAdd(myObject, "MyEvent", Any<EventHandler>.Value).
+				EventRemove(myObject, "MyEvent", Any<EventHandler>.Value);
+
+			try
+			{
+				AssertExpectations.IsMetForCallTo.MethodCall(() => myObject.MyMethod(4));
+				Assert.Fail();
+			}
+			catch (ExpectationsException ex)
+			{
+				Assert.IsTrue(ex.Message.StartsWith("Expected invocation 'myObject.MyMethod(4)' was not made, invocations:"));
+			}
+		}
+
+		[Test]
 		public void NumberOfCallsExceededButExceptionCatchedByUserCode()
 		{
 			var myObject = Mock.Interface<IMyObject>();

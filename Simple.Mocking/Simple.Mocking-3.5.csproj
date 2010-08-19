@@ -58,6 +58,7 @@
     <Compile Include="SetUp\Expactation.cs" />
     <Compile Include="SetUp\IExpectation.cs" />
     <Compile Include="SetUp\IExpectationScope.cs" />
+    <Compile Include="SetUp\IInvocationHistory.cs" />
     <Compile Include="SetUp\IInvocationMatcher.cs" />
     <Compile Include="SetUp\IMockNameScope.cs" />
     <Compile Include="SetUp\InvocationMatcher.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Syntax\ActionWithParameters.cs" />
     <Compile Include="Syntax\AnyValueConstraint.cs" />
     <Compile Include="Syntax\FuncWithParameters.cs" />
+    <Compile Include="Syntax\IAssertExpectationsIsMetForCallTo.cs" />
     <Compile Include="Syntax\ISpecifyAction.cs" />
     <Compile Include="Syntax\ISpecifyInvocation.cs" />
     <Compile Include="Syntax\ISpecifyInvocationWithPrecedence.cs" />

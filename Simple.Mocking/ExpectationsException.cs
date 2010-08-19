@@ -21,6 +21,11 @@ namespace Simple.Mocking
 		{
 		}
 
+		internal ExpectationsException(IInvocationHistory invocationHistory, string format, params object[] args)
+			: this(FormatMessage(invocationHistory, format, args))
+		{
+		}
+
 		protected ExpectationsException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
@@ -28,9 +33,9 @@ namespace Simple.Mocking
 
 
 
-		static string FormatMessage(IExpectationScope expectationScope, string format, object[] args)
+		static string FormatMessage(object details, string format, object[] args)
 		{
-			return string.Format(format, args) + Environment.NewLine + Environment.NewLine + expectationScope;
+			return string.Format(format, args) + Environment.NewLine + Environment.NewLine + details;
 		}
 
 	}

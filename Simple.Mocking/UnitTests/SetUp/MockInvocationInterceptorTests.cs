@@ -198,7 +198,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 			public bool HasBeenMet { get; private set; }
 		}
 
-		class TestExpectationScope : TestExpectation, IExpectationScope
+		class TestExpectationScope : TestExpectation, IExpectationScope, IInvocationHistory
 		{
 			public IExpectation AddedExpectation;
 
@@ -207,9 +207,25 @@ namespace Simple.Mocking.UnitTests.SetUp
 				AddedExpectation = expectation;
 			}
 
-			public void OnUnexpectedInvocation(IInvocation invocation)
+			public IInvocationHistory InvocationHistory
 			{
+				get { return this; }
+			}
+
+			public void RegisterInvocation(IInvocation invocation, bool wasExpected)
+			{				
+			}
+
+			public IEnumerable<IInvocation> ExpectedInvocations
+			{
+				get { return new IInvocation[0]; }
+			}
+
+			public IEnumerable<IInvocation> UnexpectedInvocations
+			{
+				get { return new IInvocation[0]; }
 			}
 		}
+
 	}
 }

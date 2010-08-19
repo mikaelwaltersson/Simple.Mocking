@@ -9,6 +9,7 @@ using Simple.Mocking.SetUp;
 using Simple.Mocking.SetUp.Actions;
 using Simple.Mocking.SetUp.Proxies;
 
+using AssertThatCallWasMade = Simple.Mocking.Expect;
 
 namespace Simple.Mocking.UnitTests.SetUp
 {
@@ -40,7 +41,6 @@ namespace Simple.Mocking.UnitTests.SetUp
 			catch (ArgumentNullException)
 			{
 			}
-			
 		}
 
 		[Test]
