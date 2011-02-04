@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Simple.Mocking.UnitTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Know IT")]
+[assembly: AssemblyCompany("Advise Solutions")]
 [assembly: AssemblyProduct("Simple.Mocking")]
 [assembly: AssemblyCopyright("Copyright © Mikael Waltersson 2009")]
 [assembly: AssemblyTrademark("")]
