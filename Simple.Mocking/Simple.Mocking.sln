@@ -9,22 +9,29 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking.AcceptanceTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking-3.5", "Simple.Mocking-3.5.csproj", "{1F65E613-9787-4A7C-80C1-F757CC5DACD6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A898039A-C8AA-4E44-9B43-0099A1374473}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{EFC3F13C-E3BC-4ACC-BB80-EB583F016F45}"
+	ProjectSection(SolutionItems) = preProject
+		nuget\Package.nuspec = nuget\Package.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 5
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs03
-		SccProjectUniqueName0 = Simple.Mocking.csproj
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = Simple.Mocking-3.5.csproj
+		SccProjectUniqueName1 = Simple.Mocking.csproj
 		SccLocalPath1 = .
-		SccProjectUniqueName2 = AcceptanceTests\\Simple.Mocking.AcceptanceTests.csproj
-		SccProjectName2 = AcceptanceTests
-		SccLocalPath2 = AcceptanceTests
-		SccProjectUniqueName3 = UnitTests\\Simple.Mocking.UnitTests.csproj
-		SccProjectName3 = UnitTests
-		SccLocalPath3 = UnitTests
-		SccLocalPath4 = .
+		SccProjectUniqueName2 = Simple.Mocking-3.5.csproj
+		SccLocalPath2 = .
+		SccProjectUniqueName3 = AcceptanceTests\\Simple.Mocking.AcceptanceTests.csproj
+		SccProjectName3 = AcceptanceTests
+		SccLocalPath3 = AcceptanceTests
+		SccProjectUniqueName4 = UnitTests\\Simple.Mocking.UnitTests.csproj
+		SccProjectName4 = UnitTests
+		SccLocalPath4 = UnitTests
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,5 +57,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EFC3F13C-E3BC-4ACC-BB80-EB583F016F45} = {A898039A-C8AA-4E44-9B43-0099A1374473}
 	EndGlobalSection
 EndGlobal
