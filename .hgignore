@@ -1,0 +1,10 @@
+syntax: glob
+
+*.user
+*.suo
+obj/*
+bin/*
+bin-3.5/*
+_ReSharper.*/
+*.orig
+nuget/lib/*

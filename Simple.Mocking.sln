@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking", "Simple.Mocking.csproj", "{CDA82EDE-6D38-4BB6-BF67-294CFED5850C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking", "Simple.Mocking\Simple.Mocking.csproj", "{CDA82EDE-6D38-4BB6-BF67-294CFED5850C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking.UnitTests", "UnitTests\Simple.Mocking.UnitTests.csproj", "{F1C6C9A6-1D30-4CDC-8AFA-E6DBC0B7980A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking.UnitTests", "Simple.Mocking.UnitTests\Simple.Mocking.UnitTests.csproj", "{F1C6C9A6-1D30-4CDC-8AFA-E6DBC0B7980A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking.AcceptanceTests", "AcceptanceTests\Simple.Mocking.AcceptanceTests.csproj", "{506C205C-E934-426A-AB94-4CF999770B1B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking.AcceptanceTests", "Simple.Mocking.AcceptanceTests\Simple.Mocking.AcceptanceTests.csproj", "{506C205C-E934-426A-AB94-4CF999770B1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking-3.5", "Simple.Mocking-3.5.csproj", "{1F65E613-9787-4A7C-80C1-F757CC5DACD6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking-3.5", "Simple.Mocking\Simple.Mocking-3.5.csproj", "{1F65E613-9787-4A7C-80C1-F757CC5DACD6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A898039A-C8AA-4E44-9B43-0099A1374473}"
 EndProject
@@ -17,22 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{EFC3F13C
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs03
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Simple.Mocking.csproj
-		SccLocalPath1 = .
-		SccProjectUniqueName2 = Simple.Mocking-3.5.csproj
-		SccLocalPath2 = .
-		SccProjectUniqueName3 = AcceptanceTests\\Simple.Mocking.AcceptanceTests.csproj
-		SccProjectName3 = AcceptanceTests
-		SccLocalPath3 = AcceptanceTests
-		SccProjectUniqueName4 = UnitTests\\Simple.Mocking.UnitTests.csproj
-		SccProjectName4 = UnitTests
-		SccLocalPath4 = UnitTests
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

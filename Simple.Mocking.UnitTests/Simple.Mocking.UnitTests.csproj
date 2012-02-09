@@ -5,18 +5,22 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{506C205C-E934-426A-AB94-4CF999770B1B}</ProjectGuid>
+    <ProjectGuid>{F1C6C9A6-1D30-4CDC-8AFA-E6DBC0B7980A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Simple.Mocking.AcceptanceTests</RootNamespace>
-    <AssemblyName>Simple.Mocking.AcceptanceTests</AssemblyName>
+    <RootNamespace>Simple.Mocking.UnitTests</RootNamespace>
+    <AssemblyName>Simple.Mocking.UnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -69,21 +73,46 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssertExpectationsTests.cs" />
-    <Compile Include="Classes\ABaseClass.cs" />
-    <Compile Include="Classes\ASubClass.cs" />
-    <Compile Include="Delegates\MyDelegateWithRefParameter.cs" />
-    <Compile Include="Delegates\MyDelegateWithOutParameter.cs" />
-    <Compile Include="Delegates\MyDelegate.cs" />
-    <Compile Include="Delegates\MyDelegateWithReturnValue.cs" />
+    <Compile Include="Actions\ActionTestsBase.cs" />
+    <Compile Include="Actions\ExecutesActionTests.cs" />
+    <Compile Include="Actions\ReturnsActionTests.cs" />
+    <Compile Include="Actions\SetsOutOrRefParameterActionTests.cs" />
+    <Compile Include="Actions\ThrowsActionTests.cs" />
     <Compile Include="ExpectationScopeTests.cs" />
-    <Compile Include="Interfaces\IMyObject.cs" />
-    <Compile Include="MockTests.cs" />
+    <Compile Include="ExpectationsExceptionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ExpectTests.cs" />
+    <Compile Include="SetUp\ExpectationTests.cs" />
+    <Compile Include="SetUp\InvocationMatcherTests.cs" />
+    <Compile Include="SetUp\MockInvocationInterceptorTests.cs" />
+    <Compile Include="SetUp\NumberOfInvocationsConstraintTests.cs" />
+    <Compile Include="SetUp\Proxies\ByRefTypeTests.cs" />
+    <Compile Include="SetUp\Proxies\InvocationFactoryTests.cs" />
+    <Compile Include="SetUp\Proxies\InvocationFormatterTests.cs" />
+    <Compile Include="SetUp\Proxies\InvocationInterceptor.cs" />
+    <Compile Include="SetUp\Proxies\InvocationTests.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTests.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsBase.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithBoolArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithByteArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithCharArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithClassTypeArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithDoubleArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithEnumArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithFloatArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithIntArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithLongArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithShortArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithSignedByteArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithStructTypeArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithUnsignedIntArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithUnsignedLongArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithUnsignedShortArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithValueTypeArguments.cs" />
+    <Compile Include="SetUp\Proxies\ProxyTypeCacheTests.cs" />
+    <Compile Include="Syntax\ParameterValueConstraintTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Simple.Mocking.csproj">
+    <ProjectReference Include="..\Simple.Mocking\Simple.Mocking.csproj">
       <Project>{CDA82EDE-6D38-4BB6-BF67-294CFED5850C}</Project>
       <Name>Simple.Mocking</Name>
     </ProjectReference>
