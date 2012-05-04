@@ -21,8 +21,13 @@ namespace Simple.Mocking.SetUp
             if (type == typeof(string))
                 return string.Empty;
 
+            if (type.IsArray)
+                return GetEmptyArray(type);
+
             return GetDefaultValueForType(type);
         }
+
+
 
         static bool IsConcreteClassWithPublicEmptyConstructor(Type type)
         {
@@ -37,6 +42,11 @@ namespace Simple.Mocking.SetUp
         static object GetDefaultValueForType(Type type)
         {
             return ((IDefaultValue)Activator.CreateInstance(typeof(DefaultValue<>).MakeGenericType(type))).Value;
+        }
+
+        static Array GetEmptyArray(Type type)
+        {
+            return Array.CreateInstance(type.GetElementType(), Enumerable.Repeat(0, type.GetArrayRank()).ToArray());
         }
 
         interface IStubFactory
