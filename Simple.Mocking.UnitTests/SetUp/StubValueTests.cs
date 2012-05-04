@@ -40,6 +40,15 @@ namespace Simple.Mocking.UnitTests.SetUp
         }
 
         [Test]
+        public void StubValuesForArrays()
+        {
+            Assert.That(StubValue.ForType(typeof(int[])), Is.Empty);
+            Assert.That(StubValue.ForType(typeof(double[,])), Is.Empty);
+            Assert.That(StubValue.ForType(typeof(string[,,])), Is.Empty);
+        }
+
+
+        [Test]
         public void StubValuesForInterface()
         {
             var value = StubValue.ForType(typeof(IMyInterface));
