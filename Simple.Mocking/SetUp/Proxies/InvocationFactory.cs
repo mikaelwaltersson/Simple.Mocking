@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 
 namespace Simple.Mocking.SetUp.Proxies
 {
 	public sealed class InvocationFactory
 	{
+	    static long invocationOrderGenerator;
+
 		MethodInfo method;
 		
 
@@ -59,7 +62,9 @@ namespace Simple.Mocking.SetUp.Proxies
 
 		internal Invocation CreateInvocation(IProxy target, Type[] genericArguments, object[] parameterValues, object returnValue)
 		{
-			return new Invocation(target, method, genericArguments, parameterValues, returnValue);
+		    var invocationOrder = Interlocked.Increment(ref invocationOrderGenerator);
+
+			return new Invocation(target, method, genericArguments, parameterValues, returnValue, invocationOrder);
 		}
 
 	}

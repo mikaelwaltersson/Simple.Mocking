@@ -18,6 +18,8 @@ namespace Simple.Mocking.UnitTests
 		Invocation invocation1;
 		Invocation invocation2;
 		Invocation invocation3;
+	    Action ignoredAction;
+
 
 		[SetUp]
 		public void SetUp()
@@ -200,14 +202,8 @@ namespace Simple.Mocking.UnitTests
 			var childScopeOuter = expectationScope.BeginOrdered();
 			var childScopeInner = expectationScope.BeginUnordered();
 
-			try
-			{
-				childScopeOuter.Dispose();
-				Assert.Fail();
-			}
-			catch (InvalidOperationException)
-			{
-			}
+
+		    Assert.Throws<InvalidOperationException>(() => childScopeOuter.Dispose());
 
 			childScopeInner.Dispose();
 			childScopeOuter.Dispose();
@@ -216,38 +212,24 @@ namespace Simple.Mocking.UnitTests
 		[Test]
 		public void CantTryMeetNullInvocation()
 		{
-			try
-			{
-				((IExpectationScope)expectationScope).TryMeet(null);
-				Assert.Fail();
-			}
-			catch (ArgumentNullException)
-			{
-			}
+            Assert.Throws<ArgumentNullException>(() => ((IExpectationScope)expectationScope).TryMeet(null, out ignoredAction));
 		}
 
 		[Test]
 		public void CantAddNullExpectation()
 		{
-			try
-			{
-				((IExpectationScope)expectationScope).Add(null, false);
-				Assert.Fail();
-			}
-			catch (ArgumentNullException)
-			{
-			}
+		    Assert.Throws<ArgumentNullException>(() => ((IExpectationScope)expectationScope).Add(null, false));
 		}
 
 
 		void TryMeetSucceeds(IInvocation invocation)
 		{
-			Assert.IsTrue(((IExpectationScope)expectationScope).TryMeet(invocation));
+			Assert.IsTrue(((IExpectationScope)expectationScope).TryMeet(invocation, out ignoredAction));
 		}
 
 		void TryMeetFails(IInvocation invocation)
 		{
-			Assert.IsFalse(((IExpectationScope)expectationScope).TryMeet(invocation));
+            Assert.IsFalse(((IExpectationScope)expectationScope).TryMeet(invocation, out ignoredAction));
 		}
 
 		void AssertHasBeenMet()
@@ -293,6 +275,11 @@ namespace Simple.Mocking.UnitTests
 			{
 				set { throw new NotSupportedException(); }
 			}
+
+		    public long InvocationOrder
+		    {
+                get { throw new NotSupportedException(); }
+		    }
 		}
 
 		class Expectation : IExpectation
@@ -318,8 +305,9 @@ namespace Simple.Mocking.UnitTests
 			}
 
 
-			bool IExpectation.TryMeet(IInvocation invocation)
+			bool IExpectation.TryMeet(IInvocation invocation, out Action action)
 			{
+			    action = () => { };
 				return (invocation == this.invocation && ++actualCount <= expectedTimesMax);
 			}
 

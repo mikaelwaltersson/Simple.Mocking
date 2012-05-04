@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -10,50 +11,46 @@ namespace Simple.Mocking.SetUp.Proxies
 	{
 		public static string Format(object target, MethodInfo method, IList<object> parameterValues)
 		{
-			var genericArguments = (method != null && method.IsGenericMethod ? method.GetGenericArguments() : null);
+			var genericArguments = GetGenericArguments(method);
 
-			return Format(target, method, genericArguments, parameterValues ?? new object[0]);
+			return Format(target, method, genericArguments, parameterValues);
 		}
 
-		public static string Format(object target, MethodInfo method, IList<Type> genericArguments, IList<object> parameterValues)
+	    public static string Format(object target, MethodInfo method, IList<Type> genericArguments, IList<object> parameterValues)
 		{
-			string targetText = FormatTarget(target);
+            var unwrappedTarget = InvocationTarget.UnwrapDelegateTargetAndProxyBaseObject(target);
+         
+            if (InvocationTarget.IsDelegate(target))
+                return FormatDelegate(unwrappedTarget, parameterValues);
 
-			string methodNameText = string.Empty;
-			string genericArgumentsText = FormatList(genericArguments, "<", ">", item => item.Name);
+            if (method == null)
+                return FormatWildcardInvocation(unwrappedTarget);
+    
+            var property = method.GetDeclaringProperty();
+            if (property != null)
+                return FormatProperty(unwrappedTarget, method, property, parameterValues);
 
-			var formattedParameterValues = Array.ConvertAll(parameterValues.ToArray(), value => FormatParameterValue(value));
-			
-			return Format(target, targetText, method, methodNameText, genericArgumentsText, formattedParameterValues);
-		}
+            var @event = method.GetDeclaringEvent();
+            if (@event != null)
+                return FormatEvent(unwrappedTarget, method, @event, parameterValues);
 
-		static string Format(
-			object target, string targetText,
-			MethodInfo method, string methodNameText, string genericArgumentsText, 
-			object[] formattedParameterValues)
-		{
-			if (method != null)
-			{
-				var property = method.GetDeclaringProperty();
-				if (property != null)
-					return FormatProperty(targetText, genericArgumentsText, method, property, formattedParameterValues);
+            return FormatMethod(unwrappedTarget, genericArguments, method, parameterValues);
+        }
 
-				var @event = method.GetDeclaringEvent();
-				if (@event != null)
-					return FormatEvent(targetText, method, @event, formattedParameterValues);
 
-				methodNameText = method.Name;
-			}
-			
-			string parametersValuesText = FormatList(formattedParameterValues, "(", ")");
 
-			if (target is Delegate)
-				return ((Delegate)target).Target + parametersValuesText;
 
-			return targetText + "." + methodNameText + genericArgumentsText + parametersValuesText;
-		}
 
-		static object FormatParameterValue(object value)
+        static Type[] GetGenericArguments(MethodInfo method)
+        {
+            if (method == null || !method.IsGenericMethod)
+                return null;
+
+            return method.GetGenericArguments();
+        }
+
+
+		static string FormatParameterValue(object value)
 		{
 			if (value == null)
 				return "null";
@@ -64,7 +61,7 @@ namespace Simple.Mocking.SetUp.Proxies
 			if (value is char)
 				return FormatCharParameterValue((char)value);
 			
-			return value;
+			return FormatString("{0}", value);
 		}
 
 		static string FormatStringParameterValue(string value)
@@ -85,68 +82,92 @@ namespace Simple.Mocking.SetUp.Proxies
 
 		static string EscapeChar(char c)
 		{
-			const string CharsToEscape = "'\"\\\0\a\b\f\n\r\t\v";
-			
-			const string EscapePrefix = "\\";
-			const string EscapedChars = "'\"\\0abfnrtv";
+			const string charsToEscape = "'\"\\\0\a\b\f\n\r\t\v";			
+			const string escapePrefix = "\\";
+			const string escapedChars = "'\"\\0abfnrtv";
 
 
-			int escapedCharsIndex = CharsToEscape.IndexOf(c);
+			var escapedCharsIndex = charsToEscape.IndexOf(c);
 			
 			if (escapedCharsIndex >= 0)
-				return EscapePrefix + EscapedChars[escapedCharsIndex];
+				return escapePrefix + escapedChars[escapedCharsIndex];
 
 			return c.ToString();
 		}
 
-		static string FormatProperty(
-			string targetText, string genericArgumentsText, 
-			MethodInfo method, PropertyInfo property, object[] formattedParameterValues)
+        static string FormatMethod(object unwrappedTarget, IList<Type> genericArguments, MethodInfo method, IList<object> parameterValues)
+        {
+            return FormatString("{0}.{1}{2}({3})", unwrappedTarget, method.Name, FormatGenericArguments(genericArguments), FormatParameters(parameterValues)); 
+        }
+       
+        static string FormatWildcardInvocation(object unwrappedTarget)
+        {
+            return FormatString("{0}.*", unwrappedTarget);
+        }
+
+		static string FormatProperty(object unwrappedTarget, MethodInfo method, PropertyInfo property, IList<object> parameterValues)
 		{
-			string propertyText = "." + property.Name;
-			string valueText = string.Empty;
+			var valueAssignmentText = string.Empty;
 
 			if (property.GetSetMethod() == method)
 			{
-				valueText = string.Format(" = {0}", formattedParameterValues[formattedParameterValues.Length - 1]);
-				Array.Resize(ref formattedParameterValues, formattedParameterValues.Length - 1);
+                valueAssignmentText = FormatString(" = {0}", FormatParameterValue(parameterValues.Last()));
+			    parameterValues = parameterValues.Take(parameterValues.Count - 1).ToArray();
 			}
 
-			if (formattedParameterValues.Length > 0)
-				propertyText = FormatList(formattedParameterValues, "[", "]");
+		    var propertyText =
+		        (parameterValues.Count > 0)
+		            ? FormatString("[{0}]", FormatParameters(parameterValues))
+		            : FormatString(".{0}", property.Name);
 
-			return targetText + genericArgumentsText + propertyText + valueText;
+			return FormatString("{0}{1}{2}", unwrappedTarget, propertyText, valueAssignmentText);
 		}
-
 
 		static string FormatEvent(
-			string targetText, MethodInfo method, EventInfo @event, object[] formattedParameterValues)
+            object unwrappedTarget, MethodInfo method, EventInfo @event, IList<object> parameterValues)
 		{
-			string operationText = (@event.GetAddMethod() == method ? "+" : "-");
+			var operationText = (@event.GetAddMethod() == method ? "+" : "-");
 
-			return string.Format("{0}.{1} {2}= {3}", targetText, @event.Name, operationText, formattedParameterValues[0]);
+            return FormatString("{0}.{1} {2}= {3}", unwrappedTarget, @event.Name, operationText, FormatParameters(parameterValues));
 		}
 
-		static string FormatList<T>(IList<T> list, string prefix, string suffix)
-		{
-			return FormatList(list, prefix, suffix, item => Convert.ToString(item));
-		}
-		static string FormatList<T>(IList<T> list, string prefix, string suffix, Func<T, string> converter)
+        static string FormatDelegate(object unwrappedTarget, IList<object> parameterValues)
+        {
+            return FormatString("{0}({1})", unwrappedTarget, FormatParameters(parameterValues));
+        }
+
+        static string FormatParameters(IList<object> parameterValues)
+        {
+            if (parameterValues == null)
+                return "*";
+
+            return FormatList(parameterValues, FormatParameterValue);
+        }
+
+        static string FormatGenericArguments(IList<Type> genericArguments)
+        {
+            var genericArgumentsText = FormatList(genericArguments, type => type.Name);
+
+            if (genericArgumentsText.Length > 0)
+                genericArgumentsText = "<" + genericArgumentsText + ">";
+
+            return genericArgumentsText;
+        }
+
+
+
+		static string FormatList<T>(IList<T> list, Func<T, string> converter)
 		{
 			if (list == null || list.Count == 0)
 				return string.Empty;
 
-			var itemsTextRepresentation = list.Select(converter).ToArray();
-
-			return (prefix + string.Join(", ", itemsTextRepresentation) + suffix);
+            return string.Join(", ", list.Select(converter).ToArray());
 		}
 
-		public static string FormatTarget(object target)
-		{
-			if (target is IProxy)
-				target = ((IProxy)target).BaseObject;
 
-			return Convert.ToString(target);
-		}
+        static string FormatString(string format, params object[] args)
+        {
+            return string.Format(CultureInfo.InvariantCulture, format, args);
+        }
 	}
 }

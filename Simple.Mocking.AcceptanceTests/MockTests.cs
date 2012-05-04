@@ -17,15 +17,8 @@ namespace Simple.Mocking.AcceptanceTests
 		{
 			var myObject = Mock.Interface<IMyObject>();
 
-			try
-			{
-				myObject.MyEmptyMethod();
+            Assert.Throws<ExpectationsException>(() => myObject.MyEmptyMethod());
 
-				Assert.Fail();
-			}
-			catch (ExpectationsException)
-			{
-			}
 		}
 
 		[Test]

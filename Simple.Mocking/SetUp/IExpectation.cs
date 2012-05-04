@@ -9,7 +9,7 @@ namespace Simple.Mocking.SetUp
 {
 	interface IExpectation
 	{
-		bool TryMeet(IInvocation invocation);
+		bool TryMeet(IInvocation invocation, out Action action);
 
 		bool HasBeenMet { get; }
 	}

@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 
 namespace Simple.Mocking.Syntax
 {
+    [Obsolete("Use AssertInvocationsWasMade instead (will be removed in next version)")]
 	public interface IAssertExpectationsIsMetForCallTo
 	{
 		IAssertExpectationsIsMetForCallTo MethodCall(Expression<Action> methodCallExpression);

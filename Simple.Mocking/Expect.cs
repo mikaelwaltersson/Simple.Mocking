@@ -68,6 +68,11 @@ namespace Simple.Mocking
 			return BeginExpectation().PropertySet(propertyExpression, value);
 		}
 
+        public static ISpecifyAction PropertySet<T>(Expression<Func<T>> propertyExpression, ParameterValueConstraint<T> value)
+        {
+            return BeginExpectation().PropertySet(propertyExpression, value);
+        }
+
 		public static ISpecifyAction EventAdd<TTarget, THandler>(TTarget target, string eventName, THandler handler)
 		{
 			return BeginExpectation().EventAdd(target, eventName, handler);
@@ -78,23 +83,23 @@ namespace Simple.Mocking
 			return BeginExpectation().EventRemove(target, eventName, handler);
 		}
 
-		public static void AnyInvocationOn(object target)
-		{
-			CreateExpectation(InvocationMatcher.ForAnyInvocationOn(target), new NumberOfInvocationsConstraint(null, null), false);
+        public static ISpecifyActionForAny AnyInvocationOn(object target)
+        {
+            return BeginExpectation().AnyInvocationOn(target);
 		}
 
 		public static ISpecifyInvocation WithHigherPrecedence
 		{
-			get { return BeginExpectationWithNumberOfInvocationsConstraint(null, null).WithHigherPrecedence; }
+            get { return BeginExpectation().WithHigherPrecedence; }
 		}
 
 
-		static ISpecifyInvocationWithPrecedence BeginExpectation()
+		static SpecifyInvocation BeginExpectation()
 		{
 			return BeginExpectationWithNumberOfInvocationsConstraint(null, null);
 		}
 
-		static ISpecifyInvocationWithPrecedence BeginExpectationWithNumberOfInvocationsConstraint(int? fromInclusive, int? toInclusive)
+		static SpecifyInvocation BeginExpectationWithNumberOfInvocationsConstraint(int? fromInclusive, int? toInclusive)
 		{
 			return new SpecifyInvocation(new NumberOfInvocationsConstraint(fromInclusive, toInclusive));
 		}
@@ -120,49 +125,59 @@ namespace Simple.Mocking
 				this.numberOfInvocationsConstraint = numberOfInvocationsConstraint;
 			}
 
-			ISpecifyAction ISpecifyInvocation.MethodCall(Expression<Action> methodCallExpression)
+            public ISpecifyAction MethodCall(Expression<Action> methodCallExpression)
 			{
 				return ActionInvoked(InvocationMatcher.ForMethodCall(methodCallExpression));
 			}
 
-			ISpecifyAction<T> ISpecifyInvocation.MethodCall<T>(Expression<Func<T>> methodCallExpression)
+			public ISpecifyAction<T> MethodCall<T>(Expression<Func<T>> methodCallExpression)
 			{
 				return ActionInvoked<T>(InvocationMatcher.ForMethodCall(methodCallExpression));
 			}
 
-			ISpecifyAction<T> ISpecifyInvocation.PropertyGet<T>(Expression<Func<T>> propertyExpression)
+            public ISpecifyAction<T> PropertyGet<T>(Expression<Func<T>> propertyExpression)
 			{
 				return ActionInvoked<T>(InvocationMatcher.ForPropertyGet(propertyExpression));
 			}
 
-			ISpecifyAction ISpecifyInvocation.PropertySet<T>(Expression<Func<T>> propertyExpression, T value)
+            public ISpecifyAction PropertySet<T>(Expression<Func<T>> propertyExpression, T value)
 			{
 				return ActionInvoked(InvocationMatcher.ForPropertySet(propertyExpression, value));
 			}
 
-			ISpecifyAction ISpecifyInvocation.EventAdd<TTarget, THandler>(TTarget target, string eventName, THandler handler)
+            public ISpecifyAction PropertySet<T>(Expression<Func<T>> propertyExpression, ParameterValueConstraint<T> value)
+            {
+                return ActionInvoked(InvocationMatcher.ForPropertySet(propertyExpression, value));
+            }
+
+            public ISpecifyAction EventAdd<TTarget, THandler>(TTarget target, string eventName, THandler handler)
 			{
 				return ActionInvoked(InvocationMatcher.ForEventAdd(target, eventName, handler));
 			}
 
-			ISpecifyAction ISpecifyInvocation.EventRemove<TTarget, THandler>(TTarget target, string eventName, THandler handler)
+            public ISpecifyAction EventRemove<TTarget, THandler>(TTarget target, string eventName, THandler handler)
 			{
 				return ActionInvoked(InvocationMatcher.ForEventRemove(target, eventName, handler));
 			}
 
-			ISpecifyAction ActionInvoked(InvocationMatcher invocationMatcher)
+            public ISpecifyInvocation WithHigherPrecedence
+            {
+                get { return new SpecifyInvocation(numberOfInvocationsConstraint) { hasHigherPrecedence = true }; }
+            }
+
+            public ISpecifyActionForAny AnyInvocationOn(object target)
+            {
+                return ActionInvoked(InvocationMatcher.ForAnyInvocationOn(target));
+            }
+
+            SpecifyAction ActionInvoked(InvocationMatcher invocationMatcher)
 			{
 				return new SpecifyAction(CreateExpectation(invocationMatcher, numberOfInvocationsConstraint, hasHigherPrecedence));
 			}
 
-			ISpecifyAction<T> ActionInvoked<T>(InvocationMatcher invocationMatcher)
+            SpecifyAction<T> ActionInvoked<T>(InvocationMatcher invocationMatcher)
 			{
 				return new SpecifyAction<T>(CreateExpectation(invocationMatcher, numberOfInvocationsConstraint, hasHigherPrecedence));
-			}
-
-			public ISpecifyInvocation WithHigherPrecedence
-			{
-				get { return new SpecifyInvocation(numberOfInvocationsConstraint) { hasHigherPrecedence = true }; }
 			}
 		}
 
@@ -195,39 +210,50 @@ namespace Simple.Mocking
 				AppendAction(new SetsOutOrRefParameterAction(index, value));
 			}
 
-			void AppendAction(IAction action)
+		    protected void AppendAction(IAction action)
 			{
 				expectation.AddAction(action);
 			}
 		}
 
-		class SpecifyAction : SpecifyActionBase, ISpecifyAction
+		class SpecifyAction : SpecifyActionBase, ISpecifyAction, ISpecifyActionForAny
 		{
 			public SpecifyAction(Expectation expectation)
 				: base(expectation)
 			{
 			}
 
-			void ISpecifyAction.Executes(Action action)
+            public void Executes(Action action)
 			{
 				AppendExecutesAction(action);
 			}
 
-			void ISpecifyAction.Executes(ActionWithParameters action)
+            public void Executes(ActionWithParameters action)
 			{
 				AppendExecutesAction(action);
 			}
 
-			void ISpecifyAction.Throws(Exception ex)
+            public void Throws(Exception ex)
 			{
 				AppendThrowsAction(ex);
 			}
 
-			ISpecifyAction ISpecifyAction.SetsOutOrRefParameter(int index, object value)
+            public ISpecifyAction SetsOutOrRefParameter(int index, object value)
 			{
 				AppendSetsOutOrRefParameterAction(index, value);
 				return this;
 			}
+
+            public ISpecifyActionForAny SetsOutOrRefParameters(Func<Type, object> valueForType)
+            {
+                AppendAction(new SetsOutOrRefParametersForAnyAction(valueForType));
+                return this;
+            }
+
+            public void Returns(Func<Type, object> valueForType)
+		    {
+                AppendAction(new ReturnsForAnyAction(valueForType));
+		    }
 		}
 
 		class SpecifyAction<T> : SpecifyActionBase, ISpecifyAction<T>
@@ -242,12 +268,12 @@ namespace Simple.Mocking
 				AppendExecutesAction(func);
 			}
 
-			void ISpecifyAction<T>.Executes(FuncWithParameters<T> func)
+            void ISpecifyAction<T>.Executes(FuncWithParameters<T> func)
 			{
 				AppendExecutesAction(func);
 			}
 
-			void ISpecifyAction<T>.Returns(T value)
+            void ISpecifyAction<T>.Returns(T value)
 			{
 				AppendReturnsAction(value);
 			}
@@ -257,7 +283,7 @@ namespace Simple.Mocking
 				AppendThrowsAction(ex);
 			}
 
-			ISpecifyAction<T> ISpecifyAction<T>.SetsOutOrRefParameter(int index, object value)
+            ISpecifyAction<T> ISpecifyAction<T>.SetsOutOrRefParameter(int index, object value)
 			{
 				AppendSetsOutOrRefParameterAction(index, value);
 				return this;

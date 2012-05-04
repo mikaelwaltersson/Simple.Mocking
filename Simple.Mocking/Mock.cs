@@ -61,10 +61,7 @@ namespace Simple.Mocking
 
 		public override bool Equals(object obj)
 		{
-			if (obj is IProxy)
-				obj = ((IProxy)obj).BaseObject;
-
-			return base.Equals(obj);
+            return base.Equals(InvocationTarget.UnwrapProxyBaseObject(obj));
 		}
 	}
 }

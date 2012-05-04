@@ -10,7 +10,8 @@ namespace Simple.Mocking.SetUp
 		int? fromInclusive;
 		int? toInclusive;
 
-		public NumberOfInvocationsConstraint(int? fromInclusive, int? toInclusive)
+
+	    public NumberOfInvocationsConstraint(int? fromInclusive, int? toInclusive)
 		{
 			this.fromInclusive = fromInclusive;
 			this.toInclusive = toInclusive;

@@ -49,7 +49,7 @@ namespace Simple.Mocking.AcceptanceTests
 				MethodCall(() => myObject.MyMethodWithReturnValue(Any<int>.Value)).
 				Returns(42);
 
-			int returnValue = myObject.MyMethodWithReturnValue(123);
+			var returnValue = myObject.MyMethodWithReturnValue(123);
 
 			Assert.AreEqual(42, returnValue);
 		}
@@ -77,7 +77,7 @@ namespace Simple.Mocking.AcceptanceTests
 				SetsOutOrRefParameter(0, 42);
 
 
-			int value = 123;
+			var value = 123;
 
 			myObject.MyMethodWithRefParameter(ref value);
 
@@ -122,7 +122,7 @@ namespace Simple.Mocking.AcceptanceTests
 				Returns(42);
 
 
-			int returnValue = myDelegateWithReturnValue(123);
+			var returnValue = myDelegateWithReturnValue(123);
 
 			Assert.AreEqual(42, returnValue);
 		}
@@ -154,12 +154,22 @@ namespace Simple.Mocking.AcceptanceTests
 				SetsOutOrRefParameter(0, 42);
 
 
-			int value = 123;
+			var value = 123;
 
 			myDelegateWithRefParameter(ref value);
 
 			Assert.AreEqual(42, value);
 		}
+
+        [Test]
+        public void CanNotExpectObjectMethodInvocationsOnDelegate()
+        {
+            var myDelegate = Mock.Delegate<MyDelegate>();
+
+            Assert.Throws<ArgumentException>(() => Expect.MethodCall(() => myDelegate.ToString()));
+            Assert.Throws<ArgumentException>(() => Expect.MethodCall(() => myDelegate.GetHashCode()));
+            Assert.Throws<ArgumentException>(() => Expect.MethodCall(() => myDelegate.Equals(Any<MyDelegate>.Value)));
+        }
 
 
 		[Test]
@@ -183,17 +193,23 @@ namespace Simple.Mocking.AcceptanceTests
 		[Test]
 		public void ExpectPropertySetterCalled()
 		{
-			Expect.PropertySet(() => myObject.MyProperty, Any<int>.Value);
+			Expect.PropertySet(() => myObject.MyProperty, Any<object>.Value);
+            Expect.PropertySet(() => myObject.MyIntProperty, Any<int>.Value);
 
-			myObject.MyProperty = 1;
+			myObject.MyProperty = "1";
 			myObject.MyProperty = 2;
-			myObject.MyProperty = 3;
+			myObject.MyProperty = "3";
+
+
+            myObject.MyIntProperty = 1;
+            myObject.MyIntProperty = 2;
+            myObject.MyIntProperty = 2;
 		}
 
 		[Test]
 		public void ExpectPropertySetterCalledOnce()
 		{
-			Expect.Once.PropertySet(() => myObject.MyProperty, Any<int>.Value);
+			Expect.Once.PropertySet(() => myObject.MyProperty, Any<object>.Value);
 
 			myObject.MyProperty = 1;
 		}
@@ -322,7 +338,7 @@ namespace Simple.Mocking.AcceptanceTests
 		[Test]
 		public void ExpectInvocationExecutes()
 		{
-			int invocationCount = 0;
+			var invocationCount = 0;
 
 			Expect.
 				MethodCall(() => myObject.MyEmptyMethod()).
@@ -402,8 +418,8 @@ namespace Simple.Mocking.AcceptanceTests
 
 		[Test]
 		public void ExpectAnyInvocationOn()
-		{		
-			Expect.AnyInvocationOn(myObject);
+		{
+		    Expect.AnyInvocationOn(myObject);
 
 			myObject.MyMethod(1);
 			myObject.MyMethod(2);
@@ -425,14 +441,8 @@ namespace Simple.Mocking.AcceptanceTests
 
 			myObject.MyMethod(new ASubClass());
 
-			try
-			{
-				myObject.MyMethod(new ABaseClass());
-				Assert.Fail();
-			}
-			catch (ExpectationsException)
-			{				
-			}			
+
+		    Assert.Throws<ExpectationsException>(() => myObject.MyMethod(new ABaseClass()));
 		}
 
 		[Test]

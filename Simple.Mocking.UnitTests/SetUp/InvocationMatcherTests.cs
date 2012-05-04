@@ -46,14 +46,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 		{
 			Expression<Action> expression = () => myObject.Method(Any<int>.Value.AsRefOrOut);
 
-			try
-			{
-				InvocationMatcher.ForMethodCall(expression);
-				Assert.Fail();
-			}
-			catch (ArgumentException)
-			{				
-			}
+			Assert.Throws<ArgumentException>(() => InvocationMatcher.ForMethodCall(expression));
 		}
 
 		[Test]
@@ -72,14 +65,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 		{
 			Expression<Action> expression = () => myObject.Method(Any<int>.Value.AsInterface);
 
-			try
-			{
-				InvocationMatcher.ForMethodCall(expression);
-				Assert.Fail();
-			}
-			catch (ArgumentException)
-			{
-			}
+            Assert.Throws<ArgumentException>(() => InvocationMatcher.ForMethodCall(expression));
 		}
 
 
@@ -104,9 +90,8 @@ namespace Simple.Mocking.UnitTests.SetUp
 
 			var invocationMatcher = InvocationMatcher.ForMethodCall(expression);
 
-			Assert.IsInstanceOf(typeof(InvocationMatcher.DelegateInvocationMatcher), invocationMatcher);
 			Assert.AreSame(myDelegate, invocationMatcher.Target);
-			Assert.AreEqual(myDelegate.Method, invocationMatcher.Method);
+			Assert.IsNull(invocationMatcher.Method);
 			CollectionAssert.AreEqual(new object[] { 42 }, invocationMatcher.ParameterValueConstraints);
 		}
 
@@ -122,16 +107,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 				};
 
 			foreach (var expression in invalidExpressions)
-			{
-				try
-				{
-					InvocationMatcher.ForMethodCall(expression);
-					Assert.Fail();
-				}
-				catch (ArgumentException)
-				{
-				}
-			}
+                Assert.Throws<ArgumentException>(() => InvocationMatcher.ForMethodCall(expression));
 		}
 
 		[Test]
@@ -187,16 +163,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 				};
 
 			foreach (var expression in invalidExpressions)
-			{
-				try
-				{
-					InvocationMatcher.ForPropertyGet(expression);
-					Assert.Fail();
-				}
-				catch (ArgumentException)
-				{
-				}
-			}
+                Assert.Throws<ArgumentException>(() => InvocationMatcher.ForPropertyGet(expression));
 		}
 
 
@@ -247,14 +214,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 		[Test]
 		public void ForEventAddOnNonExistingEvent()
 		{
-			try
-			{
-				InvocationMatcher.ForEventAdd(myObject, "Event2", Any<EventHandler>.Value);
-				Assert.Fail();
-			}
-			catch (ArgumentException)
-			{				
-			}
+            Assert.Throws<ArgumentException>(() => InvocationMatcher.ForEventAdd(myObject, "Event2", Any<EventHandler>.Value));
 		}
 
 		[Test]
@@ -262,11 +222,20 @@ namespace Simple.Mocking.UnitTests.SetUp
 		{
 			var invocationMatcher = InvocationMatcher.ForAnyInvocationOn(myObject);
 
-			Assert.IsInstanceOf(typeof(InvocationMatcher.AnyInvocationOnTargetMatcher), invocationMatcher);
 			Assert.IsNull(invocationMatcher.Method);
 			Assert.IsNull(invocationMatcher.ParameterValueConstraints);
 			Assert.AreEqual(myObject + ".*", invocationMatcher.ToString());
 		}
+
+        [Test]
+        public void ForAnyInvocationOnDelegate()
+        {
+            var invocationMatcher = InvocationMatcher.ForAnyInvocationOn(myDelegate);
+
+            Assert.IsNull(invocationMatcher.Method);
+            Assert.IsNull(invocationMatcher.ParameterValueConstraints);
+            Assert.AreEqual(myDelegate.Target + "(*)", invocationMatcher.ToString());
+        }
 
 		[Test]
 		public void Matches()
@@ -321,7 +290,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 		[Test]
 		public void MatchesDelegateMethod()
 		{
-			var invocationMatcher = new InvocationMatcher.DelegateInvocationMatcher(myDelegate, new[] { Any<int>.Value });
+			var invocationMatcher = new InvocationMatcher(myDelegate, null, new[] { Any<int>.Value });
 			var otherDelegate = (MyDelegate)new MyObject().MethodWithReturnValue;
 
 			Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(myDelegate.Target, myDelegate.Method.Name, 42)));
@@ -334,7 +303,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var target1 = new MyObject();
 			var target2 = new MyObject();
 
-			var invocationMatcher = new InvocationMatcher.AnyInvocationOnTargetMatcher(target1);
+            var invocationMatcher = InvocationMatcher.ForAnyInvocationOn(target1);
 
 			Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(target1, "Method")));
 			Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(target1, "MethodWithReturnValue")));
@@ -348,13 +317,37 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var target = new MyDerivedObject();
 
 			var objectMethodInvocation =
-				new Invocation(target, typeof(object).GetMethod("ToString"), null, new object[0], null);
-						
-			var invocationMatcher = new InvocationMatcher.AnyInvocationOnTargetMatcher(target);
+				new Invocation(target, typeof(object).GetMethod("ToString"), null, new object[0], null, 0);
+
+            var invocationMatcher = InvocationMatcher.ForAnyInvocationOn(target);
 
 			Assert.IsFalse(invocationMatcher.Matches(objectMethodInvocation));
 		}
-		
+
+        [Test]
+        public void MatchesAnyInvocationOnDelegate()
+        {
+            var target1 = myDelegate;
+            var target2 = (MyDelegate)new MyObject().MethodWithReturnValue;
+
+            var invocationMatcher = InvocationMatcher.ForAnyInvocationOn(target1);
+
+            Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(target1.Target, myDelegate.Method.Name)));
+            Assert.IsFalse(invocationMatcher.Matches(CreateMethodInvocation(target2.Target, myDelegate.Method.Name)));
+        }
+
+        [Test]
+        public void MatchesAnyInvocationOnDelegateDoesNotIncludesMethodsDeclaredOnObject()
+        {
+            var target = myDelegate;
+
+            var objectMethodInvocation =
+                new Invocation((IProxy)target.Target, typeof(object).GetMethod("ToString"), null, new object[0], null, 0);
+
+            var invocationMatcher = InvocationMatcher.ForAnyInvocationOn(target);
+
+            Assert.IsFalse(invocationMatcher.Matches(objectMethodInvocation));
+        }
 
 		[Test]
 		public void ToStringCanBeInvokedForAnyInvocationMatcher()
@@ -375,12 +368,12 @@ namespace Simple.Mocking.UnitTests.SetUp
 
 		static IInvocation CreateMethodInvocation(object target, string methodName, params object[] parameterValues)
 		{
-			return new Invocation(target as IProxy, typeof(IMyObject).GetMethod(methodName), null, parameterValues, null);
+			return new Invocation(target as IProxy, typeof(IMyObject).GetMethod(methodName), null, parameterValues, null, 0);
 		}
 
 		static IInvocation CreateGenericMethodInvocation(object target, string methodName, Type[] genericArguments, params object[] parameterValues)
 		{
-			return new Invocation(target as IProxy, typeof(IMyObject).GetMethod(methodName), genericArguments, parameterValues, null);
+			return new Invocation(target as IProxy, typeof(IMyObject).GetMethod(methodName), genericArguments, parameterValues, null, 0);
 		}
 
 
@@ -440,7 +433,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 
 			Type IProxy.ProxiedType
 			{
-				get { throw new NotSupportedException(); }
+				get { return typeof(IMyObject); }
 			}
 
 			object IProxy.BaseObject

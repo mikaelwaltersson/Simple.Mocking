@@ -76,14 +76,7 @@ namespace Simple.Mocking.UnitTests.Syntax
 		[Test]
 		public void ImplicitConversionToValueThrowsException()
 		{
-			try
-			{
-				Math.Max(0, new AnyValueConstraint<int>());
-				Assert.Fail();
-			}
-			catch (InvalidOperationException)
-			{				
-			}
+		    Assert.Throws<InvalidOperationException>(() => Math.Max(0, new AnyValueConstraint<int>()));
 		}
 
 	}

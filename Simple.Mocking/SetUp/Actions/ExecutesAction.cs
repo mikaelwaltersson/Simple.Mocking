@@ -10,25 +10,35 @@ namespace Simple.Mocking.SetUp.Actions
 	class ExecutesAction : IAction
 	{
 		Delegate actionOrFunc;
-		bool hasReturnValue;
-		bool hasParametersArgument;
+		
 
 		public ExecutesAction(Delegate actionOrFunc)
 		{
-			this.actionOrFunc = actionOrFunc;
-			this.hasReturnValue = (actionOrFunc.Method.ReturnType != typeof(void));
-			this.hasParametersArgument = 
-				((from parameter in actionOrFunc.Method.GetParameters() select parameter.ParameterType).SequenceEqual(new[] { typeof(IList<object>) }));
+			this.actionOrFunc = actionOrFunc;				
 		}
 
 		public void ExecuteFor(IInvocation invocation)
 		{
-			var parameters = (hasParametersArgument ? new object[] { invocation.ParameterValues } : new object[0]);					
+            var parameters = HasParametersArgument ? new object[] { invocation.ParameterValues } : new object[0];					
 			var returnValue = actionOrFunc.DynamicInvoke(parameters);
 
-
-			if (hasReturnValue)
+			if (ExpectsReturnValue(invocation))
 				invocation.ReturnValue = returnValue;
 		}
+
+	    bool ExpectsReturnValue(IInvocation invocation)
+	    {
+	        return Invocation.GetNonGenericMethod(invocation).ReturnType != typeof(void);
+	    }
+
+        bool HasParametersArgument
+        {
+            get
+            {
+                var parameters = actionOrFunc.Method.GetParameters();
+
+                return (parameters.Length == 1 && typeof(IList<object>).IsAssignableFrom(parameters[0].ParameterType));
+            }
+        }
 	}
 }

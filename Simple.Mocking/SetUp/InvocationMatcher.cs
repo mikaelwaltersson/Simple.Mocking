@@ -18,6 +18,9 @@ namespace Simple.Mocking.SetUp
 
 		public InvocationMatcher(object target, MethodInfo method, IList<object> parameterValueConstraints)
 		{
+            if (InvocationTarget.IsDelegate(target) && method != null)
+                throw new ArgumentException("Can not specify delegate target and method", "method");
+
 			this.target = target;
 			this.method = method;
 			this.parameterValueConstraints = parameterValueConstraints;
@@ -46,29 +49,36 @@ namespace Simple.Mocking.SetUp
 				MatchesParameters(invocation.ParameterValues);
 		}
 
-		protected virtual bool MatchesTarget(IProxy invocationTarget)
+		bool MatchesTarget(IProxy invocationTarget)
 		{
-			return (invocationTarget == target);
+			return ReferenceEquals(invocationTarget, InvocationTarget.UnwrapDelegateTarget(target));
 		}
 
-		protected virtual bool MatchesMethod(MethodInfo invocationMethod, IList<Type> genericArguments)
+		bool MatchesMethod(MethodInfo invocationMethod, IEnumerable<Type> genericArguments)
 		{
+            if (method == null)
+                return (invocationMethod.DeclaringType != typeof(object));
+
 			if (genericArguments != null)
 				invocationMethod = invocationMethod.MakeGenericMethod(genericArguments.ToArray());
 
-			return (invocationMethod == method);
+			return method.Equals(invocationMethod);
 		}
 
-		protected virtual bool MatchesParameters(IList<object> invocationParameterValues)
+		bool MatchesParameters(IList<object> invocationParameterValues)
 		{
+            if (parameterValueConstraints == null)
+                return true;
+
 			if (invocationParameterValues.Count != parameterValueConstraints.Count)
 				return false;
 
-			for (int i = 0; i < parameterValueConstraints.Count; i++)
+			for (var i = 0; i < parameterValueConstraints.Count; i++)
 			{
 				var constraint = parameterValueConstraints[i];
 				var value = invocationParameterValues[i];
-				bool isMatch;
+				
+                bool isMatch;
 
 				if (constraint is IParameterValueConstraint)
 					isMatch = ((IParameterValueConstraint)constraint).Matches(value);
@@ -83,6 +93,8 @@ namespace Simple.Mocking.SetUp
 
 			return true;
 		}
+
+
 
 		public override string ToString()
 		{
@@ -164,7 +176,7 @@ namespace Simple.Mocking.SetUp
 			var target = (Delegate)ResolveObjectFromExpression(body.Expression);
 			var parameters = ParseParameters(body.Arguments, target.Method);
 
-			return new DelegateInvocationMatcher(target, parameters.ToList());
+			return new InvocationMatcher(target, null, parameters.ToList());
 		}
 
 
@@ -342,48 +354,7 @@ namespace Simple.Mocking.SetUp
 
 		public static InvocationMatcher ForAnyInvocationOn(object target)
 		{
-			return new AnyInvocationOnTargetMatcher(target);
-		}
-
-		internal class DelegateInvocationMatcher : InvocationMatcher
-		{
-			public DelegateInvocationMatcher(Delegate target, IList<object> parameterValueConstraints) 
-				: base(target, target.Method, parameterValueConstraints)
-			{
-			}
-
-			protected override bool MatchesTarget(IProxy invocationTarget)
-			{
-				return (invocationTarget == ((Delegate)target).Target);
-			}
-
-			protected override bool MatchesMethod(MethodInfo invocationMethod, IList<Type> genericArguments)
-			{
-				return true;
-			}
-		}
-
-		internal class AnyInvocationOnTargetMatcher : InvocationMatcher
-		{			
-			public AnyInvocationOnTargetMatcher(object target)
-				: base(target, null, null)
-			{
-			}
-		
-			protected override bool MatchesMethod(MethodInfo invocationMethod, IList<Type> genericArguments)
-			{
-				return (invocationMethod.DeclaringType != typeof(object));
-			}
-
-			protected override bool MatchesParameters(IList<object> invocationParameterValues)
-			{
-				return true;
-			}
-
-			public override string ToString()
-			{
-				return InvocationFormatter.FormatTarget(target) + ".*";
-			}
+			return new InvocationMatcher(target, null, null);
 		}
 	}
 }

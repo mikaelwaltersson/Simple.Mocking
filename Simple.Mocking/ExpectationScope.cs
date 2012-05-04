@@ -52,12 +52,12 @@ namespace Simple.Mocking
 		}
 		
 
-		bool IExpectation.TryMeet(IInvocation invocation)
+		bool IExpectation.TryMeet(IInvocation invocation, out Action action)
 		{
 			if (invocation == null)
 				throw new ArgumentNullException("invocation");
 
-			return RootScope.TryMeet(invocation);
+			return RootScope.TryMeet(invocation, out action);
 		}
 
 		bool IExpectation.HasBeenMet
@@ -104,9 +104,9 @@ namespace Simple.Mocking
 				return;
 
 			writer.WriteLine();
-			WriteLine(writer, indentLevel, "Unexpected invocations {");
+			WriteLine(writer, indentLevel, "Unexpected invocations:");
 			unexpectedInvocations.ForEach(invocation => WriteLine(writer, indentLevel + 1, invocation));			
-			WriteLine(writer, indentLevel, "}");
+			WriteLine(writer, indentLevel, "");
 		}
 
 	
@@ -144,27 +144,20 @@ namespace Simple.Mocking
 					});
 			}
 
-			public IEnumerable<IInvocation> ExpectedInvocations
-			{
-				get { return GetEntries(true); }
-			}
+            public IEnumerable<IInvocation> Invocations
+            {
+                get { return from entry in entries select entry.Invocation; }
+            }
+
 
 			public IEnumerable<IInvocation> UnexpectedInvocations
 			{
-				get { return GetEntries(false); }
+				get { return from entry in entries where !entry.WasExpected select entry.Invocation; }
 			}
-
-			IEnumerable<IInvocation> GetEntries(bool wasExpected)
-			{
-				return
-					from entry in entries
-					where entry.WasExpected == wasExpected
-					select entry.Invocation;
-			}
-
+			
 			public override string ToString()
 			{
-				return string.Join(Environment.NewLine, entries.Select(entry => entry.ToString()).ToArray());
+                return string.Join(Environment.NewLine, Invocations.Select(invocation => invocation.ToString()).ToArray());
 			}
 		}
 
@@ -185,12 +178,8 @@ namespace Simple.Mocking
 				this.expectationList = new List<IExpectation>();
 			}
 
-			protected abstract bool DoTryMeet(IInvocation invocation);
 
-			public bool TryMeet(IInvocation invocation)
-			{
-				return DoTryMeet(invocation);
-			}
+            public abstract bool TryMeet(IInvocation invocation, out Action action);
 
 			public bool HasBeenMet
 			{
@@ -242,14 +231,15 @@ namespace Simple.Mocking
 			{
 			}
 
-			protected override bool DoTryMeet(IInvocation invocation)
+			public override bool TryMeet(IInvocation invocation, out Action action)
 			{				
 				foreach (var expectation in expectationList)
 				{
-					if (expectation.TryMeet(invocation))
+					if (expectation.TryMeet(invocation, out action))
 						return true;
 				}
 
+			    action = null;
 				return false;			
 			}
 
@@ -267,21 +257,26 @@ namespace Simple.Mocking
 			{
 			}
 
-			protected override bool DoTryMeet(IInvocation invocation)
+			public override bool TryMeet(IInvocation invocation, out Action action)
 			{
 				var nextToMeet = expectationList[nextToMeetIndex];
 
-				if (nextToMeet.TryMeet(invocation))
+				if (nextToMeet.TryMeet(invocation, out action))
 					return true;
 
-				int subsequentToMeetIndex = nextToMeetIndex + 1;
+                for (var i = nextToMeetIndex + 1; nextToMeet.HasBeenMet && i < expectationList.Count; i++)
+                {
+                    nextToMeet = expectationList[i];
 
-				if (nextToMeet.HasBeenMet && subsequentToMeetIndex < expectationList.Count && expectationList[subsequentToMeetIndex].TryMeet(invocation))
-				{
-					nextToMeetIndex = subsequentToMeetIndex;
-					return true;
-				}
+                    if (nextToMeet.TryMeet(invocation, out action))
+                    {
+                        nextToMeetIndex = i;
+                        return true;
+                    }
+                }
+                
 
+			    action = null;
 				return false;			
 			}
 

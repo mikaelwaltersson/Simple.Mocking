@@ -31,29 +31,29 @@ namespace Simple.Mocking.SetUp
 			if (invocation == null)
 				throw new ArgumentNullException("invocation");
 
-			bool wasMet = 
-				expectationScope.TryMeet(invocation) || 
-				TryMeetDefaultObjectMethodInvocation(invocation);
-			
-			try
-			{
-				if (!wasMet)
-					throw new ExpectationsException(expectationScope, "Unexpected invocation '{0}', expected:", invocation);
-			}
-			finally
-			{
-				expectationScope.InvocationHistory.RegisterInvocation(invocation, wasMet);
-			}
+		    Action action;
+
+		    var wasMet =
+		        expectationScope.TryMeet(invocation, out action) ||
+		        TryMeetDefaultObjectMethodInvocation(invocation, out action);
+
+		    expectationScope.InvocationHistory.RegisterInvocation(invocation, wasMet);
+
+            if (wasMet)
+                action();
+            else
+                throw new ExpectationsException(expectationScope, "Unexpected invocation '{0}', expected:", invocation);
 		}
 
-		static bool TryMeetDefaultObjectMethodInvocation(IInvocation invocation)
+		static bool TryMeetDefaultObjectMethodInvocation(IInvocation invocation, out Action action)
 		{
 			if (invocation.Method.DeclaringType == typeof(object))
 			{
-				invocation.ReturnValue = invocation.Method.Invoke(invocation.Target.BaseObject, invocation.ParameterValues.ToArray());
+				action = () => invocation.ReturnValue = invocation.Method.Invoke(invocation.Target.BaseObject, invocation.ParameterValues.ToArray());
 				return true;
 			}
 
+		    action = null;
 			return false;
 		}
 
@@ -69,8 +69,7 @@ namespace Simple.Mocking.SetUp
 
 		public static MockInvocationInterceptor GetFromTarget(object target)
 		{
-			if (target is Delegate)
-				target = ((Delegate)target).Target;
+		    target = InvocationTarget.UnwrapDelegateTarget(target);
 
 			var proxy = target as IProxy;
 

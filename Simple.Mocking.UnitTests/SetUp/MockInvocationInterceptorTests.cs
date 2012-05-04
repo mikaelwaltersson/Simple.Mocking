@@ -32,17 +32,11 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var target = new Target(invocationInterceptor);
 			var invocation = CreateMethodInvocation<IExpectationScope>(target, "Add", new[] { typeof(IExpectation), typeof(bool) }, new object[2]);
 
-			try
-			{
-				invocationInterceptor.OnInvocation(invocation);
-				Assert.Fail();
-			}
-			catch (ExpectationsException)
-			{				
-			}
 
-			expectationScope.CanMeet = true;
-			
+            Assert.Throws<ExpectationsException>(() => invocationInterceptor.OnInvocation(invocation));
+
+
+			expectationScope.CanMeet = true;		
 			invocationInterceptor.OnInvocation(invocation);
 
 			Assert.IsTrue(expectationScope.HasBeenMet);
@@ -83,67 +77,33 @@ namespace Simple.Mocking.UnitTests.SetUp
 		[Test]
 		public void GetFromTargetNonProxy()
 		{
-			try
-			{
-				MockInvocationInterceptor.GetFromTarget(new object());
-				Assert.Fail();
-			}
-			catch (ArgumentException)
-			{
-			}
+            Assert.Throws<ArgumentException>(() => MockInvocationInterceptor.GetFromTarget(new object()));
 		}
 
 		[Test]
 		public void GetFromTargetProxyWithNonMockInvocationInterceptor()
 		{
-			try
-			{
-				MockInvocationInterceptor.GetFromTarget(new Target(new OtherInvocationInterceptor()));
-				Assert.Fail();
-			}
-			catch (ArgumentException)
-			{
-			}
+            Assert.Throws<ArgumentException>(() => MockInvocationInterceptor.GetFromTarget(new Target(new OtherInvocationInterceptor())));
 		}
 
 		[Test]
 		public void CantCreateInvocationInterceptorWithNullArguments()
 		{
-			try
-			{
-				new MockInvocationInterceptor(null);
-				Assert.Fail();
-			}
-			catch (ArgumentNullException)
-			{
-			}
+            Assert.Throws<ArgumentNullException>(() => new MockInvocationInterceptor(null));
 		}
 
 		[Test]
 		public void CantInvokeWithNullInvocation()
 		{
-			try
-			{
-				new MockInvocationInterceptor(new TestExpectationScope()).OnInvocation(null);
-				Assert.Fail();
-			}
-			catch (ArgumentNullException)
-			{
-			}
+            Assert.Throws<ArgumentNullException>(() => new MockInvocationInterceptor(new TestExpectationScope()).OnInvocation(null));
 		}
 
 		[Test]
 		public void CantAddNullExpectation()
-		{			
-			try
-			{
-				new MockInvocationInterceptor(new TestExpectationScope()).AddExpectation(null, false);
-				Assert.Fail();
-			}
-			catch (ArgumentNullException)
-			{				
-			}
+		{
+            Assert.Throws<ArgumentNullException>(() => new MockInvocationInterceptor(new TestExpectationScope()).AddExpectation(null, false));
 		}
+
 
 		Invocation CreateMethodInvocation<T>(IProxy target, string methodName, params object[] parameterValues)
 		{
@@ -152,7 +112,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 
 		Invocation CreateMethodInvocation<T>(IProxy target, string methodName, Type[] parameterTypes, object[] parameterValues)
 		{
-			return new Invocation(target, typeof(T).GetMethod(methodName, parameterTypes), null, parameterValues, null);
+			return new Invocation(target, typeof(T).GetMethod(methodName, parameterTypes), null, parameterValues, null, 0);
 		}
 
 
@@ -190,8 +150,9 @@ namespace Simple.Mocking.UnitTests.SetUp
 		{
 			public bool CanMeet;
 	
-			public bool TryMeet(IInvocation invocation)
+			public bool TryMeet(IInvocation invocation, out Action action)
 			{
+			    action = () => { };
 				return (HasBeenMet = CanMeet);
 			}
 
@@ -216,10 +177,10 @@ namespace Simple.Mocking.UnitTests.SetUp
 			{				
 			}
 
-			public IEnumerable<IInvocation> ExpectedInvocations
-			{
-				get { return new IInvocation[0]; }
-			}
+            public IEnumerable<IInvocation> Invocations
+            {
+                get { return new IInvocation[0]; }
+            }
 
 			public IEnumerable<IInvocation> UnexpectedInvocations
 			{

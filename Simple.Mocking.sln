@@ -7,14 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking.UnitTests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking.AcceptanceTests", "Simple.Mocking.AcceptanceTests\Simple.Mocking.AcceptanceTests.csproj", "{506C205C-E934-426A-AB94-4CF999770B1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking-3.5", "Simple.Mocking\Simple.Mocking-3.5.csproj", "{1F65E613-9787-4A7C-80C1-F757CC5DACD6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A898039A-C8AA-4E44-9B43-0099A1374473}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{EFC3F13C-E3BC-4ACC-BB80-EB583F016F45}"
 	ProjectSection(SolutionItems) = preProject
-		nuget\Package.nuspec = nuget\Package.nuspec
+		nuget\Simple.Mocking\Package.nuspec = nuget\Simple.Mocking\Package.nuspec
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking-3.5", "Simple.Mocking\Simple.Mocking-3.5.csproj", "{1F65E613-9787-4A7C-80C1-F757CC5DACD6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,8 +39,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{EFC3F13C-E3BC-4ACC-BB80-EB583F016F45} = {A898039A-C8AA-4E44-9B43-0099A1374473}
 	EndGlobalSection
 EndGlobal

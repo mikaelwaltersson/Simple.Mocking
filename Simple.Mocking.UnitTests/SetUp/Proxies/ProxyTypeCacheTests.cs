@@ -14,24 +14,9 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 	{
 		[Test]
 		public void CantInvokeGetProxyTypeWithNullArgument()
-		{
-			try
-			{
-				new ProxyTypeCache().GetProxyType(null, t => t);
-				Assert.Fail();
-			}
-			catch (ArgumentNullException)
-			{
-			}
-
-			try
-			{
-				new ProxyTypeCache().GetProxyType(typeof(IMyInterface), null);
-				Assert.Fail();
-			}
-			catch (ArgumentNullException)
-			{
-			}
+		{	
+		    Assert.Throws<ArgumentNullException>(() => new ProxyTypeCache().GetProxyType(null, t => t));
+            Assert.Throws<ArgumentNullException>(() => new ProxyTypeCache().GetProxyType(typeof(IMyInterface), null));
 		}		
 
 		[Test]
@@ -70,17 +55,10 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 
 			var cache = new ProxyTypeCache();
 
-			for (int i = 0; i < 2; i++)
+			for (var i = 0; i < 2; i++)
 			{
-				try
-				{
-					cache.GetProxyType(typeof(IMyInterface), createTypeDelegate);
-					Assert.Fail();
-				}
-				catch (InvalidOperationException ex)
-				{					
-					Assert.AreSame(createTypeException, ex.InnerException);
-				}
+                var ex = Assert.Throws<InvalidOperationException>(() => cache.GetProxyType(typeof(IMyInterface), createTypeDelegate));
+                Assert.AreSame(createTypeException, ex.InnerException);
 			}
 
 			Assert.AreEqual(1, invocationCount);			

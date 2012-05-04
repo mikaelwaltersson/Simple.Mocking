@@ -29,21 +29,25 @@ namespace Simple.Mocking.SetUp
 			this.actions = new List<IAction>();
 		}
 
-		public bool TryMeet(IInvocation invocation)
+		public bool TryMeet(IInvocation invocation, out Action action)
 		{
 			if (numberOfInvocationsConstraint.CanInvoke(invocationCount) && invocationMatcher.Matches(invocation))
 			{
 				invocationCount++;
-				actions.ForEach(action => action.ExecuteFor(invocation));
+                action = () => ExecuteActionsFor(invocation);				
 				return true;
 			}
 
+		    action = null;
 			return false;
 		}
 
-		
+        void ExecuteActionsFor(IInvocation invocation)
+        {
+            actions.ForEach(action => action.ExecuteFor(invocation));
+        }
 
-		public bool HasBeenMet
+	    public bool HasBeenMet
 		{
 			get { return numberOfInvocationsConstraint.Matches(invocationCount); }
 		}

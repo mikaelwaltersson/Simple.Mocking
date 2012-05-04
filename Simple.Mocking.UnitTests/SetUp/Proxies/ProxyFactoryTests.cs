@@ -16,54 +16,16 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 		[Test]
 		public void CantInvokeConstructorWithNullArgument()
 		{
-			try
-			{
-				new ProxyFactory(null);
-				Assert.Fail();
-			}
-			catch (ArgumentNullException)
-			{
-			}
+		    Assert.Throws<ArgumentNullException>(() => new ProxyFactory(null));
 		}
 
 		[Test]
 		public void CantInvokeCreateProxyWithNullArgument()
 		{
-			try
-			{
-				proxyFactory.CreateInterfaceProxy<EventHandler>(string.Empty, null);
-				Assert.Fail();
-			}
-			catch (ArgumentNullException)
-			{
-			}
-
-			try
-			{
-				proxyFactory.CreateInterfaceProxy<EventHandler>(null, invocationInterceptor);
-				Assert.Fail();
-			}
-			catch (ArgumentNullException)
-			{
-			}
-
-			try
-			{
-				proxyFactory.CreateDelegateProxy<EventHandler>(new object(), null);
-				Assert.Fail();
-			}
-			catch (ArgumentNullException)
-			{
-			}
-
-			try
-			{
-				proxyFactory.CreateDelegateProxy<EventHandler>(null, invocationInterceptor);
-				Assert.Fail();
-			}
-			catch (ArgumentNullException)
-			{
-			}
+            Assert.Throws<ArgumentNullException>(() => proxyFactory.CreateInterfaceProxy<EventHandler>(string.Empty, null));
+            Assert.Throws<ArgumentNullException>(() => proxyFactory.CreateInterfaceProxy<EventHandler>(null, invocationInterceptor));
+            Assert.Throws<ArgumentNullException>(() => proxyFactory.CreateDelegateProxy<EventHandler>(new object(), null));
+            Assert.Throws<ArgumentNullException>(() => proxyFactory.CreateDelegateProxy<EventHandler>(null, invocationInterceptor));
 		}
 
 
@@ -89,20 +51,13 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 
 			Assert.IsNotNull(proxy1);
 			Assert.IsNotNull(proxy2);
-			Assert.IsTrue(proxy1.GetType() == proxy2.GetType());
+			Assert.AreSame(proxy1.GetType(), proxy2.GetType());
 		}
 
 		[Test]
 		public void CreatingInterfaceProxyFromClassFails()
 		{
-			try
-			{
-				proxyFactory.CreateInterfaceProxy<EmptyAbstractClass>(baseObject, invocationInterceptor);
-				Assert.Fail();
-			}
-			catch (ArgumentException)
-			{
-			}
+            Assert.Throws<ArgumentException>(() => proxyFactory.CreateInterfaceProxy<EmptyAbstractClass>(baseObject, invocationInterceptor));
 		}
 
 		[Test]
@@ -401,14 +356,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 		[Test]
 		public void CreatingDelegateProxyFromNonDelegateTypeFails()
 		{
-			try
-			{
-				proxyFactory.CreateDelegateProxy<EmptyAbstractClass>(baseObject, invocationInterceptor);
-				Assert.Fail();
-			}
-			catch (ArgumentException)
-			{
-			}
+            Assert.Throws<ArgumentException>(() => proxyFactory.CreateDelegateProxy<EmptyAbstractClass>(baseObject, invocationInterceptor));
 		}
 
 		[Test]
