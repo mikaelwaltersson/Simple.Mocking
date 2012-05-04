@@ -7,6 +7,8 @@ using System.Text;
 
 using NUnit.Framework;
 
+using Simple.Mocking.SetUp;
+
 namespace Simple.Mocking.UnitTests
 {
 	[TestFixture]
@@ -24,9 +26,7 @@ namespace Simple.Mocking.UnitTests
 				stream.Position = 0;
 
 				Assert.AreEqual("error", ((ExpectationsException)formatter.Deserialize(stream)).Message);
-			}
-
-			
+			}			
 		}
 	}
 }

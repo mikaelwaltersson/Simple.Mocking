@@ -31,6 +31,8 @@ namespace Simple.Mocking.AcceptanceTests.Interfaces
 
 		object MyProperty { get; set; }
 
+        int MyIntProperty { get; set; }
+
 		object this[int i] { get; set; }
 
 		event EventHandler MyEvent;

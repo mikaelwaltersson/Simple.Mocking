@@ -84,6 +84,7 @@
     <Compile Include="SetUp\ExpectationTests.cs" />
     <Compile Include="SetUp\InvocationMatcherTests.cs" />
     <Compile Include="SetUp\MockInvocationInterceptorTests.cs" />
+    <Compile Include="SetUp\MockNameTests.cs" />
     <Compile Include="SetUp\NumberOfInvocationsConstraintTests.cs" />
     <Compile Include="SetUp\Proxies\ByRefTypeTests.cs" />
     <Compile Include="SetUp\Proxies\InvocationFactoryTests.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithUnsignedShortArguments.cs" />
     <Compile Include="SetUp\Proxies\ProxyFactoryTestsWithValueTypeArguments.cs" />
     <Compile Include="SetUp\Proxies\ProxyTypeCacheTests.cs" />
+    <Compile Include="SetUp\StubValueTests.cs" />
     <Compile Include="Syntax\ParameterValueConstraintTests.cs" />
   </ItemGroup>
   <ItemGroup>

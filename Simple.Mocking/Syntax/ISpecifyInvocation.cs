@@ -13,6 +13,8 @@ namespace Simple.Mocking.Syntax
 
 		ISpecifyAction PropertySet<T>(Expression<Func<T>> propertyExpression, T value);
 
+        ISpecifyAction PropertySet<T>(Expression<Func<T>> propertyExpression, ParameterValueConstraint<T> value);
+
 		ISpecifyAction EventAdd<TTarget, THandler>(TTarget target, string eventName, THandler handler);
 
 		ISpecifyAction EventRemove<TTarget, THandler>(TTarget target, string eventName, THandler handler);

@@ -4,80 +4,67 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-using Simple.Mocking.SetUp;
+using Simple.Mocking.Asserts;
 using Simple.Mocking.Syntax;
 
 namespace Simple.Mocking
 {
+    [Obsolete("Use AssertInvocationsWasMade instead (will be removed in next version)")]
 	public class AssertExpectations
 	{
 		public static void IsMetFor(object target)
 		{
-			var mockInvocationInterceptor = MockInvocationInterceptor.GetFromTarget(target);
-
-			AssertExpectationScopeIsMet(mockInvocationInterceptor.ExpectationScope);
+			AssertInvocationsWasMade.MatchingExpecationsFor(target);
 		}
 
 		public static void IsMetFor(ExpectationScope expectationScope)
 		{
-			AssertExpectationScopeIsMet(expectationScope);
-		}
-
-		static void AssertExpectationScopeIsMet(IExpectationScope expectationScope)
-		{
-			if (!expectationScope.HasBeenMet)
-				throw new ExpectationsException(expectationScope, "All expectations has not been met, expected:");
+            AssertInvocationsWasMade.MatchingExpecationsFor(expectationScope);
 		}
 
 		public static IAssertExpectationsIsMetForCallTo IsMetForCallTo
 		{
-			get { return AssertExpectationsIsMetForCallTo.Instance; }
+            get { return AssertExpectationsIsMetForCallTo.Wrap(new AssertInvocations(null)); }
 		}
 
-		class AssertExpectationsIsMetForCallTo : IAssertExpectationsIsMetForCallTo
-		{
-			public static readonly IAssertExpectationsIsMetForCallTo Instance = new AssertExpectationsIsMetForCallTo();
+        class AssertExpectationsIsMetForCallTo : IAssertExpectationsIsMetForCallTo
+        {
+            IAssertInvocationFor assertInvocation;
 
-			public IAssertExpectationsIsMetForCallTo MethodCall(Expression<Action> methodCallExpression)
-			{
-				return AssertMatchingInvocationWasCalled(InvocationMatcher.ForMethodCall(methodCallExpression));
-			}
+            public static IAssertExpectationsIsMetForCallTo Wrap(IAssertInvocations assertInvocations)
+            {
+                return new AssertExpectationsIsMetForCallTo { assertInvocation = assertInvocations.AtLeastOnce };
+            }
 
-			public IAssertExpectationsIsMetForCallTo MethodCall<T>(Expression<Func<T>> methodCallExpression)
-			{
-				return AssertMatchingInvocationWasCalled(InvocationMatcher.ForMethodCall(methodCallExpression));
-			}
+            public IAssertExpectationsIsMetForCallTo MethodCall(Expression<Action> methodCallExpression)
+            {
+                return Wrap(assertInvocation.ForMethodCall(methodCallExpression));
+            }
 
-			public IAssertExpectationsIsMetForCallTo PropertyGet<T>(Expression<Func<T>> propertyExpression)
-			{
-				return AssertMatchingInvocationWasCalled(InvocationMatcher.ForPropertyGet(propertyExpression));
-			}
+            public IAssertExpectationsIsMetForCallTo MethodCall<T>(Expression<Func<T>> methodCallExpression)
+            {
+                return Wrap(assertInvocation.ForMethodCall(methodCallExpression));
+            }
 
-			public IAssertExpectationsIsMetForCallTo PropertySet<T>(Expression<Func<T>> propertyExpression, T value)
-			{
-				return AssertMatchingInvocationWasCalled(InvocationMatcher.ForPropertySet(propertyExpression, value));
-			}
+            public IAssertExpectationsIsMetForCallTo PropertyGet<T>(Expression<Func<T>> propertyExpression)
+            {
+                return Wrap(assertInvocation.ForPropertyGet(propertyExpression));
+            }
 
-			public IAssertExpectationsIsMetForCallTo EventAdd<TTarget, THandler>(TTarget target, string eventName, THandler handler)
-			{
-				return AssertMatchingInvocationWasCalled(InvocationMatcher.ForEventAdd(target, eventName, handler));
-			}
+            public IAssertExpectationsIsMetForCallTo PropertySet<T>(Expression<Func<T>> propertyExpression, T value)
+            {
+                return Wrap(assertInvocation.ForPropertySet(propertyExpression, value));
+            }
 
-			public IAssertExpectationsIsMetForCallTo EventRemove<TTarget, THandler>(TTarget target, string eventName, THandler handler)
-			{
-				return AssertMatchingInvocationWasCalled(InvocationMatcher.ForEventRemove(target, eventName, handler));
-			}
+            public IAssertExpectationsIsMetForCallTo EventAdd<TTarget, THandler>(TTarget target, string eventName, THandler handler)
+            {
+                return Wrap(assertInvocation.ForEventAdd(target, eventName, handler));
+            }
 
-			IAssertExpectationsIsMetForCallTo AssertMatchingInvocationWasCalled(InvocationMatcher invocationMatcher)
-			{
-				var invocationHistory = MockInvocationInterceptor.GetFromTarget(invocationMatcher.Target).ExpectationScope.InvocationHistory;
-
-				if (!invocationHistory.ExpectedInvocations.Any(invocationMatcher.Matches))
-					throw new ExpectationsException(invocationHistory, "Expected invocation '{0}' was not made, invocations:", invocationMatcher);
-
-				return this;
-			}
-		}
-			
+            public IAssertExpectationsIsMetForCallTo EventRemove<TTarget, THandler>(TTarget target, string eventName, THandler handler)
+            {
+                return Wrap(assertInvocation.ForEventRemove(target, eventName, handler));
+            }
+        }	
 	}
 }

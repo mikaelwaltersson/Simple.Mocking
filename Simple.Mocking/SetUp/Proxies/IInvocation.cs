@@ -17,5 +17,7 @@ namespace Simple.Mocking.SetUp.Proxies
 		IList<object> ParameterValues { get; }
 
 		object ReturnValue { set; }
+
+	    long InvocationOrder { get; }
 	}
 }

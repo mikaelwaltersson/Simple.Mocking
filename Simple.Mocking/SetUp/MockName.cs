@@ -9,12 +9,12 @@ namespace Simple.Mocking.SetUp
 	{
 		public static string GetUniqueInScope(IMockNameScope scope)
 		{
-			string nameBase = GetDefaultName();
-			string suffix = string.Empty;
+			var nameBase = GetDefaultName();
+			var suffix = string.Empty;
 
-			for (int nextSuffix = 2; ; nextSuffix++)
+			for (var nextSuffix = 2; ; nextSuffix++)
 			{
-				string name = nameBase + suffix;
+				var name = nameBase + suffix;
 
 				if (scope.Register(name))
 					return name;
@@ -26,19 +26,25 @@ namespace Simple.Mocking.SetUp
 		static string GetDefaultName()
 		{
 			var type = typeof(T);
-			string name = type.Name;
+			var name = type.Name;
 
 			if (type.IsInterface && GetFirstWord(name) == "I")
 				name = name.Substring(1);
 
-			string firstWord = GetFirstWord(name);
+            if (type.IsGenericType)
+            {
+                var separatorIndex = name.LastIndexOf("`", StringComparison.InvariantCulture);
+                name = name.Substring(0, separatorIndex);
+            }
+
+		    var firstWord = GetFirstWord(name);
 
 			return firstWord.ToLower() + name.Substring(firstWord.Length);
 		}
 
 		static string GetFirstWord(string name)
 		{
-			int i = 1;
+			var i = 1;
 
 			for (; i < name.Length; i++)
 			{

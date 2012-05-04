@@ -8,7 +8,7 @@ namespace Simple.Mocking.SetUp
 	{
 		void RegisterInvocation(IInvocation invocation, bool wasExpected);
 
-		IEnumerable<IInvocation> ExpectedInvocations { get; }
+        IEnumerable<IInvocation> Invocations { get; }
 		IEnumerable<IInvocation> UnexpectedInvocations { get; }
 	}
 }

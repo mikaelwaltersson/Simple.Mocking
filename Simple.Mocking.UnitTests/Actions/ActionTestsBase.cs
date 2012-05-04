@@ -12,7 +12,7 @@ namespace Simple.Mocking.UnitTests.Actions
 	{
 		protected Invocation CreateInvocation()
 		{
-			return new Invocation(target, typeof(Target).GetMethod("Method"), null, new object[2], null);
+			return new Invocation(target, typeof(Target).GetMethod("Method"), null, new object[2], null, 0);
 		}
 
 		Target target = new Target();

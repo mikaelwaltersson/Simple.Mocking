@@ -25,61 +25,33 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 		[Test]
 		public void CantSetReturnValueToNonAssignableValue()
 		{
-			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("Method"), null, new object[0], default(int));
+			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("Method"), null, new object[0], default(int), 0);
 
-			try
-			{
-				invocation.ReturnValue = null;
-				Assert.Fail();
-			}
-			catch (InvalidOperationException)
-			{
-			}
+		    Assert.Throws<InvalidOperationException>(() => invocation.ReturnValue = null);
 		}
 
 		[Test]
 		public void CantSetReturnValueForMethodWithoutReturnValue()
 		{
-			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("MethodWithoutReturnValue"), null, new object[2], null);
+			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("MethodWithoutReturnValue"), null, new object[2], null, 0);
 
-			try
-			{
-				invocation.ReturnValue = 0;
-				Assert.Fail();	
-			}
-			catch (InvalidOperationException)
-			{				
-			}
+            Assert.Throws<InvalidOperationException>(() => invocation.ReturnValue = 0);
 		}
 
 		[Test]
 		public void CantSetParameterValueToNonAssignableValue()
 		{
-			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("MethodWithOutAndRefValues"), null, new object[2], null);
+			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("MethodWithOutAndRefValues"), null, new object[2], null, 0);
 
-			try
-			{
-				invocation.ParameterValues[0] = new object();
-				Assert.Fail();
-			}
-			catch (InvalidOperationException)
-			{
-			}
+            Assert.Throws<InvalidOperationException>(() => invocation.ParameterValues[0] = new object());
 		}
 
 		[Test]
 		public void CantSetParameterValueForNonOutOrRefParameter()
 		{
-			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("MethodWithInputValue"), null, new object[1], null);
+			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("MethodWithInputValue"), null, new object[1], null, 0);
 
-			try
-			{
-				invocation.ParameterValues[0] = 0;
-				Assert.Fail();
-			}
-			catch (InvalidOperationException)
-			{
-			}
+            Assert.Throws<InvalidOperationException>(() => invocation.ParameterValues[0] = 0);
 		}
 
 
@@ -116,7 +88,8 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 					typeof(IMyInterface).GetMethod("MethodWithGenericArguments"),
 					new List<Type> { type }, 
 					new List<object> { item },
-					null);
+					null,
+                    0);
 
 			var parameterValues = invocation.ParameterValues;
 			var genericArguments = invocation.GenericArguments;
@@ -177,14 +150,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 
 		void AssertIsNotSupported(Action action)
 		{
-			try
-			{
-				action();
-				Assert.Fail();
-			}
-			catch (NotSupportedException)
-			{				
-			}
+            Assert.Throws<NotSupportedException>(() => action());
 		}
 
 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Simple.Mocking.Syntax
 {
-	public interface ISpecifyAction
+    public interface ISpecifyAction
 	{
 		void Executes(Action action);
 		

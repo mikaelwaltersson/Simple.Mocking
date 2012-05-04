@@ -9,126 +9,111 @@ using Simple.Mocking.AcceptanceTests.Interfaces;
 
 namespace Simple.Mocking.AcceptanceTests
 {
-	[TestFixture]
-	public class AssertExpectationsTests
-	{
-		[Test]
-		public void ForSingleMock()
-		{
-			var myObject = Mock.Interface<IMyObject>();
+    [Obsolete]
+    [TestFixture]
+    public class AssertExpectationsTests
+    {
+        [Test]
+        public void ForSingleMock()
+        {
+            var myObject = Mock.Interface<IMyObject>();
 
-			Expect.Once.MethodCall(() => myObject.MyMethod(1));
-			Expect.Once.MethodCall(() => myObject.MyMethod(2));
+            Expect.Once.MethodCall(() => myObject.MyMethod(1));
+            Expect.Once.MethodCall(() => myObject.MyMethod(2));
 
-			myObject.MyMethod(1);
-			myObject.MyMethod(2);
+            myObject.MyMethod(1);
+            myObject.MyMethod(2);
 
-			AssertExpectations.IsMetFor(myObject);
-		}
+            AssertExpectations.IsMetFor(myObject);
+        }
 
-		[Test]
-		public void ForScope()
-		{
-			var expectationScope = new ExpectationScope();
+        [Test]
+        public void ForScope()
+        {
+            var expectationScope = new ExpectationScope();
 
-			var myObject1 = Mock.Interface<IMyObject>(expectationScope);
-			var myObject2 = Mock.Interface<IMyObject>(expectationScope);
+            var myObject1 = Mock.Interface<IMyObject>(expectationScope);
+            var myObject2 = Mock.Interface<IMyObject>(expectationScope);
 
-			Expect.Once.MethodCall(() => myObject1.MyMethod(1));
-			Expect.Once.MethodCall(() => myObject2.MyMethod(2));
+            Expect.Once.MethodCall(() => myObject1.MyMethod(1));
+            Expect.Once.MethodCall(() => myObject2.MyMethod(2));
 
-			myObject1.MyMethod(1);
-			myObject2.MyMethod(2);
+            myObject1.MyMethod(1);
+            myObject2.MyMethod(2);
 
-			AssertExpectations.IsMetFor(expectationScope);
-		}
+            AssertExpectations.IsMetFor(expectationScope);
+        }
 
-		[Test]
-		public void NotMet()
-		{
-			var myObject = Mock.Interface<IMyObject>();
+        [Test]
+        public void NotMet()
+        {
+            var myObject = Mock.Interface<IMyObject>();
 
-			Expect.Once.MethodCall(() => myObject.MyMethod(1));
+            Expect.Once.MethodCall(() => myObject.MyMethod(1));
 
-			try
-			{
-				AssertExpectations.IsMetFor(myObject);
-				Assert.Fail();
-			}
-			catch (ExpectationsException ex)
-			{
-				Assert.IsTrue(ex.Message.StartsWith("All expectations has not been met, expected:"));
-			}
-		}
 
-		[Test]
-		public void ForStub()
-		{
-			var myObject = Mock.Interface<IMyObject>();
+            var ex = Assert.Throws<ExpectationsException>(() => AssertExpectations.IsMetFor(myObject));
 
-			Expect.PropertyGet(() => myObject.MyProperty).Returns(41);
-			Expect.AnyInvocationOn(myObject);
-			
+            Assert.That(ex.Message, Is.StringStarting("All expectations has not been met, expected:"));
+        }
 
-			myObject.MyMethod(1);
-			myObject.MyMethod(2);
-			myObject.MyMethod(3);
-			
-			myObject.MyGenericMethod("hello world");
-			myObject.MyGenericMethod("Hello World!!!");
-			myObject.MyGenericMethod(4311077043);
-			
-			myObject.MyProperty = (int)myObject.MyProperty + 1;
+        [Test]
+        public void ForStub()
+        {
+            var myObject = Mock.Interface<IMyObject>();
 
-			var eventHandler = (EventHandler)delegate { };
+            Expect.PropertyGet(() => myObject.MyProperty).Returns(41);
+            Expect.AnyInvocationOn(myObject);
 
-			myObject.MyEvent -= eventHandler;
-			myObject.MyEvent += eventHandler;
 
-			AssertExpectations.
-				IsMetForCallTo.
-				MethodCall(() => myObject.MyMethod(Any<int>.Value)).
-				MethodCall(() => myObject.MyGenericMethod(Any<string>.Value.Matching(s => s.StartsWith("Hel")))).
-				PropertyGet(() => myObject.MyProperty).
-				PropertySet(() => myObject.MyProperty, 42).
-				EventAdd(myObject, "MyEvent", Any<EventHandler>.Value).
-				EventRemove(myObject, "MyEvent", Any<EventHandler>.Value);
+            myObject.MyMethod(1);
+            myObject.MyMethod(2);
+            myObject.MyMethod(3);
 
-			try
-			{
-				AssertExpectations.IsMetForCallTo.MethodCall(() => myObject.MyMethod(4));
-				Assert.Fail();
-			}
-			catch (ExpectationsException ex)
-			{
-				Assert.IsTrue(ex.Message.StartsWith("Expected invocation 'myObject.MyMethod(4)' was not made, invocations:"));
-			}
-		}
+            myObject.MyGenericMethod("hello world");
+            myObject.MyGenericMethod("Hello World!!!");
+            myObject.MyGenericMethod(4311077043);
 
-		[Test]
-		public void NumberOfCallsExceededButExceptionCatchedByUserCode()
-		{
-			var myObject = Mock.Interface<IMyObject>();
+            myObject.MyProperty = (int)myObject.MyProperty + 1;
 
-			Expect.Once.MethodCall(() => myObject.MyMethod(1));
+            var eventHandler = (EventHandler)delegate { };
 
-			try
-			{
-				myObject.MyMethod(1);
-				myObject.MyMethod(1);
-			}
-			catch (ExpectationsException)
-			{				
-			}
+            myObject.MyEvent -= eventHandler;
+            myObject.MyEvent += eventHandler;
 
-			try
-			{
-				AssertExpectations.IsMetFor(myObject);
-				Assert.Fail();
-			}
-			catch (ExpectationsException)
-			{
-			}
-		}
-	}
+            AssertExpectations.
+                IsMetForCallTo.
+                MethodCall(() => myObject.MyMethod(Any<int>.Value)).
+                MethodCall(() => myObject.MyGenericMethod(Any<string>.Value.Matching(s => s.StartsWith("Hel")))).
+                PropertyGet(() => myObject.MyProperty).
+                PropertySet(() => myObject.MyProperty, 42).
+                EventAdd(myObject, "MyEvent", Any<EventHandler>.Value).
+                EventRemove(myObject, "MyEvent", Any<EventHandler>.Value);
+
+            
+            var ex = Assert.Throws<ExpectationsException>(() => AssertExpectations.IsMetForCallTo.MethodCall(() => myObject.MyMethod(4)));
+
+            Assert.That(ex.Message, Is.StringStarting("Wrong number of invocations for 'myObject.MyMethod(4)', expected 1..* actual 0:"));
+        }
+
+        [Test]
+        public void NumberOfCallsExceededButExceptionCatchedByUserCode()
+        {
+            var myObject = Mock.Interface<IMyObject>();
+
+            Expect.Once.MethodCall(() => myObject.MyMethod(1));
+
+            try
+            {
+                myObject.MyMethod(1);
+                myObject.MyMethod(1);
+            }
+            catch (ExpectationsException)
+            {
+            }
+
+
+            Assert.Throws<ExpectationsException>(() => AssertExpectations.IsMetFor(myObject));
+        }
+    }
 }

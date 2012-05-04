@@ -22,14 +22,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 		[Test]
 		public void CantInvokeGetRealTypeForByRefTypeForNonByRefTypes()
 		{
-			try
-			{
-				typeof(int).GetRealTypeForByRefType();
-				Assert.Fail();	
-			}
-			catch (InvalidOperationException)
-			{				
-			}
+		    Assert.Throws<InvalidOperationException>(() => typeof(int).GetRealTypeForByRefType());
 		}
 
 	}

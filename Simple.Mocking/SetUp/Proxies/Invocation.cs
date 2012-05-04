@@ -14,15 +14,17 @@ namespace Simple.Mocking.SetUp.Proxies
 		IList<Type> genericArguments;
 		IList<object> parameterValues;
 		object returnValue;
+	    long invocationOrder;
 
 
-		internal Invocation(IProxy target, MethodInfo method, IList<Type> genericArguments, IList<object> parameterValues, object returnValue)
+		internal Invocation(IProxy target, MethodInfo method, IList<Type> genericArguments, IList<object> parameterValues, object returnValue, long invocationOrder)
 		{
 			this.target = target;
 			this.method = method;
 			this.genericArguments = (genericArguments != null ? new GenericArgumentsList(genericArguments) : null);
 			this.parameterValues = new ParameterList(this, parameterValues);
 			this.returnValue = returnValue;
+		    this.invocationOrder = invocationOrder;
 		}
 
 		public IProxy Target
@@ -33,11 +35,6 @@ namespace Simple.Mocking.SetUp.Proxies
 		public MethodInfo Method
 		{
 			get { return method; }
-		}
-
-		public MethodInfo ConcreteMethod
-		{
-			get { return (genericArguments != null ? method.MakeGenericMethod(genericArguments.ToArray()) : method); }
 		}
 
 		public IList<Type> GenericArguments
@@ -60,8 +57,13 @@ namespace Simple.Mocking.SetUp.Proxies
 			internal get { return returnValue; }
 		}
 
+	    public long InvocationOrder
+	    {
+            get { return invocationOrder; }
+	    }
 
-		public static object HandleInvocation(
+
+	    public static object HandleInvocation(
 			IProxy target, InvocationFactory invocationFactory,
 			Type[] genericArguments, object[] parameterValues, object returnValue)
 		{
@@ -76,7 +78,7 @@ namespace Simple.Mocking.SetUp.Proxies
 
 		void AssertMethodParameterIsAssignable(int index, object value)
 		{
-			var parameterType = ConcreteMethod.GetParameters()[index].ParameterType;
+			var parameterType = GetNonGenericMethod(this).GetParameters()[index].ParameterType;
 
 			if (!parameterType.IsByRef)
 			{
@@ -93,7 +95,7 @@ namespace Simple.Mocking.SetUp.Proxies
 
 		void AssertMethodReturnValueIsAssignable(object value)
 		{
-			var returnType = ConcreteMethod.ReturnType;
+			var returnType = GetNonGenericMethod(this).ReturnType;
 
 			if (returnType == typeof(void))
 			{
@@ -108,12 +110,20 @@ namespace Simple.Mocking.SetUp.Proxies
 			}
 		}
 
-		public override string ToString()
+	    public override string ToString()
 		{
 			return InvocationFormatter.Format(target, method, genericArguments, parameterValues);
 		}
 
-	
+
+        public static MethodInfo GetNonGenericMethod(IInvocation invocation)
+        {
+            var method = invocation.Method;
+            var genericArguments = invocation.GenericArguments;
+
+            return (genericArguments != null ? method.MakeGenericMethod(genericArguments.ToArray()) : method);
+        }
+
 
 
 
