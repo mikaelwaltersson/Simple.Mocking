@@ -14,12 +14,12 @@ namespace Simple.Mocking
 	{
 		public static void IsMetFor(object target)
 		{
-			AssertInvocationsWasMade.MatchingExpecationsFor(target);
+			AssertInvocationsWasMade.MatchingExpectationsFor(target);
 		}
 
 		public static void IsMetFor(ExpectationScope expectationScope)
 		{
-            AssertInvocationsWasMade.MatchingExpecationsFor(expectationScope);
+            AssertInvocationsWasMade.MatchingExpectationsFor(expectationScope);
 		}
 
 		public static IAssertExpectationsIsMetForCallTo IsMetForCallTo

@@ -4,7 +4,8 @@ syntax: glob
 *.suo
 obj/*
 bin/*
-bin-3.5/*
+bin-4.0/*
 _ReSharper.*/
 *.orig
-nuget/lib/*
+
+nuget/Simple.Mocking/lib/*

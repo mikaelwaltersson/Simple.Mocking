@@ -29,8 +29,8 @@ namespace Simple.Mocking.AcceptanceTests
                 Once.ForMethodCall(() => myObject.MyMethod(3)).
                 InOrderAsSpecified();
 
-            
-            AssertInvocationsWasMade.MatchingExpecationsFor(myObject);
+
+            AssertInvocationsWasMade.MatchingExpectationsFor(myObject);
 
             AssertInvocationsWasMade.None.ForMethodCall(() => myObject.MyGenericMethod(0));
 

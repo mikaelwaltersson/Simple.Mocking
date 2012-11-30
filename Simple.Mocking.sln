@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking", "Simple.Mocking\Simple.Mocking.csproj", "{CDA82EDE-6D38-4BB6-BF67-294CFED5850C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking.UnitTests", "Simple.Mocking.UnitTests\Simple.Mocking.UnitTests.csproj", "{F1C6C9A6-1D30-4CDC-8AFA-E6DBC0B7980A}"
@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		nuget\Simple.Mocking\Package.nuspec = nuget\Simple.Mocking\Package.nuspec
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking-3.5", "Simple.Mocking\Simple.Mocking-3.5.csproj", "{1F65E613-9787-4A7C-80C1-F757CC5DACD6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking-4.0", "Simple.Mocking\Simple.Mocking-4.0.csproj", "{1F65E613-9787-4A7C-80C1-F757CC5DACD6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
