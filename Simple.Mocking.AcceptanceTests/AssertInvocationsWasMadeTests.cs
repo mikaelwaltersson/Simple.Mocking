@@ -23,7 +23,7 @@ namespace Simple.Mocking.AcceptanceTests
             myObject.MyMethod(1);
             myObject.MyMethod(2);
 
-            AssertInvocationsWasMade.MatchingExpecationsFor(myObject);
+            AssertInvocationsWasMade.MatchingExpectationsFor(myObject);
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace Simple.Mocking.AcceptanceTests
             myObject1.MyMethod(1);
             myObject2.MyMethod(2);
 
-            AssertInvocationsWasMade.MatchingExpecationsFor(expectationScope);
+            AssertInvocationsWasMade.MatchingExpectationsFor(expectationScope);
         }
 
         [Test]
@@ -51,7 +51,7 @@ namespace Simple.Mocking.AcceptanceTests
             Expect.Once.MethodCall(() => myObject.MyMethod(1));
 
 
-            var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.MatchingExpecationsFor(myObject));
+            var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.MatchingExpectationsFor(myObject));
 
             Assert.That(ex.Message, Is.StringStarting("All expectations has not been met, expected:"));
         }

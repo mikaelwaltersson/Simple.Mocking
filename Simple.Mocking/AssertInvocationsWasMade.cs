@@ -11,14 +11,14 @@ namespace Simple.Mocking
 {
     public static class AssertInvocationsWasMade
     {
-        public static void MatchingExpecationsFor(object target)
+        public static void MatchingExpectationsFor(object target)
 		{
 			var mockInvocationInterceptor = MockInvocationInterceptor.GetFromTarget(target);
 
             AssertExpectationScopeIsMet(mockInvocationInterceptor.ExpectationScope);
 		}
 
-        public static void MatchingExpecationsFor(ExpectationScope expectationScope)
+        public static void MatchingExpectationsFor(ExpectationScope expectationScope)
 		{
             AssertExpectationScopeIsMet(expectationScope);
 		}
