@@ -12,9 +12,11 @@
     <description>Easy to use framework for creating mock objects, fakes, stubs with an intuitive and fluent API.</description>
     <tags>Mocking Mock TDD Testdriven Fake Stub Simple Fluent</tags>
   </metadata>
-    <file src="..\Simple.Mocking\bin\Release\Simple.Json.dll" target="lib\net45\" />
-    <file src="..\Simple.Mocking\bin\Release\Simple.Json.pdb" target="lib\net45\" />
-    <file src="..\Simple.Mocking\bin-4.0\Release\Simple.Json.dll" target="lib\net40\" />
-    <file src="..\Simple.Mocking\bin-4.0\Release\Simple.Json.pdb" target="lib\net40\" />    
-    <file src="..\Simple.Mocking\**\*.cs" target="src\Simple.Json\" />
+  <files>
+    <file src="..\Simple.Mocking\bin\Release\Simple.Mocking.dll" target="lib\net45\" />
+    <file src="..\Simple.Mocking\bin\Release\Simple.Mocking.pdb" target="lib\net45\" />
+    <file src="..\Simple.Mocking\bin-4.0\Release\Simple.Mocking.dll" target="lib\net40\" />
+    <file src="..\Simple.Mocking\bin-4.0\Release\Simple.Mocking.pdb" target="lib\net40\" />    
+    <file src="..\Simple.Mocking\**\*.cs" target="src\Simple.Mocking\" />
+  </files>    
 </package>
