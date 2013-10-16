@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking.AcceptanceTe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A898039A-C8AA-4E44-9B43-0099A1374473}"
 	ProjectSection(SolutionItems) = preProject
-		nuget\Simple.Mocking\Package.nuspec = nuget\Simple.Mocking\Package.nuspec
+		nuget\Simple.Mocking.nuspec = nuget\Simple.Mocking.nuspec
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Mocking-4.0", "Simple.Mocking\Simple.Mocking-4.0.csproj", "{1F65E613-9787-4A7C-80C1-F757CC5DACD6}"
