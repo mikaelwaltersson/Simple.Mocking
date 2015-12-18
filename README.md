@@ -1,5 +1,27 @@
 # Simple.Mocking
+
 Easy to use framework for creating mock objects, fakes, stubs with an intuitive and fluent API
+
+If you are looking for an alternative to the usual .NET mocking frameworks (Moq, RhinoMocks, EasyMock.Net, NMock) you should take a look on `Simple.Mocking`.
+
+* Can mock/fake any interface or delegate
+* Refactor friendly syntax, no "magic string" (except for event add/remove)
+* No record/replay which just clutters down test code
+* Easy to learn, small API ([Getting started with Simple.Mocking])
+
+**Available through NuGet:** http://www.nuget.org/List/Packages/Simple.Mocking
+
+**New version (1.1) released at May 4, 2012**  
+
+* Added "convenience" methods for stubs
+* Added class AssertInvocationsWasMade for extended support of "AAA"-style tests
+* Marked class AssertExpectations as obsolete in favor of AssertInvocationsWasMade
+* Minor bugfixes for delegate mocking, expectation scopes and property set wildcard matching
+
+**Other sources of information**
+
+* Filip Ekberg has written a blog post about mocking in .NET using this framework:      
+  http://blog.filipekberg.se/2012/01/30/getting-started-with-a-mocking-framework/
 
 
 ## Getting started with Simple.Mocking
