@@ -84,7 +84,21 @@ namespace Simple.Mocking.AcceptanceTests
 			Assert.AreEqual(42, value);
 		}
 
-		[Test]
+        [Test]
+        public void ExpectOnMethodWithGenericRefParameter()
+        {
+            Expect.
+                MethodCall(() => myObject.MyMethodWithGenericRefParameter(ref Any<string>.Value.AsRefOrOut)).
+                SetsOutOrRefParameter(0, "Hello World!");
+
+            var value = "";
+
+            myObject.MyMethodWithGenericRefParameter(ref value);
+
+            Assert.AreEqual("Hello World!", value);
+        }
+
+        [Test]
 		public void ExpectMethodWithInterfaceParameterCalled()
 		{
 			Expect.MethodCall(() => myObject.MyMethodWithInterfaceParameter(Any<IComparable<int>>.Value.AsInterface));

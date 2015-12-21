@@ -86,7 +86,7 @@ namespace Simple.Mocking.SetUp.Proxies
 					string.Format("Can not set parameter {0} of method '{1}' (not an out or ref parameter)", index, method));
 			}
 
-			if (!parameterType.GetRealTypeForByRefType().IsAssignable(value))
+			if (!parameterType.GetElementType().IsAssignable(value))
 			{
 				throw new InvalidOperationException(
 					string.Format("Can not set parameter {0} of method '{1}' (value '{2}' is not assignable)", index, method, value));				

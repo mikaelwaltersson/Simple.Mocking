@@ -89,7 +89,6 @@
     <Compile Include="SetUp\MockInvocationInterceptorTests.cs" />
     <Compile Include="SetUp\MockNameTests.cs" />
     <Compile Include="SetUp\NumberOfInvocationsConstraintTests.cs" />
-    <Compile Include="SetUp\Proxies\ByRefTypeTests.cs" />
     <Compile Include="SetUp\Proxies\InvocationFactoryTests.cs" />
     <Compile Include="SetUp\Proxies\InvocationFormatterTests.cs" />
     <Compile Include="SetUp\Proxies\InvocationInterceptor.cs" />

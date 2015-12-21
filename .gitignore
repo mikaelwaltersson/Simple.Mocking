@@ -1,9 +1,9 @@
+/**/obj
+/**/bin
+/**/bin-4.0
+/**/.vs
+/**/_ReSharper.*
+Thumbs.db
+*.orig
 *.user
 *.suo
-*.orig
-obj/*
-bin/*
-bin-4.0/*
-nuget/Simple.Mocking/lib/*
-_ReSharper.*/
-

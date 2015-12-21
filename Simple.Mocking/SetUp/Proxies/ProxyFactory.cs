@@ -387,7 +387,7 @@ namespace Simple.Mocking.SetUp.Proxies
 
 				if (parameterType.IsByRef)
 				{
-					parameterType = parameterType.GetRealTypeForByRefType();
+					parameterType = parameterType.GetElementType();
 					ilGenerator.EmitLoadIndirect(parameterType);
 				}
 
@@ -445,7 +445,7 @@ namespace Simple.Mocking.SetUp.Proxies
 				if (!parameterType.IsByRef)
 					continue;
 
-				parameterType = parameterType.GetRealTypeForByRefType();
+				parameterType = parameterType.GetElementType();
 
 				ilGenerator.Emit(OpCodes.Ldarg, i + 1);
 				ilGenerator.Emit(OpCodes.Ldloc_2);

@@ -7,16 +7,6 @@ namespace Simple.Mocking.SetUp
 {
 	static class TypeParameter
 	{
-		const string ByRefSpecifier = "&";
-
-		public static Type GetRealTypeForByRefType(this Type type)
-		{
-			if (!type.IsByRef)
-				throw new InvalidOperationException();
-
-			return Type.GetType(type.AssemblyQualifiedName.Replace(ByRefSpecifier, string.Empty), true);
-		}
-
 		public static bool IsDelegateType(this Type type)
 		{
 			return typeof(Delegate).IsAssignableFrom(type);

@@ -24,7 +24,7 @@ namespace Simple.Mocking.SetUp.Actions
 	            var parameterType = parameters[i].ParameterType;
 
                 if (parameterType.IsByRef)
-                    invocation.ParameterValues[i] = GetValueForType(parameterType.GetRealTypeForByRefType());   	                                
+                    invocation.ParameterValues[i] = GetValueForType(parameterType.GetElementType());   	                                
 	        }
 	    }
 	}

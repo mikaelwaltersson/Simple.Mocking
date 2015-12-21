@@ -21,7 +21,9 @@ namespace Simple.Mocking.AcceptanceTests.Interfaces
 
 		void MyMethodWithRefParameter(ref int value);
 
-		void MyMethodWithInterfaceParameter(IComparable<int> value);
+        void MyMethodWithGenericRefParameter<T>(ref T value);
+
+        void MyMethodWithInterfaceParameter(IComparable<int> value);
 
 		void MyMethodWithOverload(int value);
 
@@ -35,6 +37,6 @@ namespace Simple.Mocking.AcceptanceTests.Interfaces
 
 		object this[int i] { get; set; }
 
-		event EventHandler MyEvent;
+		event EventHandler MyEvent;	    
 	}
 }
