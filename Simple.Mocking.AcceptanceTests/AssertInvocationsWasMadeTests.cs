@@ -53,7 +53,7 @@ namespace Simple.Mocking.AcceptanceTests
 
             var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.MatchingExpectationsFor(myObject));
 
-            Assert.That(ex.Message, Is.StringStarting("All expectations has not been met, expected:"));
+            Assert.That(ex.Message, Does.StartWith("All expectations has not been met, expected:"));
         }
 
         [Test]
@@ -87,7 +87,7 @@ namespace Simple.Mocking.AcceptanceTests
 
             var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.AtLeastOnce.ForMethodCall(() => myObject.MyMethod(2)));
 
-            Assert.That(ex.Message, Is.StringStarting("Wrong number of invocations for 'myObject.MyMethod(2)', expected 1..* actual 0:"));
+            Assert.That(ex.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(2)', expected 1..* actual 0:"));
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace Simple.Mocking.AcceptanceTests
 
             var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.AtLeast(2).ForMethodCall(() => myObject.MyMethod(2)));
 
-            Assert.That(ex.Message, Is.StringStarting("Wrong number of invocations for 'myObject.MyMethod(2)', expected 2..* actual 1:"));
+            Assert.That(ex.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(2)', expected 2..* actual 1:"));
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace Simple.Mocking.AcceptanceTests
 
             var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.AtMostOnce.ForMethodCall(() => myObject.MyMethod(2)));
 
-            Assert.That(ex.Message, Is.StringStarting("Wrong number of invocations for 'myObject.MyMethod(2)', expected *..1 actual 2:"));
+            Assert.That(ex.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(2)', expected *..1 actual 2:"));
         }
 
         [Test]
@@ -137,7 +137,7 @@ namespace Simple.Mocking.AcceptanceTests
 
             var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.AtMost(2).ForMethodCall(() => myObject.MyMethod(2)));
 
-            Assert.That(ex.Message, Is.StringStarting("Wrong number of invocations for 'myObject.MyMethod(2)', expected *..2 actual 3:"));
+            Assert.That(ex.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(2)', expected *..2 actual 3:"));
         }
 
         [Test]
@@ -154,8 +154,8 @@ namespace Simple.Mocking.AcceptanceTests
             var ex1 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Once.ForMethodCall(() => myObject.MyMethod(2)));
             var ex2 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Once.ForMethodCall(() => myObject.MyMethod(3)));
 
-            Assert.That(ex1.Message, Is.StringStarting("Wrong number of invocations for 'myObject.MyMethod(2)', expected 1 actual 2:"));
-            Assert.That(ex2.Message, Is.StringStarting("Wrong number of invocations for 'myObject.MyMethod(3)', expected 1 actual 0:"));
+            Assert.That(ex1.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(2)', expected 1 actual 2:"));
+            Assert.That(ex2.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(3)', expected 1 actual 0:"));
         }
 
         [Test]
@@ -175,8 +175,8 @@ namespace Simple.Mocking.AcceptanceTests
             var ex1 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Exactly(2).ForMethodCall(() => myObject.MyMethod(2)));
             var ex2 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Exactly(2).ForMethodCall(() => myObject.MyMethod(3)));
 
-            Assert.That(ex1.Message, Is.StringStarting("Wrong number of invocations for 'myObject.MyMethod(2)', expected 2 actual 1:"));
-            Assert.That(ex2.Message, Is.StringStarting("Wrong number of invocations for 'myObject.MyMethod(3)', expected 2 actual 3:"));
+            Assert.That(ex1.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(2)', expected 2 actual 1:"));
+            Assert.That(ex2.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(3)', expected 2 actual 3:"));
         }
 
         [Test]
@@ -197,8 +197,8 @@ namespace Simple.Mocking.AcceptanceTests
             var ex1 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Between(1, 2).ForMethodCall(() => myObject.MyMethod(3)));
             var ex2 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Between(1, 2).ForMethodCall(() => myObject.MyMethod(4)));
 
-            Assert.That(ex1.Message, Is.StringStarting("Wrong number of invocations for 'myObject.MyMethod(3)', expected 1..2 actual 3:"));
-            Assert.That(ex2.Message, Is.StringStarting("Wrong number of invocations for 'myObject.MyMethod(4)', expected 1..2 actual 0:"));
+            Assert.That(ex1.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(3)', expected 1..2 actual 3:"));
+            Assert.That(ex2.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(4)', expected 1..2 actual 0:"));
         }
 
         [Test]
@@ -229,7 +229,7 @@ namespace Simple.Mocking.AcceptanceTests
                               AtLeastOnce.ForMethodCall(() => myObject.MyMethod(3)).
                               InOrderAsSpecified());
 
-            Assert.That(ex.Message, Is.StringStarting("Invocations was not made in specified order (first mismatch at invocation 'myObject.MyMethod(2)'):"));
+            Assert.That(ex.Message, Does.StartWith("Invocations was not made in specified order (first mismatch at invocation 'myObject.MyMethod(2)'):"));
  
         }
     }
