@@ -54,7 +54,7 @@ namespace Simple.Mocking.AcceptanceTests
 
             var ex = Assert.Throws<ExpectationsException>(() => AssertExpectations.IsMetFor(myObject));
 
-            Assert.That(ex.Message, Is.StringStarting("All expectations has not been met, expected:"));
+            Assert.That(ex.Message, Does.StartWith("All expectations has not been met, expected:"));
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace Simple.Mocking.AcceptanceTests
             
             var ex = Assert.Throws<ExpectationsException>(() => AssertExpectations.IsMetForCallTo.MethodCall(() => myObject.MyMethod(4)));
 
-            Assert.That(ex.Message, Is.StringStarting("Wrong number of invocations for 'myObject.MyMethod(4)', expected 1..* actual 0:"));
+            Assert.That(ex.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(4)', expected 1..* actual 0:"));
         }
 
         [Test]

@@ -41,10 +41,9 @@ namespace Simple.Mocking.SetUp.Proxies
 		{
 			string moduleAndAssemblyName = string.Format(ModuleAndAssemblyNameFormat, Guid.NewGuid());
 
-			var appDomain = AppDomain.CurrentDomain;
 			var assemblyName = new AssemblyName(moduleAndAssemblyName);
 
-			var assemblyBuilder = appDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+			var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
 
 			return assemblyBuilder.DefineDynamicModule(moduleAndAssemblyName);
 		}
@@ -110,7 +109,7 @@ namespace Simple.Mocking.SetUp.Proxies
 
 			ImplementMembers(typeBuilder, baseType, proxiedType);
 
-			return typeBuilder.CreateType();
+			return typeBuilder.CreateTypeInfo();
 		}
 
 
