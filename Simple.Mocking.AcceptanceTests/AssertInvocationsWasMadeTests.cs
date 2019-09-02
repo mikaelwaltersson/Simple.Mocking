@@ -73,7 +73,7 @@ namespace Simple.Mocking.AcceptanceTests
             }
 
 
-            Assert.Throws<ExpectationsException>(() => AssertExpectations.IsMetFor(myObject));
+            Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.MatchingExpectationsFor(myObject));
         }
 
         [Test]

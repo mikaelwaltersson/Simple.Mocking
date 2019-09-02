@@ -49,7 +49,7 @@ namespace Simple.Mocking.AcceptanceTests
 			myObject1.MyMethod(5);
 			myObject2.MyMethod(4);		
 
-			AssertExpectations.IsMetFor(expectationScope);
+			AssertInvocationsWasMade.MatchingExpectationsFor(expectationScope);
 		}
 
 		[Test]
@@ -93,23 +93,23 @@ namespace Simple.Mocking.AcceptanceTests
 			catch (ExpectationsException ex)
 			{
 				Assert.AreEqual(
-					"Unexpected invocation 'myObject.MyMethod(4)', expected:\r\n" +
-					"\r\n" +
-					"(invoked: 1 of 1) myObject.MyMethod(1)\r\n" +
-					"(invoked: 1 of 1) myObject2.MyMethod(2)\r\n" +
-					"In order {\r\n" +
-					"  (invoked: 3 of 1..*) myObject.MyMethod(3)\r\n" +
-					"  (invoked: 0 of 1..*) myObject.MyMethod(Any<Int32>.Value.Matching(i => (i > 10)))\r\n" +
-					"  Unordered {\r\n" +
-					"    (invoked: 0 of 1..*) myObject2.MyMethod(4)\r\n" +
-					"    (invoked: 0 of 1..*) myObject.MyMethod(5)\r\n" +
-					"  }\r\n" +
-					"}\r\n" +
-					"(invoked: 0 of *) myObject3.*\r\n" +
-                    "\r\n" +
-                    "Unexpected invocations:\r\n" +
-                    "  myObject.MyMethod(4)\r\n"+
-                    "\r\n",
+					"Unexpected invocation 'myObject.MyMethod(4)', expected:" + Environment.NewLine +
+					"" + Environment.NewLine +
+					"(invoked: 1 of 1) myObject.MyMethod(1)" + Environment.NewLine +
+					"(invoked: 1 of 1) myObject2.MyMethod(2)" + Environment.NewLine +
+					"In order {" + Environment.NewLine +
+					"  (invoked: 3 of 1..*) myObject.MyMethod(3)" + Environment.NewLine +
+					"  (invoked: 0 of 1..*) myObject.MyMethod(Any<Int32>.Value.Matching(i => (i > 10)))" + Environment.NewLine +
+					"  Unordered {" + Environment.NewLine +
+					"    (invoked: 0 of 1..*) myObject2.MyMethod(4)" + Environment.NewLine +
+					"    (invoked: 0 of 1..*) myObject.MyMethod(5)" + Environment.NewLine +
+					"  }" + Environment.NewLine +
+					"}" + Environment.NewLine +
+					"(invoked: 0 of *) myObject3.*" + Environment.NewLine +
+                    "" + Environment.NewLine +
+                    "Unexpected invocations:" + Environment.NewLine +
+                    "  myObject.MyMethod(4)" + Environment.NewLine +
+                    "" + Environment.NewLine,
 					ex.Message);
 			}
 		}

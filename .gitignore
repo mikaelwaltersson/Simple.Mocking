@@ -1,9 +1,3 @@
-/**/obj
-/**/bin
-/**/bin-4.0
-/**/.vs
-/**/_ReSharper.*
-Thumbs.db
-*.orig
-*.user
-*.suo
+.ionide/
+obj/
+bin/
