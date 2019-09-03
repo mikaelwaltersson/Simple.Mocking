@@ -5,10 +5,10 @@ Easy to use framework for creating mock objects, fakes, stubs with an intuitive 
 * Can mock/fake any interface or delegate
 * Refactor friendly syntax, no "magic string" (except for event add/remove)
 * No record/replay which just clutters down test code
-* Easy to learn, small API ([Getting started with Simple.Mocking])
+* Easy to learn, small API
 
 **.NET Core version (2.0) released at September 2, 2019**  
-No feature changes, just ported to .NET Core. (Thanks to pull request from @rerikson)
+No feature changes, just ported to .NET Core. (Thanks to pull request from [@rerikson](https://github.com/rerikson))
 
 
 **Other sources of information**
@@ -247,6 +247,6 @@ Where `StubValue.ForType` is a static method which will return a default stub va
  
  
 ## Contributors
-* @mikaelwaltersson
-* @rerikson
+* [@mikaelwaltersson](https://github.com/mikaelwaltersson)
+* [@rerikson](https://github.com/rerikson)
   
