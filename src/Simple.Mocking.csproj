@@ -4,8 +4,10 @@
     <TargetFrameworks>net6.0</TargetFrameworks>
     <Product>Simple.Mocking</Product>
     <Description>Easy to use framework for creating mock objects, fakes, stubs with an intuitive and fluent API</Description>
+    <Authors>Mikael Waltersson</Authors>
     <Copyright>Copyright © Mikael Waltersson 2009</Copyright>
     <Version>6.0.0</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>simplemocking tdd mocking mocks unittesting agile unittest</PackageTags>
     <ProjectUrl>https://github.com/mikaelwaltersson</ProjectUrl>
     <RepositoryUrl>https://github.com/mikaelwaltersson/Simple.Mocking.git</RepositoryUrl> 
