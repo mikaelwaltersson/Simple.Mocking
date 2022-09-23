@@ -21,11 +21,12 @@ namespace Simple.Mocking.UnitTests
 
 			using (var stream = new MemoryStream())
 			{
+#pragma warning disable SYSLIB0011
 				formatter.Serialize(stream, new ExpectationsException("error"));
-
 				stream.Position = 0;
 
 				Assert.AreEqual("error", ((ExpectationsException)formatter.Deserialize(stream)).Message);
+#pragma warning restore SYSLIB0011
 			}			
 		}
 	}

@@ -1,7 +1,4 @@
-using System;
-using System.Text;
 using System.Collections.Generic;
-using System.Linq;
 
 using NUnit.Framework;
 
@@ -53,10 +50,7 @@ namespace Simple.Mocking.UnitTests.SetUp
         {
             HashSet<string> names = new HashSet<string>();
 
-            public bool Register(string name)
-            {
-                return names.Add(name);
-            }
+            public bool Register(string name) => names.Add(name);
         }
     }
 }

@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using NUnit.Framework;
 
 using Simple.Mocking.SetUp;
 
 namespace Simple.Mocking.UnitTests.SetUp
 {
-	[TestFixture]
+    [TestFixture]
 	public class NumberOfInvocationsConstraintTests
 	{
 		[Test]
@@ -59,6 +54,5 @@ namespace Simple.Mocking.UnitTests.SetUp
 			Assert.AreEqual("10..*", new NumberOfInvocationsConstraint(10, null).ToString());
 			Assert.AreEqual("10..15", new NumberOfInvocationsConstraint(10, 15).ToString());			
 		}
-
 	}
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using NUnit.Framework;
 
@@ -9,7 +6,7 @@ using Simple.Mocking.SetUp.Proxies;
 
 namespace Simple.Mocking.UnitTests.SetUp.Proxies
 {
-	[TestFixture]
+    [TestFixture]
 	public class InvocationFactoryTests
 	{
 		[Test]
@@ -17,7 +14,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 		{
 			try
 			{
-				InvocationFactory.GetForMethod(null);
+				InvocationFactory.GetForMethod(null!);
 			}
 			catch (ArgumentNullException)
 			{				
@@ -29,7 +26,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 		{
 			try
 			{
-				InvocationFactory.GetForMethodTextRepresentation(null, "System.String ToString()");
+				InvocationFactory.GetForMethodTextRepresentation(null!, "System.String ToString()");
 			}
 			catch (ArgumentNullException)
 			{
@@ -37,7 +34,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 
 			try
 			{
-				InvocationFactory.GetForMethodTextRepresentation(typeof(object), null);
+				InvocationFactory.GetForMethodTextRepresentation(typeof(object), null!);
 			}
 			catch (ArgumentNullException)
 			{
@@ -49,7 +46,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 		{
 			try
 			{
-				InvocationFactory.GetTextRepresentationForMethod(null);
+				InvocationFactory.GetTextRepresentationForMethod(null!);
 			}
 			catch (ArgumentNullException)
 			{

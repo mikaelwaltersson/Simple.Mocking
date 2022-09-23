@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Simple.Mocking.SetUp.Proxies
 {
-	class ProxyTypeCache
+    class ProxyTypeCache
 	{
 		IDictionary<Type, Entry> cache;
 
@@ -13,8 +11,6 @@ namespace Simple.Mocking.SetUp.Proxies
 		{
 			cache = new Dictionary<Type, Entry>();
 		}
-
-
 
 		public Type GetProxyType(Type type, Func<Type, Type> createTypeDelegate)
 		{
@@ -24,9 +20,7 @@ namespace Simple.Mocking.SetUp.Proxies
 			if (createTypeDelegate == null)
 				throw new ArgumentNullException("createTypeDelegate");
 
-			Entry entry;
-
-			if (!cache.TryGetValue(type, out entry))
+			if (!cache.TryGetValue(type, out var entry))
 			{
 				entry = new Entry();
 				cache.Add(type, entry);
@@ -46,8 +40,8 @@ namespace Simple.Mocking.SetUp.Proxies
 
 		class Entry
 		{
-			Type type;
-			Exception createTypeException;
+			Type? type;
+			Exception? createTypeException;
 
 			public Type Type
 			{
@@ -61,7 +55,7 @@ namespace Simple.Mocking.SetUp.Proxies
 				}
 			}
 
-			public Exception CreateTypeException
+			public Exception? CreateTypeException
 			{
 				set { createTypeException = value; }
 			}

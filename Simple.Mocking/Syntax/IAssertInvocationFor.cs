@@ -13,8 +13,8 @@ namespace Simple.Mocking.Syntax
 
         IAssertInvocations ForPropertySet<T>(Expression<Func<T>> propertyExpression, T value);
 
-        IAssertInvocations ForEventAdd<TTarget, THandler>(TTarget target, string eventName, THandler handler);
+        IAssertInvocations ForEventAdd<TTarget, THandler>(TTarget target, string eventName, THandler handler) where TTarget : notnull;
 
-        IAssertInvocations ForEventRemove<TTarget, THandler>(TTarget target, string eventName, THandler handler);
+        IAssertInvocations ForEventRemove<TTarget, THandler>(TTarget target, string eventName, THandler handler) where TTarget : notnull;
     }
 }

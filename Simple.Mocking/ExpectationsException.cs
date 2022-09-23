@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 
 using Simple.Mocking.SetUp;
 
 namespace Simple.Mocking
 {
-	[Serializable]
+    [Serializable]
 	public class ExpectationsException : Exception
 	{
 		public ExpectationsException(string message)
@@ -31,12 +28,7 @@ namespace Simple.Mocking
 		{
 		}
 
-
-
-		static string FormatMessage(object details, string format, object[] args)
-		{
-			return string.Format(format, args) + Environment.NewLine + Environment.NewLine + details;
-		}
-
+		static string FormatMessage(object details, string format, object[] args) =>
+			string.Concat(string.Format(format, args), Environment.NewLine, Environment.NewLine, details);
 	}
 }

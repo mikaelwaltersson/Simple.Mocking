@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Simple.Mocking.SetUp.Actions;
 using Simple.Mocking.SetUp.Proxies;
 
 namespace Simple.Mocking.SetUp
 {
-	class Expectation : IExpectation
+    class Expectation : IExpectation
 	{				
 		IInvocationMatcher invocationMatcher;
 		NumberOfInvocationsConstraint numberOfInvocationsConstraint;
@@ -29,7 +27,7 @@ namespace Simple.Mocking.SetUp
 			this.actions = new List<IAction>();
 		}
 
-		public bool TryMeet(IInvocation invocation, out Action action)
+		public bool TryMeet(IInvocation invocation, out Action? action)
 		{
 			if (numberOfInvocationsConstraint.CanInvoke(invocationCount) && invocationMatcher.Matches(invocation))
 			{
@@ -42,15 +40,11 @@ namespace Simple.Mocking.SetUp
 			return false;
 		}
 
-        void ExecuteActionsFor(IInvocation invocation)
-        {
-            actions.ForEach(action => action.ExecuteFor(invocation));
-        }
+        void ExecuteActionsFor(IInvocation invocation) =>
+        	actions.ForEach(action => action.ExecuteFor(invocation));
 
-	    public bool HasBeenMet
-		{
-			get { return numberOfInvocationsConstraint.Matches(invocationCount); }
-		}
+	    public bool HasBeenMet => 
+			numberOfInvocationsConstraint.Matches(invocationCount);
 
 		public void AddAction(IAction action)
 		{
@@ -60,13 +54,9 @@ namespace Simple.Mocking.SetUp
 			actions.Add(action);
 		}
 
-		public override string ToString()
-		{
-			return string.Format(
+		public override string ToString() =>
+			string.Format(
 				"(invoked: {0} of {1}) {2}", 
 				invocationCount, numberOfInvocationsConstraint, invocationMatcher);
-		}
 	}
-
-
 }

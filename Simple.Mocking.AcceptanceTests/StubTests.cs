@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 using Simple.Mocking.AcceptanceTests.Delegates;
 using Simple.Mocking.AcceptanceTests.Interfaces;
@@ -22,18 +17,15 @@ namespace Simple.Mocking.AcceptanceTests
             myObject.MyMethod(2);
             myObject.MyMethod(3);
 
-
             AssertInvocationsWasMade.
                 Once.ForMethodCall(() => myObject.MyMethod(1)).
                 Between(1, 2).ForMethodCall(() => myObject.MyMethod(2)).
                 Once.ForMethodCall(() => myObject.MyMethod(3)).
                 InOrderAsSpecified();
 
-
             AssertInvocationsWasMade.MatchingExpectationsFor(myObject);
 
             AssertInvocationsWasMade.None.ForMethodCall(() => myObject.MyGenericMethod(0));
-
 
             Assert.That(myObject.MyProperty, Is.TypeOf<object>());
 
@@ -42,7 +34,6 @@ namespace Simple.Mocking.AcceptanceTests
             int outValue;
             myObject.MyMethodWithOutParameter(0, out outValue);
             Assert.That(outValue, Is.EqualTo(0));
-
         }
 
         [Test]
@@ -66,12 +57,10 @@ namespace Simple.Mocking.AcceptanceTests
             Stub.MethodCall(() => myObject.MyMethodWithReturnValue(Any<int>.Value)).Returns(42);
             Stub.MethodCall(() => myObject.MyMethodWithOutParameter(Any<int>.Value, out Any<int>.Value.AsRefOrOut)).SetsOutOrRefParameter(1, 42);
 
-            
             var result1 = myObject.MyMethodWithReturnValue(12345);
 
             int result2;
             myObject.MyMethodWithOutParameter(12345, out result2);
-
 
             Assert.AreEqual(42, result1);
             Assert.AreEqual(42, result2);

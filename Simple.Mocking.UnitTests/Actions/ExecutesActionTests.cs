@@ -1,16 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using NUnit.Framework;
 
 using Simple.Mocking.SetUp.Actions;
 
-
 namespace Simple.Mocking.UnitTests.Actions
 {
-	[TestFixture]
+    [TestFixture]
 	public class ExecutesActionTests : ActionTestsBase
 	{
 		[Test]

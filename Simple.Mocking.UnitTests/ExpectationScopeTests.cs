@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using System.Text;
 using System.Collections.Generic;
-using System.Linq;
 
 using NUnit.Framework;
 
@@ -11,14 +9,13 @@ using Simple.Mocking.SetUp.Proxies;
 
 namespace Simple.Mocking.UnitTests
 {
-	[TestFixture]
+    [TestFixture]
 	public class ExpectationScopeTests
 	{
 		ExpectationScope expectationScope;
 		Invocation invocation1;
 		Invocation invocation2;
 		Invocation invocation3;
-	    Action ignoredAction;
 
 
 		[SetUp]
@@ -212,24 +209,24 @@ namespace Simple.Mocking.UnitTests
 		[Test]
 		public void CantTryMeetNullInvocation()
 		{
-            Assert.Throws<ArgumentNullException>(() => ((IExpectationScope)expectationScope).TryMeet(null, out ignoredAction));
+            Assert.Throws<ArgumentNullException>(() => ((IExpectationScope)expectationScope).TryMeet(null!, out var ignoredAction));
 		}
 
 		[Test]
 		public void CantAddNullExpectation()
 		{
-		    Assert.Throws<ArgumentNullException>(() => ((IExpectationScope)expectationScope).Add(null, false));
+		    Assert.Throws<ArgumentNullException>(() => ((IExpectationScope)expectationScope).Add(null!, false));
 		}
 
 
 		void TryMeetSucceeds(IInvocation invocation)
 		{
-			Assert.IsTrue(((IExpectationScope)expectationScope).TryMeet(invocation, out ignoredAction));
+			Assert.IsTrue(((IExpectationScope)expectationScope).TryMeet(invocation, out var ignoredAction));
 		}
 
 		void TryMeetFails(IInvocation invocation)
 		{
-            Assert.IsFalse(((IExpectationScope)expectationScope).TryMeet(invocation, out ignoredAction));
+            Assert.IsFalse(((IExpectationScope)expectationScope).TryMeet(invocation, out var ignoredAction));
 		}
 
 		void AssertHasBeenMet()
@@ -251,35 +248,12 @@ namespace Simple.Mocking.UnitTests
 
 		class Invocation : IInvocation
 		{
-			public IProxy Target
-			{
-				get { throw new NotSupportedException(); }
-			}
-
-			public MethodInfo Method
-			{
-				get { throw new NotSupportedException(); }
-			}
-
-			public IList<Type> GenericArguments
-			{
-				get { throw new NotSupportedException(); }
-			}
-
-			public IList<object> ParameterValues
-			{
-				get { throw new NotSupportedException(); }
-			}
-
-			public object ReturnValue
-			{
-				set { throw new NotSupportedException(); }
-			}
-
-		    public long InvocationOrder
-		    {
-                get { throw new NotSupportedException(); }
-		    }
+			public IProxy Target => throw new NotSupportedException();
+			public MethodInfo Method => throw new NotSupportedException();
+			public IList<Type>? GenericArguments => throw new NotSupportedException();
+			public IList<object?> ParameterValues => throw new NotSupportedException();
+			public object? ReturnValue { set => throw new NotSupportedException(); }
+		    public long InvocationOrder => throw new NotSupportedException();
 		}
 
 		class Expectation : IExpectation

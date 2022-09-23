@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Simple.Mocking.Syntax
 {
-	public sealed class MatchingPredicateValueConstraint<T> : ParameterValueConstraint<T>
+    public sealed class MatchingPredicateValueConstraint<T> : ParameterValueConstraint<T>
 	{
 		Expression<Func<T, bool>> predicateExpression;
 		Func<T, bool> predicate;
@@ -20,14 +17,8 @@ namespace Simple.Mocking.Syntax
 			this.predicate = predicateExpression.Compile();
 		}
 
-		public override string ToString()
-		{
-			return string.Format("Any<{0}>.Value.Matching({1})", typeof(T).Name, predicateExpression);
-		}
+		public override string ToString() => string.Format("Any<{0}>.Value.Matching({1})", typeof(T).Name, predicateExpression);
 
-		protected override bool Matches(T value)
-		{
-			return predicate(value);
-		}
+		protected override bool Matches(T value) => predicate(value);
 	}
 }

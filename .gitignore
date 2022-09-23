@@ -1,3 +1,7 @@
 .ionide/
 obj/
 bin/
+TestResults/
+coveragereport/
+coverage.cobertura.xml
+coverage.json

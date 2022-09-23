@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection.Emit;
-using System.Text;
 
 namespace Simple.Mocking.SetUp.Proxies
 {
-	static class ILGeneratorEmit
+    static class ILGeneratorEmit
 	{
 		public static void EmitStoreIndirect(this ILGenerator ilGenerator, Type type)
 		{
@@ -55,7 +52,5 @@ namespace Simple.Mocking.SetUp.Proxies
 			else
 				ilGenerator.Emit(OpCodes.Ldind_Ref);
 		}
-
-		
 	}
 }

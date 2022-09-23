@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using NUnit.Framework;
 
@@ -9,7 +6,7 @@ using Simple.Mocking.SetUp.Proxies;
 
 namespace Simple.Mocking.UnitTests.SetUp.Proxies
 {
-	[TestFixture]
+    [TestFixture]
 	public class InvocationFormatterTests
 	{
 		MyObject target = new MyObject();
@@ -21,7 +18,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 				InvocationFormatter.Format(
 					target, 
 					typeof(IMyInterface).GetMethod("Method"), 
-					new object[]{ 1, 2 }));
+					new object?[]{ 1, 2 }));
 		}
 
 		[Test]
@@ -30,8 +27,8 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			Assert.AreEqual("myObject.GenericMethod<Int32, Int32>(1, 2)",
 				InvocationFormatter.Format(
 					target, 
-					typeof(IMyInterface).GetMethod("GenericMethod").MakeGenericMethod(new []{ typeof(int), typeof(int)}), 
-					new object[] { 1, 2 }));
+					typeof(IMyInterface).GetMethod("GenericMethod")!.MakeGenericMethod(new []{ typeof(int), typeof(int)}), 
+					new object?[] { 1, 2 }));
 		}
 
 		[Test]
@@ -41,7 +38,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 				InvocationFormatter.Format(
 					(MyDelegate)target.Method,
 					typeof(MyObject).GetMethod("Method"),
-					new object[] { 1, 2 }));
+					new object?[] { 1, 2 }));
 		}
 
 		[Test]
@@ -50,8 +47,8 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			Assert.AreEqual("myObject.Property",
 				InvocationFormatter.Format(
 					target,
-					typeof(IMyInterface).GetProperty("Property").GetGetMethod(),
-					new object[0]));
+					typeof(IMyInterface).GetProperty("Property")!.GetGetMethod(),
+					new object?[0]));
 		}
 
 		[Test]
@@ -60,8 +57,18 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			Assert.AreEqual("myObject.Property = 1",
 				InvocationFormatter.Format(
 					target,
-					typeof(IMyInterface).GetProperty("Property").GetSetMethod(),
-					new object[] { 1 }));
+					typeof(IMyInterface).GetProperty("Property")!.GetSetMethod(),
+					new object?[] { 1 }));
+		}
+
+		[Test]
+		public void PropertySetWildcard()
+		{
+			Assert.AreEqual("myObject.Property = *",
+				InvocationFormatter.Format(
+					target,
+					typeof(IMyInterface).GetProperty("Property")!.GetSetMethod(),
+					null));
 		}
 
 		[Test]
@@ -70,8 +77,18 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			Assert.AreEqual("myObject[1, 2]",
 				InvocationFormatter.Format(
 					target,
-					typeof(IMyInterface).GetProperty("Item").GetGetMethod(),
-					new object[] { 1, 2 }));
+					typeof(IMyInterface).GetProperty("Item")!.GetGetMethod(),
+					new object?[] { 1, 2 }));
+		}
+
+		[Test]
+		public void IndexedPropertyGetWildcard()
+		{
+			Assert.AreEqual("myObject[*]",
+				InvocationFormatter.Format(
+					target,
+					typeof(IMyInterface).GetProperty("Item")!.GetGetMethod(),
+					null));
 		}
 
 		[Test]
@@ -80,8 +97,18 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			Assert.AreEqual("myObject[1, 2] = 3",
 				InvocationFormatter.Format(
 					target,
-					typeof(IMyInterface).GetProperty("Item").GetSetMethod(),
-					new object[] { 1, 2, 3 }));
+					typeof(IMyInterface).GetProperty("Item")!.GetSetMethod(),
+					new object?[] { 1, 2, 3 }));
+		}
+
+		[Test]
+		public void IndexedPropertySetWildcard()
+		{
+			Assert.AreEqual("myObject[*] = *",
+				InvocationFormatter.Format(
+					target,
+					typeof(IMyInterface).GetProperty("Item")!.GetSetMethod(),
+					null));
 		}
 
 		[Test]
@@ -90,8 +117,8 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			Assert.AreEqual("myObject.Event += System.EventHandler",
 				InvocationFormatter.Format(
 					target,
-					typeof(IMyInterface).GetEvent("Event").GetAddMethod(),
-					new object[] { (EventHandler)target.EventHandler }));
+					typeof(IMyInterface).GetEvent("Event")!.GetAddMethod(),
+					new object?[] { (EventHandler)target.EventHandler }));
 		}
 
 		[Test]
@@ -100,8 +127,8 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			Assert.AreEqual("myObject.Event -= System.EventHandler",
 				InvocationFormatter.Format(
 					target,
-					typeof(IMyInterface).GetEvent("Event").GetRemoveMethod(),
-					new object[] { (EventHandler)target.EventHandler }));
+					typeof(IMyInterface).GetEvent("Event")!.GetRemoveMethod(),
+					new object?[] { (EventHandler)target.EventHandler }));
 		}
 
 		[Test]
@@ -111,7 +138,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 				InvocationFormatter.Format(
 					target,
 					typeof(IMyInterface).GetMethod("MethodWithStringArgument"),
-					new object[] { "Hello World\n" }));
+					new object?[] { "Hello World\n" }));
 		}
 
 		[Test]
@@ -121,7 +148,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 				InvocationFormatter.Format(
 					target,
 					typeof(IMyInterface).GetMethod("MethodWithCharArgument"),
-					new object[] { '\t' }));
+					new object?[] { '\t' }));
 		}
 
 		[Test]
@@ -131,7 +158,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 				InvocationFormatter.Format(
 					target,
 					typeof(IMyInterface).GetMethod("MethodWithObjectArgument"),
-					new object[] { null }));
+					new object?[] { null }));
 		}
 
 
@@ -144,7 +171,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 				return a + b;
 			}
 
-			public void EventHandler(object sender, EventArgs e)
+			public void EventHandler(object? sender, EventArgs e)
 			{				
 			}
 

@@ -1,19 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Simple.Mocking.SetUp.Proxies;
 using Simple.Mocking.UnitTests.SetUp.Proxies;
 
 namespace Simple.Mocking.UnitTests.Actions
 {
-	public abstract class ActionTestsBase
+    public abstract class ActionTestsBase
 	{
-		protected Invocation CreateInvocation()
-		{
-			return new Invocation(target, typeof(Target).GetMethod("Method"), null, new object[2], null, 0);
-		}
+		protected Invocation CreateInvocation() =>
+			new Invocation(target, typeof(Target).GetMethod("Method")!, null, new object[2], null, 0);
 
 		Target target = new Target();
 
@@ -24,7 +17,7 @@ namespace Simple.Mocking.UnitTests.Actions
 			{
 			}
 
-			public object Method(ref object value)
+			public object? Method(ref object? value)
 			{
 				value = null;
 				return null;

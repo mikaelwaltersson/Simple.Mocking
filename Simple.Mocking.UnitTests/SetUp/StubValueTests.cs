@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using NUnit.Framework;
 
@@ -51,7 +49,7 @@ namespace Simple.Mocking.UnitTests.SetUp
         [Test]
         public void StubValuesForInterface()
         {
-            var value = StubValue.ForType(typeof(IMyInterface));
+            var value = StubValue.ForType(typeof(IMyInterface))!;
 
             Assert.That(value, Is.InstanceOf<IProxy>());
             Assert.That(((IProxy)value).BaseObject, Is.TypeOf<Mock>());
@@ -60,11 +58,11 @@ namespace Simple.Mocking.UnitTests.SetUp
         [Test]
         public void StubValuesForDelegate()
         {
-            var value = StubValue.ForType(typeof(Action));
+            var value = StubValue.ForType(typeof(Action))!;
 
             Assert.That(value, Is.InstanceOf<Delegate>());
             Assert.That(((Delegate)value).Target, Is.InstanceOf<IProxy>());
-            Assert.That(((IProxy)((Delegate)value).Target).BaseObject, Is.TypeOf<Mock>());
+            Assert.That(((IProxy)((Delegate)value).Target!).BaseObject, Is.TypeOf<Mock>());
         }
 
         public interface IMyInterface

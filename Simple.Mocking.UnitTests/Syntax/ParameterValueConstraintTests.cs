@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using NUnit.Framework;
 
 using Simple.Mocking.SetUp;
 using Simple.Mocking.Syntax;
 
-
 namespace Simple.Mocking.UnitTests.Syntax
 {
-	[TestFixture]
+    [TestFixture]
 	public class ParameterValueConstraintTests
 	{
 		[Test]
@@ -52,13 +48,7 @@ namespace Simple.Mocking.UnitTests.Syntax
 		[Test]
 		public void CantCreateMatchingPredicateValueConstraintWithNullPredicate()
 		{
-			try
-			{
-				new MatchingPredicateValueConstraint<object>(null);	
-			}
-			catch (ArgumentNullException)
-			{				
-			}
+			Assert.Throws<ArgumentNullException>(() => new MatchingPredicateValueConstraint<object>(null!));
 		}
 
 		[Test]
@@ -78,6 +68,5 @@ namespace Simple.Mocking.UnitTests.Syntax
 		{
 		    Assert.Throws<InvalidOperationException>(() => Math.Max(0, new AnyValueConstraint<int>()));
 		}
-
 	}
 }

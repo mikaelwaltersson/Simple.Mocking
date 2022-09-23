@@ -9,7 +9,7 @@ namespace Simple.Mocking.SetUp
 {
     static class InvocationTarget
     {
-        public static object UnwrapDelegateTarget(object target)
+        public static object? UnwrapDelegateTarget(object? target)
         {
             if (target is Delegate)
                 target = ((Delegate)target).Target;
@@ -17,7 +17,7 @@ namespace Simple.Mocking.SetUp
             return target;
         }
 
-        public static object UnwrapProxyBaseObject(object target)
+        public static object? UnwrapProxyBaseObject(object? target)
         {
             if (target is IProxy)
                 target = ((IProxy)target).BaseObject;
@@ -25,13 +25,10 @@ namespace Simple.Mocking.SetUp
             return target;
         }
 
-        public static object UnwrapDelegateTargetAndProxyBaseObject(object target)
-        {
-            return UnwrapProxyBaseObject(UnwrapDelegateTarget(target));
-        }
+        public static object? UnwrapDelegateTargetAndProxyBaseObject(object? target) =>
+            UnwrapProxyBaseObject(UnwrapDelegateTarget(target));
 
-
-        public static bool IsDelegate(object target)
+        public static bool IsDelegate(object? target)
         {
             if (target is Delegate)
                 return true;

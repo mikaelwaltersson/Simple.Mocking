@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using NUnit.Framework;
 
@@ -9,14 +6,14 @@ using Simple.Mocking.SetUp.Proxies;
 
 namespace Simple.Mocking.UnitTests.SetUp.Proxies
 {
-	[TestFixture]
+    [TestFixture]
 	public class ProxyTypeCacheTests
 	{
 		[Test]
 		public void CantInvokeGetProxyTypeWithNullArgument()
 		{	
-		    Assert.Throws<ArgumentNullException>(() => new ProxyTypeCache().GetProxyType(null, t => t));
-            Assert.Throws<ArgumentNullException>(() => new ProxyTypeCache().GetProxyType(typeof(IMyInterface), null));
+		    Assert.Throws<ArgumentNullException>(() => new ProxyTypeCache().GetProxyType(null!, t => t));
+            Assert.Throws<ArgumentNullException>(() => new ProxyTypeCache().GetProxyType(typeof(IMyInterface), null!));
 		}		
 
 		[Test]
@@ -57,7 +54,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 
 			for (var i = 0; i < 2; i++)
 			{
-                var ex = Assert.Throws<InvalidOperationException>(() => cache.GetProxyType(typeof(IMyInterface), createTypeDelegate));
+                var ex = Assert.Throws<InvalidOperationException>(() => cache.GetProxyType(typeof(IMyInterface), createTypeDelegate))!;
                 Assert.AreSame(createTypeException, ex.InnerException);
 			}
 

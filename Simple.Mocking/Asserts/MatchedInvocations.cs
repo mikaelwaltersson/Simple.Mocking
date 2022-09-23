@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Simple.Mocking.SetUp;
 using Simple.Mocking.SetUp.Proxies;
@@ -10,14 +8,12 @@ namespace Simple.Mocking.Asserts
 {
     class MatchedInvocations
     {
-        MatchedInvocations previousMatch;
+        MatchedInvocations? previousMatch;
         NumberOfInvocationsConstraint numberOfInvocationsConstraint;
         InvocationMatcher invocationMatcher;
         IInvocation[] matchingInvocations;
 
-
-
-        public MatchedInvocations(MatchedInvocations previousMatch, NumberOfInvocationsConstraint numberOfInvocationsConstraint, InvocationMatcher invocationMatcher, IInvocation[] matchingInvocations)
+        public MatchedInvocations(MatchedInvocations? previousMatch, NumberOfInvocationsConstraint numberOfInvocationsConstraint, InvocationMatcher invocationMatcher, IInvocation[] matchingInvocations)
         {
             this.previousMatch = previousMatch;
             this.numberOfInvocationsConstraint = numberOfInvocationsConstraint;
@@ -25,32 +21,29 @@ namespace Simple.Mocking.Asserts
             this.matchingInvocations = matchingInvocations;
         }
 
-        public void AssertInvocationsWasMadeInSpecifiedOrder()
+        public static void AssertInvocationsWasMadeInSpecifiedOrder(MatchedInvocations? match)
         {
-            var matches = GetAllPreviousMatchesInOrder(this);
+            var matches = GetAllPreviousMatchesInOrder(match);
             var expectationScope = GetOrderedExpectationScope(matches);
 
             foreach (var invocation in GetAllMatchingInvocationsInOrder(matches))
             {
-                Action action;
-                if (!expectationScope.TryMeet(invocation, out action))
+                if (!expectationScope.TryMeet(invocation, out var action))
                     throw new ExpectationsException(expectationScope, "Invocations was not made in specified order (first mismatch at invocation '{0}'):", invocation);
             }
         }
 
-        static List<MatchedInvocations> GetAllPreviousMatchesInOrder(MatchedInvocations match)
+        static List<MatchedInvocations> GetAllPreviousMatchesInOrder(MatchedInvocations? match)
         {
             var allMatches = new List<MatchedInvocations>();
 
-            do
+            while (match != null)
             {
                 allMatches.Add(match);
                 match = match.previousMatch;
             }
-            while (match != null);
 
             allMatches.Reverse();
-
             return allMatches;
         }
 
@@ -67,18 +60,10 @@ namespace Simple.Mocking.Asserts
             return expectationScope;
         }
 
-        static void AddExpectation(IExpectationScope expectationScope, IInvocationMatcher invocationMatcher, NumberOfInvocationsConstraint numberOfInvocationsConstraint)
-        {
+        static void AddExpectation(IExpectationScope expectationScope, IInvocationMatcher invocationMatcher, NumberOfInvocationsConstraint numberOfInvocationsConstraint) =>
             expectationScope.Add(new Expectation(invocationMatcher, numberOfInvocationsConstraint), false);
-        }
 
-
-        IEnumerable<IInvocation> GetAllMatchingInvocationsInOrder(IEnumerable<MatchedInvocations> matches)
-        {
-            return matches.SelectMany(match => match.matchingInvocations).OrderBy(invocation => invocation.InvocationOrder);
-        }
-
-
-
+        static IEnumerable<IInvocation> GetAllMatchingInvocationsInOrder(IEnumerable<MatchedInvocations> matches) =>
+            matches.SelectMany(match => match.matchingInvocations).OrderBy(invocation => invocation.InvocationOrder);
     }
 }

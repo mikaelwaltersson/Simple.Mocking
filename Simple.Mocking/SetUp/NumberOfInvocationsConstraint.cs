@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Simple.Mocking.SetUp
+﻿namespace Simple.Mocking.SetUp
 {
-	sealed class NumberOfInvocationsConstraint
+    sealed class NumberOfInvocationsConstraint
 	{
 		int? fromInclusive;
 		int? toInclusive;
-
 
 	    public NumberOfInvocationsConstraint(int? fromInclusive, int? toInclusive)
 		{
@@ -17,34 +11,22 @@ namespace Simple.Mocking.SetUp
 			this.toInclusive = toInclusive;
 		}
 
-		public bool Matches(int invocationCount)
-		{
-			return (MatchesLowerBound(invocationCount) && MatchesUpperBound(invocationCount));
-		}
+		public bool Matches(int invocationCount) =>
+			(MatchesLowerBound(invocationCount) && MatchesUpperBound(invocationCount));
 
-		bool MatchesLowerBound(int invocationCount)
-		{
-			return (!fromInclusive.HasValue || invocationCount >= fromInclusive.Value);
-		}
+		bool MatchesLowerBound(int invocationCount) =>
+			(!fromInclusive.HasValue || invocationCount >= fromInclusive.Value);
 
-		bool MatchesUpperBound(int invocationCount)
-		{
-			return (!toInclusive.HasValue || invocationCount <= toInclusive.Value);
-		}
+		bool MatchesUpperBound(int invocationCount) => 
+			(!toInclusive.HasValue || invocationCount <= toInclusive.Value);
 
-		public bool CanInvoke(int currentInvocationCount)
-		{
-			return MatchesUpperBound(currentInvocationCount + 1);
-		}
+		public bool CanInvoke(int currentInvocationCount) =>
+			MatchesUpperBound(currentInvocationCount + 1);
 
-		public override string ToString()
-		{
-			return (toInclusive == fromInclusive ? ToString(toInclusive) : (ToString(fromInclusive) + ".." + ToString(toInclusive)));
-		}
+		public override string ToString() =>
+			(toInclusive == fromInclusive ? ToString(toInclusive) : (ToString(fromInclusive) + ".." + ToString(toInclusive)));
 
-		string ToString(int? bound)
-		{
-			return (bound.HasValue ? bound.Value.ToString() : "*");
-		}
+		string ToString(int? bound) =>
+			(bound.HasValue ? bound.Value.ToString() : "*");
 	}
 }

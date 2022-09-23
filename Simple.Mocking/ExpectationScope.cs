@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 using Simple.Mocking.SetUp;
 using Simple.Mocking.SetUp.Proxies;
 
 namespace Simple.Mocking
 {
-	public sealed class ExpectationScope : IExpectationScope, IMockNameScope
+    public sealed class ExpectationScope : IExpectationScope, IMockNameScope
 	{
 		Stack<ChildScope> scopeStack;
 		HashSet<string> mockNames;
@@ -21,7 +20,7 @@ namespace Simple.Mocking
 			this.mockNames = new HashSet<string>();
 			this.invocationHistory = new InvocationHistory();
 
-			scopeStack.Push(new UnorderedChildScope(null));
+			scopeStack.Push(new UnorderedChildScope(null!));
 		}
 
 		public IDisposable BeginUnordered()
@@ -52,7 +51,7 @@ namespace Simple.Mocking
 		}
 		
 
-		bool IExpectation.TryMeet(IInvocation invocation, out Action action)
+		bool IExpectation.TryMeet(IInvocation invocation, out Action? action)
 		{
 			if (invocation == null)
 				throw new ArgumentNullException("invocation");
@@ -132,39 +131,21 @@ namespace Simple.Mocking
 
 		class InvocationHistory : IInvocationHistory
 		{
-			List<InvocationHistoryEntry> entries = new List<InvocationHistoryEntry>();
+			List<(IInvocation Invocation, bool WasExpected)> entries = new List<(IInvocation, bool)>();
 
 			public void RegisterInvocation(IInvocation invocation, bool wasExpected)
 			{
-				entries.Add(
-					new InvocationHistoryEntry
-					{
-						Invocation = invocation,
-						WasExpected = wasExpected
-					});
+				entries.Add((Invocation: invocation, WasExpected: wasExpected));
 			}
 
-            public IEnumerable<IInvocation> Invocations
-            {
-                get { return from entry in entries select entry.Invocation; }
-            }
+            public IEnumerable<IInvocation> Invocations =>
+				from entry in entries select entry.Invocation;
 
-
-			public IEnumerable<IInvocation> UnexpectedInvocations
-			{
-				get { return from entry in entries where !entry.WasExpected select entry.Invocation; }
-			}
+			public IEnumerable<IInvocation> UnexpectedInvocations =>
+				from entry in entries where !entry.WasExpected select entry.Invocation;
 			
-			public override string ToString()
-			{
-                return string.Join(Environment.NewLine, Invocations.Select(invocation => invocation.ToString()).ToArray());
-			}
-		}
-
-		class InvocationHistoryEntry
-		{
-			public IInvocation Invocation;
-			public bool WasExpected;
+			public override string ToString() =>
+				string.Join(Environment.NewLine, Invocations.Select(invocation => invocation.ToString()).ToArray());
 		}
 
 		abstract class ChildScope : IExpectation, IDisposable
@@ -179,13 +160,10 @@ namespace Simple.Mocking
 			}
 
 
-            public abstract bool TryMeet(IInvocation invocation, out Action action);
+            public abstract bool TryMeet(IInvocation invocation, out Action? action);
 
-			public bool HasBeenMet
-			{
-				get { return expectationList.All(expectation => expectation.HasBeenMet); }
-			}
-
+			public bool HasBeenMet =>
+				expectationList.All(expectation => expectation.HasBeenMet);
 		
 			public void Add(IExpectation expectation, bool hasHigherPrecedence)
 			{
@@ -197,10 +175,8 @@ namespace Simple.Mocking
 
 			protected abstract void DescribeHeader(TextWriter writer, int indentLevel);
 
-			static void DescribeFooter(TextWriter writer, int indentLevel)
-			{
+			static void DescribeFooter(TextWriter writer, int indentLevel) =>
 				WriteLine(writer, indentLevel, "}");
-			}	
 
 			public void DescribeContent(TextWriter writer, int indentLevel)
 			{
@@ -219,10 +195,8 @@ namespace Simple.Mocking
 				}
 			}
 
-			public void Dispose()
-			{
+			public void Dispose() =>
 				parent.ExitChildScope(this);
-			}
 		}		
 
 		class UnorderedChildScope : ChildScope
@@ -231,7 +205,7 @@ namespace Simple.Mocking
 			{
 			}
 
-			public override bool TryMeet(IInvocation invocation, out Action action)
+			public override bool TryMeet(IInvocation invocation, out Action? action)
 			{				
 				foreach (var expectation in expectationList)
 				{
@@ -243,10 +217,8 @@ namespace Simple.Mocking
 				return false;			
 			}
 
-			protected override void DescribeHeader(TextWriter writer, int indentLevel)
-			{
+			protected override void DescribeHeader(TextWriter writer, int indentLevel) =>
 				WriteLine(writer, indentLevel, "Unordered {");
-			}
 		}
 
 		class OrderedChildScope : ChildScope
@@ -257,7 +229,7 @@ namespace Simple.Mocking
 			{
 			}
 
-			public override bool TryMeet(IInvocation invocation, out Action action)
+			public override bool TryMeet(IInvocation invocation, out Action? action)
 			{
 				var nextToMeet = expectationList[nextToMeetIndex];
 
@@ -275,17 +247,12 @@ namespace Simple.Mocking
                     }
                 }
                 
-
 			    action = null;
 				return false;			
 			}
 
-			protected override void DescribeHeader(TextWriter writer, int indentLevel)
-			{
+			protected override void DescribeHeader(TextWriter writer, int indentLevel) =>
 				WriteLine(writer, indentLevel, "In order {");
-			}
 		}
-
-
 	}
 }

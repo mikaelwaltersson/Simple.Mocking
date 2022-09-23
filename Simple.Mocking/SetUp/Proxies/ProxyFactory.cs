@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Reflection.Emit;
 
 
 namespace Simple.Mocking.SetUp.Proxies
 {
-	class ProxyFactory
+    class ProxyFactory
 	{
 		const string ModuleAndAssemblyNameFormat = "Proxies-{0}";
 		const string TypeNameFormat = "Proxies-{0}";
@@ -19,8 +18,6 @@ namespace Simple.Mocking.SetUp.Proxies
 
 		ModuleBuilder moduleBuilder;
 		ProxyTypeCache proxyTypeCache;
-
-
 
 		public ProxyFactory()
 			: this(CreateModuleBuilder())
@@ -76,10 +73,8 @@ namespace Simple.Mocking.SetUp.Proxies
 			return (T)CreateDelegate(proxyType, delegateType, baseObject, invocationInterceptor);
 		}
 
-		object CreateInstance(Type proxyType, params object[] constructorArguments)
-		{
-			return Activator.CreateInstance(proxyType, constructorArguments);
-		}
+		object CreateInstance(Type proxyType, params object[] constructorArguments) => 
+			Activator.CreateInstance(proxyType, constructorArguments)!;
 
 		object CreateDelegate(Type proxyType, Type delegateType, params object[] constructorArguments)
 		{
@@ -109,7 +104,7 @@ namespace Simple.Mocking.SetUp.Proxies
 
 			ImplementMembers(typeBuilder, baseType, proxiedType);
 
-			return typeBuilder.CreateTypeInfo();
+			return typeBuilder.CreateTypeInfo()!;
 		}
 
 
@@ -128,7 +123,7 @@ namespace Simple.Mocking.SetUp.Proxies
 		MethodInfo[] GetBaseMethods(Type interfaceType)
 		{
 			if (interfaceType.IsDelegateType())
-				return new[] { interfaceType.GetMethod(DelegateInvokeMethodName) };
+				return new[] { interfaceType.GetMethod(DelegateInvokeMethodName)! };
 
 			var interfaceMethods = GetInterfaceMethods(interfaceType);
 			var objectMethods = GetVirtualMethodsDeclaredInObject();
@@ -136,16 +131,12 @@ namespace Simple.Mocking.SetUp.Proxies
 			return interfaceMethods.Concat(objectMethods).ToArray();
 		}
 
-
-
-		ConstructorInfo GetBaseConstructor(Type baseType)
-		{
-			return baseType.GetConstructor(
+		ConstructorInfo GetBaseConstructor(Type baseType) =>
+			baseType.GetConstructor(
 				BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, 
 				null, 
 				new[] { typeof(object), typeof(IInvocationInterceptor) }, 
-				null);
-		}
+				null)!;
 
 		MethodInfo[] GetInterfaceMethods(Type interfaceType)
 		{
@@ -157,11 +148,8 @@ namespace Simple.Mocking.SetUp.Proxies
 			return interfaceMethods.Distinct().ToArray();
 		}
 
-		MethodInfo[] GetVirtualMethodsDeclaredInObject()
-		{
-			return typeof(object).GetMethods().Where(method => method.IsVirtual).ToArray();
-		}
-
+		MethodInfo[] GetVirtualMethodsDeclaredInObject() =>
+			typeof(object).GetMethods().Where(method => method.IsVirtual).ToArray();
 
 		FieldInfo[] ImplementClassConstructor(TypeBuilder typeBuilder, MethodInfo[] baseMethods)
 		{
@@ -182,7 +170,7 @@ namespace Simple.Mocking.SetUp.Proxies
 				{					
 					string methodTextRepresentation = InvocationFactory.GetTextRepresentationForMethod(baseMethod);
 
-					ilGenerator.Emit(OpCodes.Ldtoken, declaringType);
+					ilGenerator.Emit(OpCodes.Ldtoken, declaringType!);
 					ilGenerator.Emit(OpCodes.Call, Methods.GetTypeFromHandle);
 					ilGenerator.Emit(OpCodes.Ldstr, methodTextRepresentation);
 					ilGenerator.Emit(OpCodes.Call, Methods.GetInvocationFactoryForMethodTextRepresentation);
@@ -191,7 +179,7 @@ namespace Simple.Mocking.SetUp.Proxies
 				else
 				{
 					ilGenerator.Emit(OpCodes.Ldtoken, baseMethod);
-					ilGenerator.Emit(OpCodes.Ldtoken, declaringType);
+					ilGenerator.Emit(OpCodes.Ldtoken, declaringType!);
 					ilGenerator.Emit(OpCodes.Call, Methods.GetMethodFromHandle);
 					ilGenerator.Emit(OpCodes.Call, Methods.GetInvocationFactoryForMethod);
 					ilGenerator.Emit(OpCodes.Stsfld, invocationFactoryField);
@@ -251,8 +239,9 @@ namespace Simple.Mocking.SetUp.Proxies
 			var methodAttributes = MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot;
 			bool isMethodOverride;
 
-
+#pragma warning disable CS8604
 			if (baseMethod.DeclaringType.IsDelegateType())
+#pragma warning restore CS8604
 			{
 				methodName = DelegateInvokeMethodName;
 				methodAttributes |= MethodAttributes.Public;
@@ -387,10 +376,10 @@ namespace Simple.Mocking.SetUp.Proxies
 				if (parameterType.IsByRef)
 				{
 					parameterType = parameterType.GetElementType();
-					ilGenerator.EmitLoadIndirect(parameterType);
+					ilGenerator.EmitLoadIndirect(parameterType!);
 				}
 
-				EmitBoxValue(ilGenerator, parameterType);
+				EmitBoxValue(ilGenerator, parameterType!);
 
 				ilGenerator.Emit(OpCodes.Stelem_Ref);
 			}
@@ -450,25 +439,30 @@ namespace Simple.Mocking.SetUp.Proxies
 				ilGenerator.Emit(OpCodes.Ldloc_2);
 				ilGenerator.Emit(OpCodes.Ldc_I4, i);
 				ilGenerator.Emit(OpCodes.Ldelem_Ref);
+#pragma warning disable CS8604
 				ilGenerator.Emit(OpCodes.Unbox_Any, parameterType);
+#pragma warning restore CS8604
 				ilGenerator.EmitStoreIndirect(parameterType);
 			}
 		}
 
 
 
-		static string GetProxyTypeName(Type type)
-		{
-			return string.Format(TypeNameFormat,
-				type.FullName.Replace(Type.Delimiter, TypeNameInterfaceFullNameDelimiter));
-		}
+		static string GetProxyTypeName(Type type) =>
+#pragma warning disable CS8602
+			string.Format(
+				TypeNameFormat,
+				type.FullName.Replace(Type.Delimiter, TypeNameInterfaceFullNameDelimiter)
+			);
+#pragma warning restore CS8602
 
 		static string GetProxyMethodName(MethodInfo method)
 		{
+#pragma warning disable CS8602
 			return string.Format(MethodNameFormat,
 				method.DeclaringType.FullName.Replace(Type.Delimiter, TypeNameInterfaceFullNameDelimiter), method.Name);
+#pragma warning restore CS8602
 		}
-
 
 		static class Methods
 		{		
@@ -476,10 +470,10 @@ namespace Simple.Mocking.SetUp.Proxies
 				GetMethod<Func<RuntimeTypeHandle, Type>>(Type.GetTypeFromHandle);
 
 			public static readonly MethodInfo GetMethodFromHandle =
-				GetMethod<Func<RuntimeMethodHandle, RuntimeTypeHandle, MethodBase>>(MethodBase.GetMethodFromHandle);
+				GetMethod<Func<RuntimeMethodHandle, RuntimeTypeHandle, MethodBase>>(MethodBase.GetMethodFromHandle!);
       
 			public static readonly MethodInfo HandleInvocation =
-				GetMethod<HandleInvocationCallback>(Invocation.HandleInvocation);
+				GetMethod<HandleInvocationCallback>(Invocation.HandleInvocation!);
 
 			public static readonly MethodInfo GetInvocationFactoryForMethod =
 				GetMethod<Func<MethodInfo, InvocationFactory>>(InvocationFactory.GetForMethod);
@@ -487,11 +481,8 @@ namespace Simple.Mocking.SetUp.Proxies
 			public static readonly MethodInfo GetInvocationFactoryForMethodTextRepresentation =
 				GetMethod<Func<Type, string, InvocationFactory>>(InvocationFactory.GetForMethodTextRepresentation);
 
-			static MethodInfo GetMethod<TFunc>(TFunc func)
-			{
-				return ((Delegate)(object)func).Method;
-			}
-
+			static MethodInfo GetMethod<TFunc>(TFunc func) where TFunc : notnull => 
+				((Delegate)(object)func).Method;
 		}
 
 		delegate object HandleInvocationCallback(

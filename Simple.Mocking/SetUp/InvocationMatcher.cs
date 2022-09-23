@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 using Simple.Mocking.SetUp.Proxies;
 using Simple.Mocking.Syntax;
 
 namespace Simple.Mocking.SetUp
 {
-	class InvocationMatcher : IInvocationMatcher
+    class InvocationMatcher : IInvocationMatcher
 	{
 		object target;
-		MethodInfo method;
-		IList<object> parameterValueConstraints;
+		MethodInfo? method;
+		IList<object?>? parameterValueConstraints;
 
-		public InvocationMatcher(object target, MethodInfo method, IList<object> parameterValueConstraints)
+		public InvocationMatcher(object target, MethodInfo? method, IList<object?>? parameterValueConstraints)
 		{
             if (InvocationTarget.IsDelegate(target) && method != null)
                 throw new ArgumentException("Can not specify delegate target and method", "method");
@@ -26,35 +25,21 @@ namespace Simple.Mocking.SetUp
 			this.parameterValueConstraints = parameterValueConstraints;
 		}
 
-		public object Target
-		{
-			get { return target; }
-		}
+		public object Target => target;
 
-		public MethodInfo Method
-		{
-			get { return method; }
-		}
+		public MethodInfo? Method => method;
 
-		public IList<object> ParameterValueConstraints
-		{
-			get { return parameterValueConstraints; }
-		}
+		public IList<object?>? ParameterValueConstraints => parameterValueConstraints;
 
-		public bool Matches(IInvocation invocation)
-		{
-			return 
-				MatchesTarget(invocation.Target) &&
-				MatchesMethod(invocation.Method, invocation.GenericArguments) &&
-				MatchesParameters(invocation.ParameterValues);
-		}
+		public bool Matches(IInvocation invocation) =>
+			MatchesTarget(invocation.Target) &&
+			MatchesMethod(invocation.Method, invocation.GenericArguments) &&
+			MatchesParameters(invocation.ParameterValues);
 
-		bool MatchesTarget(IProxy invocationTarget)
-		{
-			return ReferenceEquals(invocationTarget, InvocationTarget.UnwrapDelegateTarget(target));
-		}
-
-		bool MatchesMethod(MethodInfo invocationMethod, IEnumerable<Type> genericArguments)
+		bool MatchesTarget(IProxy invocationTarget) =>
+			ReferenceEquals(invocationTarget, InvocationTarget.UnwrapDelegateTarget(target));
+		
+		bool MatchesMethod(MethodInfo invocationMethod, IEnumerable<Type>? genericArguments)
 		{
             if (method == null)
                 return (invocationMethod.DeclaringType != typeof(object));
@@ -65,7 +50,7 @@ namespace Simple.Mocking.SetUp
 			return method.Equals(invocationMethod);
 		}
 
-		bool MatchesParameters(IList<object> invocationParameterValues)
+		bool MatchesParameters(IList<object?> invocationParameterValues)
 		{
             if (parameterValueConstraints == null)
                 return true;
@@ -96,12 +81,10 @@ namespace Simple.Mocking.SetUp
 
 
 
-		public override string ToString()
-		{
-			return InvocationFormatter.Format(target, method, parameterValueConstraints);			
-		}
+		public override string ToString() =>
+			InvocationFormatter.Format(target, method, parameterValueConstraints);
 
-		static InvocationMatcher CreateInvocationMatcher(object target, MethodInfo method, IEnumerable<object> parameters)
+		static InvocationMatcher CreateInvocationMatcher(object target, MethodInfo method, IEnumerable<object?> parameters)
 		{
 			if (method.IsGenericMethod)
 				method = StripParameterValueConstraintsFromGenericArguments(method);
@@ -156,7 +139,7 @@ namespace Simple.Mocking.SetUp
 		{
 			var body = (MethodCallExpression)methodCallExpression.Body;
 
-			var target = ResolveObjectFromExpression(body.Object);
+			var target = ResolveObjectFromExpression(body.Object!);
 			var parameters = ParseParameters(body.Arguments, body.Method);
 
 			return CreateInvocationMatcher(target, body.Method, parameters);
@@ -179,18 +162,11 @@ namespace Simple.Mocking.SetUp
 			return new InvocationMatcher(target, null, parameters.ToList());
 		}
 
+		public static InvocationMatcher ForPropertyGet(LambdaExpression propertyExpression) =>
+			ForPropertyCall(propertyExpression, property => property.GetGetMethod()!);
 
-		public static InvocationMatcher ForPropertyGet(LambdaExpression propertyExpression)
-		{
-			return ForPropertyCall(propertyExpression, property => property.GetGetMethod());
-		}
-
-		public static InvocationMatcher ForPropertySet(LambdaExpression propertyExpression, object value)
-		{
-			return ForPropertyCall(propertyExpression, property => property.GetSetMethod(), value);
-		}
-
-
+		public static InvocationMatcher ForPropertySet(LambdaExpression propertyExpression, object? value) =>
+			ForPropertyCall(propertyExpression, property => property.GetSetMethod()!, value);
 
 		static bool IsPropertyExpression(LambdaExpression propertyExpression)
 		{
@@ -208,7 +184,7 @@ namespace Simple.Mocking.SetUp
 
 		
 
-		static InvocationMatcher ForPropertyCall(LambdaExpression propertyExpression, Func<PropertyInfo, MethodInfo> methodSelector, params object[] parameters)
+		static InvocationMatcher ForPropertyCall(LambdaExpression propertyExpression, Func<PropertyInfo, MethodInfo> methodSelector, params object?[] parameters)
 		{
 			if (IsIndexedPropertyExpression(propertyExpression))
 				return CreateForIndexedPropertyCall(propertyExpression, methodSelector, parameters);
@@ -221,37 +197,33 @@ namespace Simple.Mocking.SetUp
 				"propertyExpression");
 		}
 
-		static InvocationMatcher CreateForPropertyCall(LambdaExpression propertyExpression, Func<PropertyInfo, MethodInfo> methodSelector, object[] parameters)
+		static InvocationMatcher CreateForPropertyCall(LambdaExpression propertyExpression, Func<PropertyInfo, MethodInfo> methodSelector, object?[] parameters)
 		{
 			var body = (MemberExpression)propertyExpression.Body;
 			var property = (PropertyInfo)body.Member;
 
-			var target = ResolveObjectFromExpression(body.Expression);
+			var target = ResolveObjectFromExpression(body.Expression!);
 			var method = methodSelector(property);
 
 			return CreateInvocationMatcher(target, method, parameters);
 		}
 
-		static InvocationMatcher CreateForIndexedPropertyCall(LambdaExpression propertyExpression, Func<PropertyInfo, MethodInfo> methodSelector, object[] valueParameters)
+		static InvocationMatcher CreateForIndexedPropertyCall(LambdaExpression propertyExpression, Func<PropertyInfo, MethodInfo> methodSelector, object?[] valueParameters)
 		{
 			var body = (MethodCallExpression)propertyExpression.Body;
 
-			var target = ResolveObjectFromExpression(body.Object);
-			var method = methodSelector(body.Method.GetDeclaringProperty());
+			var target = ResolveObjectFromExpression(body.Object!);
+			var method = methodSelector(body.Method.GetDeclaringProperty()!);
 			var parameters = ParseParameters(body.Arguments, body.Method).Concat(valueParameters);
 
 			return CreateInvocationMatcher(target, method, parameters);
 		}
 
-		public static InvocationMatcher ForEventAdd<T>(T target, string eventName, object handler)
-		{
-			return CreateForEventAddOrRemove(target, GetEvent<T>(eventName).GetAddMethod(), handler);
-		}
+		public static InvocationMatcher ForEventAdd<T>(T target, string eventName, object? handler) where T : notnull =>
+			CreateForEventAddOrRemove(target, GetEvent<T>(eventName).GetAddMethod()!, handler);
 
-		public static InvocationMatcher ForEventRemove<T>(T target, string eventName, object handler)
-		{
-			return CreateForEventAddOrRemove(target, GetEvent<T>(eventName).GetRemoveMethod(), handler);
-		}
+		public static InvocationMatcher ForEventRemove<T>(T target, string eventName, object? handler) where T : notnull =>
+			CreateForEventAddOrRemove(target, GetEvent<T>(eventName).GetRemoveMethod()!, handler);
 
 		static EventInfo GetEvent<T>(string eventName)
 		{
@@ -263,28 +235,21 @@ namespace Simple.Mocking.SetUp
 			return eventMember;
 		}
 
-		static InvocationMatcher CreateForEventAddOrRemove(object target, MethodInfo method, object handler)
-		{
-			return CreateInvocationMatcher(target, method, new[] { handler });
-		}
+		static InvocationMatcher CreateForEventAddOrRemove(object target, MethodInfo method, object? handler) =>
+			CreateInvocationMatcher(target, method, new[] { handler });
 
-
-		static IEnumerable<object> ParseParameters(IEnumerable<Expression> arguments, MethodInfo methodInfo)
+		static IEnumerable<object?> ParseParameters(IEnumerable<Expression> arguments, MethodInfo methodInfo)
 		{
 			var methodParameters = methodInfo.GetParameters();
 
 			return arguments.Select((argument, i) => ParseParameterConstraint(argument, methodParameters[i]));
 		}
 
-		static object ResolveObjectFromExpression(Expression expression)
-		{
-			return Expression.Lambda<Func<object>>(Expression.Convert(expression, typeof(object))).Compile()();
-		}
+		static object ResolveObjectFromExpression(Expression expression) =>
+			Expression.Lambda<Func<object>>(Expression.Convert(expression, typeof(object))).Compile()();
 
-		static object ParseParameterConstraint(Expression argumentExpression, ParameterInfo parameter)
-		{
-			return ResolveObjectFromExpression(GetReducedParameterValueConstraintExpression(argumentExpression, parameter));
-		}
+		static object? ParseParameterConstraint(Expression argumentExpression, ParameterInfo parameter) =>
+			ResolveObjectFromExpression(GetReducedParameterValueConstraintExpression(argumentExpression, parameter));
 
 		static Expression GetReducedParameterValueConstraintExpression(Expression argumentExpression, ParameterInfo parameter)
 		{
@@ -300,13 +265,17 @@ namespace Simple.Mocking.SetUp
 				if (IsAsRefOrOutExpression(memberExpression))
 				{
 					AssertParameterTypeIsByRef(memberExpression, parameter);
+#pragma warning disable CS8603
 					return memberExpression.Expression;
+#pragma warning restore CS8604
 				}
 				
 				if (IsAsInterfaceExpression(memberExpression))
 				{
 					AssertGenericArgumentIsInterface(memberExpression);
+#pragma warning disable CS8604
 					return memberExpression.Expression;
+#pragma warning restore CS8604
 				}
 			}
 
@@ -316,22 +285,18 @@ namespace Simple.Mocking.SetUp
 			return argumentExpression;
 		}
 
-		static bool IsAsRefOrOutExpression(MemberExpression memberExpression)
-		{
-			return IsFieldInGenericTypeDefinition(memberExpression.Member, typeof(ParameterValueConstraint<>), "AsRefOrOut");
-		}
+		static bool IsAsRefOrOutExpression(MemberExpression memberExpression) =>
+			IsFieldInGenericTypeDefinition(memberExpression.Member, typeof(ParameterValueConstraint<>), "AsRefOrOut");
 
-		static bool IsAsInterfaceExpression(MemberExpression memberExpression)
-		{
-			return IsFieldInGenericTypeDefinition(memberExpression.Member, typeof(ParameterValueConstraint<>), "AsInterface");
-		}
+		static bool IsAsInterfaceExpression(MemberExpression memberExpression) =>
+			IsFieldInGenericTypeDefinition(memberExpression.Member, typeof(ParameterValueConstraint<>), "AsInterface");
 
 		static bool IsFieldInGenericTypeDefinition(MemberInfo member, Type genericType, string fieldName)
 		{
 			var declaringType = member.DeclaringType;
 
 			return (
-				declaringType.IsGenericType && 
+				declaringType!.IsGenericType && 
 				declaringType.GetGenericTypeDefinition() == genericType && 
 				member is FieldInfo && 
 				member.Name == fieldName);
@@ -346,15 +311,13 @@ namespace Simple.Mocking.SetUp
 
 		static void AssertGenericArgumentIsInterface(MemberExpression memberExpression)
 		{
-			var genericArgument = memberExpression.Member.DeclaringType.GetGenericArguments()[0];
+			var genericArgument = memberExpression.Member.DeclaringType!.GetGenericArguments()[0];
 
 			if (!genericArgument.IsInterface)
 				throw new ArgumentException(string.Format("Cant set '{0}' as an value constraint for non interface type {1}", memberExpression, genericArgument));
 		}
 
-		public static InvocationMatcher ForAnyInvocationOn(object target)
-		{
-			return new InvocationMatcher(target, null, null);
-		}
+		public static InvocationMatcher ForAnyInvocationOn(object target) =>
+			new InvocationMatcher(target, null, null);
 	}
 }

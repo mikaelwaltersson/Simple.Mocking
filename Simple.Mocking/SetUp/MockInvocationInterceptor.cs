@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Simple.Mocking.SetUp.Proxies;
 
 namespace Simple.Mocking.SetUp
 {
-	class MockInvocationInterceptor : IInvocationInterceptor
+    class MockInvocationInterceptor : IInvocationInterceptor
 	{
 		IExpectationScope expectationScope;
 		
-
 		public MockInvocationInterceptor(IExpectationScope expectationScope)
 		{
 			if (expectationScope == null)
@@ -20,32 +17,26 @@ namespace Simple.Mocking.SetUp
 			this.expectationScope = expectationScope;
 		}
 
-		public IExpectationScope ExpectationScope
-		{
-			get { return expectationScope; }
-		}
-
+		public IExpectationScope ExpectationScope => expectationScope;
 
 		public void OnInvocation(IInvocation invocation)
 		{
 			if (invocation == null)
 				throw new ArgumentNullException("invocation");
 
-		    Action action;
-
 		    var wasMet =
-		        expectationScope.TryMeet(invocation, out action) ||
+		        expectationScope.TryMeet(invocation, out var action) ||
 		        TryMeetDefaultObjectMethodInvocation(invocation, out action);
 
 		    expectationScope.InvocationHistory.RegisterInvocation(invocation, wasMet);
 
             if (wasMet)
-                action();
+                action!();
             else
                 throw new ExpectationsException(expectationScope, "Unexpected invocation '{0}', expected:", invocation);
 		}
 
-		static bool TryMeetDefaultObjectMethodInvocation(IInvocation invocation, out Action action)
+		static bool TryMeetDefaultObjectMethodInvocation(IInvocation invocation, out Action? action)
 		{
 			if (invocation.Method.DeclaringType == typeof(object))
 			{
@@ -67,7 +58,7 @@ namespace Simple.Mocking.SetUp
 		}
     
 
-		public static MockInvocationInterceptor GetFromTarget(object target)
+		public static MockInvocationInterceptor GetFromTarget(object? target)
 		{
 		    target = InvocationTarget.UnwrapDelegateTarget(target);
 
@@ -84,8 +75,5 @@ namespace Simple.Mocking.SetUp
 
 			return mockInvocationInterceptor;
 		}
-
 	}
-
-	
 }

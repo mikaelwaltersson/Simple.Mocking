@@ -1,15 +1,10 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 using Simple.Mocking.AcceptanceTests.Interfaces;
 
 namespace Simple.Mocking.AcceptanceTests
 {
-	[TestFixture]
+    [TestFixture]
 	public class MockTests
 	{
 		[Test]
@@ -18,7 +13,6 @@ namespace Simple.Mocking.AcceptanceTests
 			var myObject = Mock.Interface<IMyObject>();
 
             Assert.Throws<ExpectationsException>(() => myObject.MyEmptyMethod());
-
 		}
 
 		[Test]

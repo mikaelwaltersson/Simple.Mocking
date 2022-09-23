@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using NUnit.Framework;
 
@@ -9,7 +7,7 @@ using Simple.Mocking.SetUp.Proxies;
 
 namespace Simple.Mocking.UnitTests.SetUp.Proxies
 {
-	[TestFixture]
+    [TestFixture]
 	public class InvocationTests
 	{		
 		TestInvocationInterceptor invocationInterceptor;
@@ -19,13 +17,13 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 		public void SetUp()
 		{
 			invocationInterceptor = new TestInvocationInterceptor();
-			target = new Proxy { InvocationInterceptor = invocationInterceptor, ProxiedType = null };			
+			target = new Proxy { InvocationInterceptor = invocationInterceptor, ProxiedType = null! };			
 		}
 
 		[Test]
 		public void CantSetReturnValueToNonAssignableValue()
 		{
-			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("Method"), null, new object[0], default(int), 0);
+			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("Method")!, null, new object[0], default(int), 0);
 
 		    Assert.Throws<InvalidOperationException>(() => invocation.ReturnValue = null);
 		}
@@ -33,7 +31,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 		[Test]
 		public void CantSetReturnValueForMethodWithoutReturnValue()
 		{
-			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("MethodWithoutReturnValue"), null, new object[2], null, 0);
+			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("MethodWithoutReturnValue")!, null, new object[2], null, 0);
 
             Assert.Throws<InvalidOperationException>(() => invocation.ReturnValue = 0);
 		}
@@ -41,7 +39,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 		[Test]
 		public void CantSetParameterValueToNonAssignableValue()
 		{
-			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("MethodWithOutAndRefValues"), null, new object[2], null, 0);
+			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("MethodWithOutAndRefValues")!, null, new object[2], null, 0);
 
             Assert.Throws<InvalidOperationException>(() => invocation.ParameterValues[0] = new object());
 		}
@@ -49,7 +47,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 		[Test]
 		public void CantSetParameterValueForNonOutOrRefParameter()
 		{
-			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("MethodWithInputValue"), null, new object[1], null, 0);
+			var invocation = new Invocation(target, typeof(IMyInterface).GetMethod("MethodWithInputValue")!, null, new object[1], null, 0);
 
             Assert.Throws<InvalidOperationException>(() => invocation.ParameterValues[0] = 0);
 		}
@@ -58,17 +56,17 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 		[Test]
 		public void SettingOutAndRefParameters()
 		{
-			var method = typeof(IMyInterface).GetMethod("MethodWithOutAndRefValues");
+			var method = typeof(IMyInterface).GetMethod("MethodWithOutAndRefValues")!;
 
 			invocationInterceptor.OnInvocationHandler =
 				invocation =>
 				{
-					Assert.AreEqual(42, (int)invocation.ParameterValues[0]);
+					Assert.AreEqual(42, (int)invocation.ParameterValues[0]!);
 					invocation.ParameterValues[0] = 43;
 					invocation.ParameterValues[1] = 44;					
 				};
 
-			var parameters = new object[] { 42, null };
+			var parameters = new object?[] { 42, null };
 			
 			Invocation.HandleInvocation(target, InvocationFactory.GetForMethod(method), null, parameters, null);
 
@@ -85,14 +83,14 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			var invocation = 
 				new Invocation(
 					target, 
-					typeof(IMyInterface).GetMethod("MethodWithGenericArguments"),
+					typeof(IMyInterface).GetMethod("MethodWithGenericArguments")!,
 					new List<Type> { type }, 
-					new List<object> { item },
+					new List<object?> { item },
 					null,
                     0);
 
 			var parameterValues = invocation.ParameterValues;
-			var genericArguments = invocation.GenericArguments;
+			var genericArguments = invocation.GenericArguments!;
 
 			AssertIsNotSupported(() => parameterValues.Add(item));
 			AssertIsNotSupported(() => genericArguments.Add(type));
@@ -152,8 +150,6 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 		{
             Assert.Throws<NotSupportedException>(() => action());
 		}
-
-
 
 		class Proxy : IProxy
 		{

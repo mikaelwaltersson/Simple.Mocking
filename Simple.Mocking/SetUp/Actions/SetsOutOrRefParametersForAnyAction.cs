@@ -1,16 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 using Simple.Mocking.SetUp.Proxies;
 
 namespace Simple.Mocking.SetUp.Actions
 {
-	class SetsOutOrRefParametersForAnyAction : ActionForAnyBase
+    class SetsOutOrRefParametersForAnyAction : ActionForAnyBase
 	{
-        public SetsOutOrRefParametersForAnyAction(Func<Type, object> valueForType)
+        public SetsOutOrRefParametersForAnyAction(Func<Type, object?> valueForType)
             : base(valueForType)
 		{
 		}
@@ -24,7 +21,7 @@ namespace Simple.Mocking.SetUp.Actions
 	            var parameterType = parameters[i].ParameterType;
 
                 if (parameterType.IsByRef)
-                    invocation.ParameterValues[i] = GetValueForType(parameterType.GetElementType());   	                                
+                    invocation.ParameterValues[i] = GetValueForType(parameterType.GetElementType()!);   	                                
 	        }
 	    }
 	}

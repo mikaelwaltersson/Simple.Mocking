@@ -1,25 +1,19 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 
 namespace Simple.Mocking.SetUp.Proxies
 {
-	public sealed class InvocationFactory
+    public sealed class InvocationFactory
 	{
 	    static long invocationOrderGenerator;
 
 		MethodInfo method;
 		
-
 		InvocationFactory(MethodInfo method)
 		{
 			this.method = method;
 		}
-
-
 
 		public static InvocationFactory GetForMethod(MethodInfo method)
 		{
@@ -42,11 +36,7 @@ namespace Simple.Mocking.SetUp.Proxies
 			return new InvocationFactory(method);
 		}
 
-		
-		internal static string GetTextRepresentationForMethod(MethodInfo methodInfo)
-		{
-			return Convert.ToString(methodInfo);
-		}
+		internal static string GetTextRepresentationForMethod(MethodInfo methodInfo) => Convert.ToString(methodInfo)!;
 
 		static MethodInfo LookupMethodByTextRepresentation(Type declaringType, string methodTextRepresentation)
 		{
@@ -59,13 +49,11 @@ namespace Simple.Mocking.SetUp.Proxies
 			throw new MissingMethodException(string.Format("Method '{0}' is not declared by type '{1}'", methodTextRepresentation, declaringType));
 		}
 
-
-		internal Invocation CreateInvocation(IProxy target, Type[] genericArguments, object[] parameterValues, object returnValue)
+		internal Invocation CreateInvocation(IProxy target, Type[]? genericArguments, object?[] parameterValues, object? returnValue)
 		{
 		    var invocationOrder = Interlocked.Increment(ref invocationOrderGenerator);
 
 			return new Invocation(target, method, genericArguments, parameterValues, returnValue, invocationOrder);
 		}
-
 	}
 }

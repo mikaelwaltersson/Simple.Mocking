@@ -1,20 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 using Simple.Mocking.SetUp.Proxies;
 
 namespace Simple.Mocking.SetUp.Actions
 {
-	class ReturnsForAnyAction : ActionForAnyBase
+    class ReturnsForAnyAction : ActionForAnyBase
 	{
-        public ReturnsForAnyAction(Func<Type, object> valueForType)
+        public ReturnsForAnyAction(Func<Type, object?> valueForType)
             : base(valueForType)
 		{
 		}
-
 
 	    protected override void ExecuteFor(MethodInfo nonGenericMethod, IInvocation invocation)
 	    {

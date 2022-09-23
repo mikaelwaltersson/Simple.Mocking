@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using NUnit.Framework;
 
@@ -11,18 +8,16 @@ using Simple.Mocking.AcceptanceTests.Interfaces;
 
 namespace Simple.Mocking.AcceptanceTests
 {
-	[TestFixture]
+    [TestFixture]
 	public class ExpectTests
 	{
 		IMyObject myObject;
-
 
 		[SetUp]
 		public void Initialize()
 		{
 			myObject = Mock.Interface<IMyObject>();
 		}
-
 
 		[Test]
 		public void ExpectMethodCalled()
@@ -376,7 +371,7 @@ namespace Simple.Mocking.AcceptanceTests
 
 			Expect.
 				MethodCall(() => myObject.MyMethod(Any<int>.Value)).
-				Executes(parameters => invocationCount += (int)parameters[0]);
+				Executes(parameters => invocationCount += (int)parameters[0]!);
 			
 			Expect.
 				MethodCall(() => myObject.MyMethodWithReturnValue(Any<int>.Value)).

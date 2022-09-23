@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Simple.Mocking.SetUp;
 using Simple.Mocking.SetUp.Proxies;
@@ -10,7 +7,7 @@ using Simple.Mocking.SetUp.Proxies;
 
 namespace Simple.Mocking
 {
-	public sealed class Mock
+    public sealed class Mock
 	{
 		static readonly ProxyFactory factory = new ProxyFactory();
 
@@ -21,25 +18,17 @@ namespace Simple.Mocking
 			this.name = name;
 		}
 
-		public static T Interface<T>()
-		{
-			return Interface<T>(new ExpectationScope());
-		}
+		public static T Interface<T>() =>
+			Interface<T>(new ExpectationScope());
 
-		public static T Interface<T>(ExpectationScope expectationScope)
-		{
-			return Create<T>(factory.CreateInterfaceProxy<T>, expectationScope);
-		}
+		public static T Interface<T>(ExpectationScope expectationScope) =>
+			Create<T>(factory.CreateInterfaceProxy<T>, expectationScope);
 
-		public static T Delegate<T>()
-		{
-			return Delegate<T>(new ExpectationScope());
-		}
+		public static T Delegate<T>() =>
+			Delegate<T>(new ExpectationScope());
 
-		public static T Delegate<T>(ExpectationScope expectationScope)
-		{
-			return Create<T>(factory.CreateDelegateProxy<T>, expectationScope);
-		}
+		public static T Delegate<T>(ExpectationScope expectationScope) =>
+			Create<T>(factory.CreateDelegateProxy<T>, expectationScope);
 
 		static T Create<T>(Func<object, MockInvocationInterceptor, T> factoryFunc, ExpectationScope expectationScope)
 		{
@@ -51,18 +40,10 @@ namespace Simple.Mocking
 			}
 		}
 
-		public override string ToString()
-		{
-			return name;
-		}
+		public override string ToString() => name;
 
-
-
-
-		public override bool Equals(object obj)
-		{
-            return base.Equals(InvocationTarget.UnwrapProxyBaseObject(obj));
-		}
+		public override bool Equals(object? obj) =>
+			base.Equals(InvocationTarget.UnwrapProxyBaseObject(obj));
 	}
 }
 

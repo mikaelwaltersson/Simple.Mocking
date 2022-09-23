@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Simple.Mocking.Syntax
 {
@@ -13,7 +10,7 @@ namespace Simple.Mocking.Syntax
 
 		void Throws(Exception ex);
 
-		ISpecifyAction SetsOutOrRefParameter(int index, object value);
+		ISpecifyAction SetsOutOrRefParameter(int index, object? value);
 	}
 
 	public interface ISpecifyAction<T>
@@ -26,6 +23,6 @@ namespace Simple.Mocking.Syntax
 
 		void Throws(Exception ex);
 
-		ISpecifyAction<T> SetsOutOrRefParameter(int index, object value);
+		ISpecifyAction<T> SetsOutOrRefParameter(int index, object? value);
 	}
 }

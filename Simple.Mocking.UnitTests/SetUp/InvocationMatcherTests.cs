@@ -28,7 +28,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 
 			Assert.AreSame(myObject, invocationMatcher.Target);
 			Assert.AreEqual(typeof(IMyObject).GetMethod("Method"), invocationMatcher.Method);
-			CollectionAssert.AreEqual(new object[] { 42 }, invocationMatcher.ParameterValueConstraints);
+			CollectionAssert.AreEqual(new object?[] { 42 }, invocationMatcher.ParameterValueConstraints);
 		}
 
 		[Test]
@@ -77,10 +77,10 @@ namespace Simple.Mocking.UnitTests.SetUp
 
 			var invocationMatcher = InvocationMatcher.ForMethodCall(expression);
 
-			var parameterValueConstraint = invocationMatcher.ParameterValueConstraints[0];
+			var parameterValueConstraint = invocationMatcher.ParameterValueConstraints?[0];
 
 			Assert.IsInstanceOf<MatchingPredicateValueConstraint<int>>(parameterValueConstraint);
-			Assert.AreEqual(Any<int>.Value.Matching(i => i%2 == 0).ToString(), parameterValueConstraint.ToString());
+			Assert.AreEqual(Any<int>.Value.Matching(i => i%2 == 0).ToString(), parameterValueConstraint?.ToString());
 		}
 
 		[Test]
@@ -92,7 +92,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 
 			Assert.AreSame(myDelegate, invocationMatcher.Target);
 			Assert.IsNull(invocationMatcher.Method);
-			CollectionAssert.AreEqual(new object[] { 42 }, invocationMatcher.ParameterValueConstraints);
+			CollectionAssert.AreEqual(new object?[] { 42 }, invocationMatcher.ParameterValueConstraints);
 		}
 
 		[Test]
@@ -118,8 +118,8 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var invocationMatcher = InvocationMatcher.ForMethodCall(expression);
 
 			Assert.AreSame(myObject, invocationMatcher.Target);
-			Assert.AreEqual(typeof(IMyObject).GetMethod("GenericMethod").MakeGenericMethod(new[] { typeof(string), typeof(string) }), invocationMatcher.Method);
-			CollectionAssert.AreEqual(new object[] { "1", Any<string>.Value }, invocationMatcher.ParameterValueConstraints);
+			Assert.AreEqual(typeof(IMyObject).GetMethod("GenericMethod")!.MakeGenericMethod(new[] { typeof(string), typeof(string) }), invocationMatcher.Method);
+			CollectionAssert.AreEqual(new object?[] { "1", Any<string>.Value }, invocationMatcher.ParameterValueConstraints);
 		}
 
 
@@ -132,7 +132,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var invocationMatcher = InvocationMatcher.ForPropertyGet(expression);
 
 			Assert.AreSame(myObject, invocationMatcher.Target);
-			Assert.AreEqual(typeof(IMyObject).GetProperty("Property").GetGetMethod(), invocationMatcher.Method);
+			Assert.AreEqual(typeof(IMyObject).GetProperty("Property")!.GetGetMethod(), invocationMatcher.Method);
 			CollectionAssert.AreEqual(new object[0], invocationMatcher.ParameterValueConstraints);
 		}
 
@@ -144,9 +144,9 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var invocationMatcher = InvocationMatcher.ForPropertyGet(expression);
 
 			Assert.AreSame(myObject, invocationMatcher.Target);
-			Assert.AreEqual(typeof(IMyObject).GetProperty("Item").GetGetMethod(), invocationMatcher.Method);
+			Assert.AreEqual(typeof(IMyObject).GetProperty("Item")!.GetGetMethod(), invocationMatcher.Method);
 
-			var parameterValueConstraint = invocationMatcher.ParameterValueConstraints[0];
+			var parameterValueConstraint = invocationMatcher.ParameterValueConstraints?[0];
 
 			Assert.IsInstanceOf<AnyValueConstraint<int>>(parameterValueConstraint);
 		}
@@ -175,7 +175,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var invocationMatcher = InvocationMatcher.ForPropertySet(expression, 42);
 
 			Assert.AreSame(myObject, invocationMatcher.Target);
-			Assert.AreEqual(typeof(IMyObject).GetProperty("Property").GetSetMethod(), invocationMatcher.Method);
+			Assert.AreEqual(typeof(IMyObject).GetProperty("Property")!.GetSetMethod(), invocationMatcher.Method);
 			CollectionAssert.AreEqual(new []{ 42 }, invocationMatcher.ParameterValueConstraints);
 		}
 
@@ -187,8 +187,8 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var invocationMatcher = InvocationMatcher.ForPropertySet(expression, Any<string>.Value);
 
 			Assert.AreSame(myObject, invocationMatcher.Target);
-			Assert.AreEqual(typeof(IMyObject).GetProperty("Item").GetSetMethod(), invocationMatcher.Method);
-			CollectionAssert.AreEqual(new object[] { Any<int>.Value, Any<string>.Value }, invocationMatcher.ParameterValueConstraints);
+			Assert.AreEqual(typeof(IMyObject).GetProperty("Item")!.GetSetMethod(), invocationMatcher.Method);
+			CollectionAssert.AreEqual(new object?[] { Any<int>.Value, Any<string>.Value }, invocationMatcher.ParameterValueConstraints);
 		}
 
 		[Test]
@@ -197,8 +197,8 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var invocationMatcher = InvocationMatcher.ForEventAdd(myObject, "Event", Any<EventHandler>.Value);
 
 			Assert.AreSame(myObject, invocationMatcher.Target);
-			Assert.AreEqual(typeof(IMyObject).GetEvent("Event").GetAddMethod(), invocationMatcher.Method);
-			CollectionAssert.AreEqual(new object[] { Any<EventHandler>.Value }, invocationMatcher.ParameterValueConstraints);
+			Assert.AreEqual(typeof(IMyObject).GetEvent("Event")!.GetAddMethod(), invocationMatcher.Method);
+			CollectionAssert.AreEqual(new object?[] { Any<EventHandler>.Value }, invocationMatcher.ParameterValueConstraints);
 		}
 
 		[Test]
@@ -207,14 +207,16 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var invocationMatcher = InvocationMatcher.ForEventRemove(myObject, "Event", Any<EventHandler>.Value);
 
 			Assert.AreSame(myObject, invocationMatcher.Target);
-			Assert.AreEqual(typeof(IMyObject).GetEvent("Event").GetRemoveMethod(), invocationMatcher.Method);
-			CollectionAssert.AreEqual(new object[] { Any<EventHandler>.Value }, invocationMatcher.ParameterValueConstraints);
+			Assert.AreEqual(typeof(IMyObject).GetEvent("Event")!.GetRemoveMethod(), invocationMatcher.Method);
+			CollectionAssert.AreEqual(new object?[] { Any<EventHandler>.Value }, invocationMatcher.ParameterValueConstraints);
 		}
 
 		[Test]
-		public void ForEventAddOnNonExistingEvent()
+		public void ForEventAddOrRemoveOnNonExistingEventOrHandler()
 		{
             Assert.Throws<ArgumentException>(() => InvocationMatcher.ForEventAdd(myObject, "Event2", Any<EventHandler>.Value));
+			Assert.Throws<ArgumentException>(() => InvocationMatcher.ForEventRemove(myObject, "Event3", Any<EventHandler>.Value));
+			Assert.Throws<ArgumentException>(() => InvocationMatcher.ForEventAdd(myObject, "Event4", Any<EventHandler>.Value));
 		}
 
 		[Test]
@@ -240,7 +242,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 		[Test]
 		public void Matches()
 		{
-			var invocationMatcher = new InvocationMatcher(myObject, typeof(IMyObject).GetMethod("Method"), new object[] { 42 });
+			var invocationMatcher = new InvocationMatcher(myObject, typeof(IMyObject).GetMethod("Method"), new object?[] { 42 });
 
 			Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(myObject, "Method", 42)));
 			
@@ -253,7 +255,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 		[Test]
 		public void MatchesWithParameterValueConstraints()
 		{
-			var invocationMatcher = new InvocationMatcher(myObject, typeof(IMyObject).GetMethod("Method"), new object[] { Any<int>.Value });
+			var invocationMatcher = new InvocationMatcher(myObject, typeof(IMyObject).GetMethod("Method"), new object?[] { Any<int>.Value });
 
 			Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(myObject, "Method", int.MinValue)));
 			Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(myObject, "Method", 42)));
@@ -265,9 +267,9 @@ namespace Simple.Mocking.UnitTests.SetUp
 		[Test]
 		public void MatchesWithNullValues()
 		{
-			var invocationMatcher = new InvocationMatcher(myObject, typeof(IMyObject).GetMethod("Method"), new object[] { null });
+			var invocationMatcher = new InvocationMatcher(myObject, typeof(IMyObject).GetMethod("Method"), new object?[] { null });
 
-			Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(myObject, "Method", (object)null)));
+			Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(myObject, "Method", (object?)null)));
 			
 			Assert.IsFalse(invocationMatcher.Matches(CreateMethodInvocation(myObject, "Method", 42)));		
 		}
@@ -278,8 +280,8 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var invocationMatcher = 
 				new InvocationMatcher(
 					myObject, 
-					typeof(IMyObject).GetMethod("GenericMethod").MakeGenericMethod(new[] { typeof(string), typeof(int) }), 
-					new object[] { "1", 1 });
+					typeof(IMyObject).GetMethod("GenericMethod")!.MakeGenericMethod(new[] { typeof(string), typeof(int) }), 
+					new object?[] { "1", 1 });
 
 			Assert.IsTrue(invocationMatcher.Matches(CreateGenericMethodInvocation(myObject, "GenericMethod", new[] { typeof(string), typeof(int) },  "1", 1)));
 			
@@ -293,8 +295,8 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var invocationMatcher = new InvocationMatcher(myDelegate, null, new[] { Any<int>.Value });
 			var otherDelegate = (MyDelegate)new MyObject().MethodWithReturnValue;
 
-			Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(myDelegate.Target, myDelegate.Method.Name, 42)));
-			Assert.IsFalse(invocationMatcher.Matches(CreateMethodInvocation(otherDelegate.Target, otherDelegate.Method.Name, 42)));
+			Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(myDelegate.Target!, myDelegate.Method.Name, 42)));
+			Assert.IsFalse(invocationMatcher.Matches(CreateMethodInvocation(otherDelegate.Target!, otherDelegate.Method.Name, 42)));
 		}
 
 		[Test]
@@ -317,7 +319,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 			var target = new MyDerivedObject();
 
 			var objectMethodInvocation =
-				new Invocation(target, typeof(object).GetMethod("ToString"), null, new object[0], null, 0);
+				new Invocation(target, typeof(object).GetMethod("ToString")!, null, new object[0], null, 0);
 
             var invocationMatcher = InvocationMatcher.ForAnyInvocationOn(target);
 
@@ -332,8 +334,8 @@ namespace Simple.Mocking.UnitTests.SetUp
 
             var invocationMatcher = InvocationMatcher.ForAnyInvocationOn(target1);
 
-            Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(target1.Target, myDelegate.Method.Name)));
-            Assert.IsFalse(invocationMatcher.Matches(CreateMethodInvocation(target2.Target, myDelegate.Method.Name)));
+            Assert.IsTrue(invocationMatcher.Matches(CreateMethodInvocation(target1.Target!, myDelegate.Method.Name)));
+            Assert.IsFalse(invocationMatcher.Matches(CreateMethodInvocation(target2.Target!, myDelegate.Method.Name)));
         }
 
         [Test]
@@ -342,7 +344,7 @@ namespace Simple.Mocking.UnitTests.SetUp
             var target = myDelegate;
 
             var objectMethodInvocation =
-                new Invocation((IProxy)target.Target, typeof(object).GetMethod("ToString"), null, new object[0], null, 0);
+                new Invocation((IProxy)target.Target!, typeof(object).GetMethod("ToString")!, null, new object[0], null, 0);
 
             var invocationMatcher = InvocationMatcher.ForAnyInvocationOn(target);
 
@@ -352,7 +354,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 		[Test]
 		public void ToStringCanBeInvokedForAnyInvocationMatcher()
 		{
-			new InvocationMatcher(null, null, null).ToString();
+			new InvocationMatcher(null!, null, null).ToString();
 		}
 
 		[Test]
@@ -366,18 +368,12 @@ namespace Simple.Mocking.UnitTests.SetUp
 			Assert.IsTrue(matcher.Matches(CreateMethodInvocation(myObject, "Method", MyEnumY.Y2)));
 		}
 
-		static IInvocation CreateMethodInvocation(object target, string methodName, params object[] parameterValues)
-		{
-			return new Invocation(target as IProxy, typeof(IMyObject).GetMethod(methodName), null, parameterValues, null, 0);
-		}
-
-		static IInvocation CreateGenericMethodInvocation(object target, string methodName, Type[] genericArguments, params object[] parameterValues)
-		{
-			return new Invocation(target as IProxy, typeof(IMyObject).GetMethod(methodName), genericArguments, parameterValues, null, 0);
-		}
-
-
-
+		static IInvocation CreateMethodInvocation(object target, string methodName, params object?[] parameterValues) =>
+			new Invocation((IProxy)target, typeof(IMyObject).GetMethod(methodName)!, null, parameterValues, null, 0);
+		
+		static IInvocation CreateGenericMethodInvocation(object target, string methodName, Type[] genericArguments, params object[] parameterValues) =>
+			new Invocation((IProxy)target, typeof(IMyObject).GetMethod(methodName)!, genericArguments, parameterValues, null, 0);
+		
 		enum MyEnumX
 		{
 			X1, X2, X3
@@ -389,7 +385,6 @@ namespace Simple.Mocking.UnitTests.SetUp
 		}
 
 		delegate int MyDelegate(int value);
-
 
 		interface IMyObject
 		{
@@ -404,7 +399,6 @@ namespace Simple.Mocking.UnitTests.SetUp
 
 		interface IMyDerivedObject : IMyObject
 		{
-
 		}
 
 		class MyObject : IMyObject, IProxy
@@ -413,38 +407,16 @@ namespace Simple.Mocking.UnitTests.SetUp
 			{
 			}
 
-			public int MethodWithReturnValue(int value)
-			{
-				return value;
-			}
-
-			public void MethodWithRefValue(ref int value)
-			{
-			}
-
-			public void GenericMethod<A, B>(A a, B b)
-			{				
-			}
-
-
-			public string this[int i] { get { return string.Empty; } set { } }
+			public int MethodWithReturnValue(int value) => value;
+			public void MethodWithRefValue(ref int value) {}
+			public void GenericMethod<A, B>(A a, B b) {}
+			public string this[int i] { get => string.Empty; set { } }
 			public int Property { get; set; }
 			public event EventHandler Event { add { } remove { } }
 
-			Type IProxy.ProxiedType
-			{
-				get { return typeof(IMyObject); }
-			}
-
-			object IProxy.BaseObject
-			{
-				get { return this; }
-			}
-
-			IInvocationInterceptor IProxy.InvocationInterceptor
-			{
-				get { throw new NotSupportedException(); }
-			}
+			Type IProxy.ProxiedType => typeof(IMyObject);
+			object IProxy.BaseObject => this;
+			IInvocationInterceptor IProxy.InvocationInterceptor => throw new NotSupportedException();
 		}
 
 		class MyDerivedObject : MyObject, IMyDerivedObject

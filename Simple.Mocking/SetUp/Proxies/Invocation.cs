@@ -3,21 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Simple.Mocking.SetUp.Proxies
 {
-	public class Invocation : IInvocation
+    public class Invocation : IInvocation
 	{
 		IProxy target;
 		MethodInfo method;
-		IList<Type> genericArguments;
-		IList<object> parameterValues;
-		object returnValue;
+		IList<Type>? genericArguments;
+		IList<object?> parameterValues;
+		object? returnValue;
 	    long invocationOrder;
 
-
-		internal Invocation(IProxy target, MethodInfo method, IList<Type> genericArguments, IList<object> parameterValues, object returnValue, long invocationOrder)
+		internal Invocation(IProxy target, MethodInfo method, IList<Type>? genericArguments, IList<object?> parameterValues, object? returnValue, long invocationOrder)
 		{
 			this.target = target;
 			this.method = method;
@@ -27,45 +25,30 @@ namespace Simple.Mocking.SetUp.Proxies
 		    this.invocationOrder = invocationOrder;
 		}
 
-		public IProxy Target
-		{
-			get { return target; }
-		}
+		public IProxy Target => target;
 
-		public MethodInfo Method
-		{
-			get { return method; }
-		}
+		public MethodInfo Method => method;
 
-		public IList<Type> GenericArguments
-		{
-			get { return genericArguments; }
-		}
+		public IList<Type>? GenericArguments => genericArguments;
 
-		public IList<object> ParameterValues
-		{
-			get { return parameterValues; }
-		}
+		public IList<object?> ParameterValues => parameterValues;
 
-		public object ReturnValue
+		public object? ReturnValue
 		{
+			internal get => returnValue;
 			set
 			{
 				AssertMethodReturnValueIsAssignable(value);
 				returnValue = value;
 			}
-			internal get { return returnValue; }
 		}
 
-	    public long InvocationOrder
-	    {
-            get { return invocationOrder; }
-	    }
+	    public long InvocationOrder => invocationOrder;
 
 
-	    public static object HandleInvocation(
+	    public static object? HandleInvocation(
 			IProxy target, InvocationFactory invocationFactory,
-			Type[] genericArguments, object[] parameterValues, object returnValue)
+			Type[]? genericArguments, object?[] parameterValues, object? returnValue)
 		{
 			var invocation = invocationFactory.CreateInvocation(target, genericArguments, parameterValues, returnValue);
 
@@ -76,7 +59,7 @@ namespace Simple.Mocking.SetUp.Proxies
 			return invocation.returnValue;
 		}
 
-		void AssertMethodParameterIsAssignable(int index, object value)
+		void AssertMethodParameterIsAssignable(int index, object? value)
 		{
 			var parameterType = GetNonGenericMethod(this).GetParameters()[index].ParameterType;
 
@@ -86,14 +69,14 @@ namespace Simple.Mocking.SetUp.Proxies
 					string.Format("Can not set parameter {0} of method '{1}' (not an out or ref parameter)", index, method));
 			}
 
-			if (!parameterType.GetElementType().IsAssignable(value))
+			if (!parameterType.GetElementType()!.IsAssignable(value))
 			{
 				throw new InvalidOperationException(
 					string.Format("Can not set parameter {0} of method '{1}' (value '{2}' is not assignable)", index, method, value));				
 			}
 		}		
 
-		void AssertMethodReturnValueIsAssignable(object value)
+		void AssertMethodReturnValueIsAssignable(object? value)
 		{
 			var returnType = GetNonGenericMethod(this).ReturnType;
 
@@ -110,10 +93,7 @@ namespace Simple.Mocking.SetUp.Proxies
 			}
 		}
 
-	    public override string ToString()
-		{
-			return InvocationFormatter.Format(target, method, genericArguments, parameterValues);
-		}
+	    public override string ToString() => InvocationFormatter.Format(target, method, genericArguments, parameterValues);
 
 
         public static MethodInfo GetNonGenericMethod(IInvocation invocation)
@@ -136,76 +116,37 @@ namespace Simple.Mocking.SetUp.Proxies
 				this.list = list;
 			}
 
-			public IEnumerator<T> GetEnumerator()
-			{
-				return list.GetEnumerator();
-			}
+			public IEnumerator<T> GetEnumerator() => list.GetEnumerator();
 
-			IEnumerator IEnumerable.GetEnumerator()
-			{
-				return GetEnumerator();
-			}
+			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-			public virtual void Add(T item)
-			{
-				throw new NotSupportedException();
-			}
+			public virtual void Add(T item) => throw new NotSupportedException();
 
-			public virtual void Clear()
-			{
-				throw new NotSupportedException();
-			}
+			public virtual void Clear() => throw new NotSupportedException();
 
-			public bool Contains(T item)
-			{
-				return list.Contains(item);
-			}
+			public bool Contains(T item) => list.Contains(item);
 
-			public void CopyTo(T[] array, int arrayIndex)
-			{
-				list.CopyTo(array, arrayIndex);
-			}
+			public void CopyTo(T[] array, int arrayIndex) => list.CopyTo(array, arrayIndex);
 
-			public virtual bool Remove(T item)
-			{
-				throw new NotSupportedException();
-			}
+			public virtual bool Remove(T item) => throw new NotSupportedException();
 
-			public int Count
-			{
-				get { return list.Count; }
-			}
+			public int Count => list.Count;
 
-			public virtual bool IsReadOnly
-			{
-				get { return list.IsReadOnly; }
-			}
+			public virtual bool IsReadOnly => list.IsReadOnly;
+			
+			public int IndexOf(T item) => list.IndexOf(item);
 
-			public int IndexOf(T item)
-			{
-				return list.IndexOf(item);
-			}
+			public virtual void Insert(int index, T item) => throw new NotSupportedException();
 
-			public virtual void Insert(int index, T item)
-			{
-				throw new NotSupportedException();
-			}
-
-			public virtual void RemoveAt(int index)
-			{
-				throw new NotSupportedException();
-			}
+			public virtual void RemoveAt(int index) => throw new NotSupportedException();
 
 			public virtual T this[int index]
 			{
-				get { return list[index]; }
-				set { SetItem(index, value); }
+				get => list[index];
+				set => SetItem(index, value);
 			}
 
-			protected virtual void SetItem(int index, T value)
-			{
-				list[index] = value;				
-			}
+			protected virtual void SetItem(int index, T value) => list[index] = value;
 		}
 		
 		class GenericArgumentsList : ListWithRestrictedAccess<Type>
@@ -214,29 +155,24 @@ namespace Simple.Mocking.SetUp.Proxies
 			{
 			}
 
-			protected override void SetItem(int index, Type value)
-			{
-				throw new NotSupportedException();
-			}
+			protected override void SetItem(int index, Type value) => throw new NotSupportedException();
 		}
 
-		class ParameterList : ListWithRestrictedAccess<object>
+		class ParameterList : ListWithRestrictedAccess<object?>
 		{
 			Invocation invocation;
 
-			public ParameterList(Invocation invocation, IList<object> list)
+			public ParameterList(Invocation invocation, IList<object?> list)
 				: base(list)
 			{
 				this.invocation = invocation;
 			}
 
-			protected override void SetItem(int index, object value)
+			protected override void SetItem(int index, object? value)
 			{
 				invocation.AssertMethodParameterIsAssignable(index, value);
 				base.SetItem(index, value);
 			}
 		}
-
-		
 	}
 }

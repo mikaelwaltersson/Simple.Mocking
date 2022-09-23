@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using NUnit.Framework;
 
@@ -51,7 +48,7 @@ namespace Simple.Mocking.AcceptanceTests
             Expect.Once.MethodCall(() => myObject.MyMethod(1));
 
 
-            var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.MatchingExpectationsFor(myObject));
+            var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.MatchingExpectationsFor(myObject))!;
 
             Assert.That(ex.Message, Does.StartWith("All expectations has not been met, expected:"));
         }
@@ -85,7 +82,7 @@ namespace Simple.Mocking.AcceptanceTests
 
             AssertInvocationsWasMade.AtLeastOnce.ForMethodCall(() => myObject.MyMethod(1));
 
-            var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.AtLeastOnce.ForMethodCall(() => myObject.MyMethod(2)));
+            var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.AtLeastOnce.ForMethodCall(() => myObject.MyMethod(2)))!;
 
             Assert.That(ex.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(2)', expected 1..* actual 0:"));
         }
@@ -101,7 +98,7 @@ namespace Simple.Mocking.AcceptanceTests
 
             AssertInvocationsWasMade.AtLeast(2).ForMethodCall(() => myObject.MyMethod(1));
 
-            var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.AtLeast(2).ForMethodCall(() => myObject.MyMethod(2)));
+            var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.AtLeast(2).ForMethodCall(() => myObject.MyMethod(2)))!;
 
             Assert.That(ex.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(2)', expected 2..* actual 1:"));
         }
@@ -117,7 +114,7 @@ namespace Simple.Mocking.AcceptanceTests
 
             AssertInvocationsWasMade.AtMostOnce.ForMethodCall(() => myObject.MyMethod(1));
 
-            var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.AtMostOnce.ForMethodCall(() => myObject.MyMethod(2)));
+            var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.AtMostOnce.ForMethodCall(() => myObject.MyMethod(2)))!;
 
             Assert.That(ex.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(2)', expected *..1 actual 2:"));
         }
@@ -135,7 +132,7 @@ namespace Simple.Mocking.AcceptanceTests
 
             AssertInvocationsWasMade.AtMost(2).ForMethodCall(() => myObject.MyMethod(1));
 
-            var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.AtMost(2).ForMethodCall(() => myObject.MyMethod(2)));
+            var ex = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.AtMost(2).ForMethodCall(() => myObject.MyMethod(2)))!;
 
             Assert.That(ex.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(2)', expected *..2 actual 3:"));
         }
@@ -151,8 +148,8 @@ namespace Simple.Mocking.AcceptanceTests
 
             AssertInvocationsWasMade.Once.ForMethodCall(() => myObject.MyMethod(1));
 
-            var ex1 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Once.ForMethodCall(() => myObject.MyMethod(2)));
-            var ex2 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Once.ForMethodCall(() => myObject.MyMethod(3)));
+            var ex1 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Once.ForMethodCall(() => myObject.MyMethod(2)))!;
+            var ex2 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Once.ForMethodCall(() => myObject.MyMethod(3)))!;
 
             Assert.That(ex1.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(2)', expected 1 actual 2:"));
             Assert.That(ex2.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(3)', expected 1 actual 0:"));
@@ -172,8 +169,8 @@ namespace Simple.Mocking.AcceptanceTests
 
             AssertInvocationsWasMade.Exactly(2).ForMethodCall(() => myObject.MyMethod(1));
 
-            var ex1 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Exactly(2).ForMethodCall(() => myObject.MyMethod(2)));
-            var ex2 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Exactly(2).ForMethodCall(() => myObject.MyMethod(3)));
+            var ex1 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Exactly(2).ForMethodCall(() => myObject.MyMethod(2)))!;
+            var ex2 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Exactly(2).ForMethodCall(() => myObject.MyMethod(3)))!;
 
             Assert.That(ex1.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(2)', expected 2 actual 1:"));
             Assert.That(ex2.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(3)', expected 2 actual 3:"));
@@ -194,8 +191,8 @@ namespace Simple.Mocking.AcceptanceTests
             AssertInvocationsWasMade.Between(1, 2).ForMethodCall(() => myObject.MyMethod(1));
             AssertInvocationsWasMade.Between(1, 2).ForMethodCall(() => myObject.MyMethod(2));
 
-            var ex1 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Between(1, 2).ForMethodCall(() => myObject.MyMethod(3)));
-            var ex2 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Between(1, 2).ForMethodCall(() => myObject.MyMethod(4)));
+            var ex1 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Between(1, 2).ForMethodCall(() => myObject.MyMethod(3)))!;
+            var ex2 = Assert.Throws<ExpectationsException>(() => AssertInvocationsWasMade.Between(1, 2).ForMethodCall(() => myObject.MyMethod(4)))!;
 
             Assert.That(ex1.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(3)', expected 1..2 actual 3:"));
             Assert.That(ex2.Message, Does.StartWith("Wrong number of invocations for 'myObject.MyMethod(4)', expected 1..2 actual 0:"));
@@ -227,10 +224,50 @@ namespace Simple.Mocking.AcceptanceTests
                               AtLeast(3).ForMethodCall(() => myObject.MyMethod(1)).
                               AtLeastOnce.ForMethodCall(() => myObject.MyMethod(2)).
                               AtLeastOnce.ForMethodCall(() => myObject.MyMethod(3)).
-                              InOrderAsSpecified());
+                              InOrderAsSpecified())!;
 
             Assert.That(ex.Message, Does.StartWith("Invocations was not made in specified order (first mismatch at invocation 'myObject.MyMethod(2)'):"));
- 
+        }
+    
+        [Test]
+        public void ForStubPropertyGet()
+        {
+            var myObject = Stub.Interface<IMyObject>();
+
+            var myValue = myObject.MyIntProperty; 
+
+            AssertInvocationsWasMade.Once.ForPropertyGet(() => myObject.MyIntProperty);
+            Assert.AreEqual(myValue, default(int));
+        }
+
+        [Test]
+        public void ForStubPropertySet()
+        {
+            var myObject = Stub.Interface<IMyObject>();
+            
+            myObject.MyIntProperty = 23; 
+
+            AssertInvocationsWasMade.Once.ForPropertySet(() => myObject.MyIntProperty, 23);
+        }
+
+        [Test]
+        public void ForStubEventAdd()
+        {
+            var myObject = Stub.Interface<IMyObject>();
+
+            myObject.MyEvent += (sender, e) => {};
+
+            AssertInvocationsWasMade.Once.ForEventAdd(myObject, "MyEvent", Any<EventHandler>.Value);
+        }
+
+        [Test]
+        public void ForStubEventRemove()
+        {
+            var myObject = Stub.Interface<IMyObject>();
+
+            myObject.MyEvent -= (sender, e) => {};
+
+            AssertInvocationsWasMade.Once.ForEventRemove(myObject, "MyEvent", Any<EventHandler>.Value);
         }
     }
 }

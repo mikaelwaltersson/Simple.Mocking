@@ -15,8 +15,8 @@ namespace Simple.Mocking.Syntax
 
         ISpecifyAction PropertySet<T>(Expression<Func<T>> propertyExpression, ParameterValueConstraint<T> value);
 
-		ISpecifyAction EventAdd<TTarget, THandler>(TTarget target, string eventName, THandler handler);
+		ISpecifyAction EventAdd<TTarget, THandler>(TTarget target, string eventName, THandler handler) where TTarget : notnull;
 
-		ISpecifyAction EventRemove<TTarget, THandler>(TTarget target, string eventName, THandler handler);
+		ISpecifyAction EventRemove<TTarget, THandler>(TTarget target, string eventName, THandler handler) where TTarget : notnull;
 	}
 }

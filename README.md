@@ -7,8 +7,12 @@ Easy to use framework for creating mock objects, fakes, stubs with an intuitive 
 * No record/replay which just clutters down test code
 * Easy to learn, small API
 
+**.NET Core version (2.0) released at September 23, 2022**  
+No feature changes, just upgraded to .NET Core 6.0.
+
+
 **.NET Core version (2.0) released at September 2, 2019**  
-No feature changes, just ported to .NET Core. (Thanks to pull request from [@rerikson](https://github.com/rerikson))
+No feature changes, just ported to .NET Core 2.0. (Thanks to pull request from [@rerikson](https://github.com/rerikson))
 
 
 **Other sources of information**

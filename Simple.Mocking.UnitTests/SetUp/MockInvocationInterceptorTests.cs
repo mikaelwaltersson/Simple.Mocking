@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using NUnit.Framework;
 
@@ -10,7 +9,7 @@ using Simple.Mocking.SetUp.Proxies;
 
 namespace Simple.Mocking.UnitTests.SetUp
 {
-	[TestFixture]
+    [TestFixture]
 	public class MockInvocationInterceptorTests
 	{
 		[Test]
@@ -89,19 +88,19 @@ namespace Simple.Mocking.UnitTests.SetUp
 		[Test]
 		public void CantCreateInvocationInterceptorWithNullArguments()
 		{
-            Assert.Throws<ArgumentNullException>(() => new MockInvocationInterceptor(null));
+            Assert.Throws<ArgumentNullException>(() => new MockInvocationInterceptor(null!));
 		}
 
 		[Test]
 		public void CantInvokeWithNullInvocation()
 		{
-            Assert.Throws<ArgumentNullException>(() => new MockInvocationInterceptor(new TestExpectationScope()).OnInvocation(null));
+            Assert.Throws<ArgumentNullException>(() => new MockInvocationInterceptor(new TestExpectationScope()).OnInvocation(null!));
 		}
 
 		[Test]
 		public void CantAddNullExpectation()
 		{
-            Assert.Throws<ArgumentNullException>(() => new MockInvocationInterceptor(new TestExpectationScope()).AddExpectation(null, false));
+            Assert.Throws<ArgumentNullException>(() => new MockInvocationInterceptor(new TestExpectationScope()).AddExpectation(null!, false));
 		}
 
 
@@ -112,7 +111,7 @@ namespace Simple.Mocking.UnitTests.SetUp
 
 		Invocation CreateMethodInvocation<T>(IProxy target, string methodName, Type[] parameterTypes, object[] parameterValues)
 		{
-			return new Invocation(target, typeof(T).GetMethod(methodName, parameterTypes), null, parameterValues, null, 0);
+			return new Invocation(target, typeof(T).GetMethod(methodName, parameterTypes)!, null, parameterValues, null, 0);
 		}
 
 
@@ -187,6 +186,5 @@ namespace Simple.Mocking.UnitTests.SetUp
 				get { return new IInvocation[0]; }
 			}
 		}
-
 	}
 }

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Simple.Mocking.AcceptanceTests.Classes;
 
 namespace Simple.Mocking.AcceptanceTests.Interfaces
 {
-	public interface IMyObject
+    public interface IMyObject
 	{	
 		void MyEmptyMethod();
 

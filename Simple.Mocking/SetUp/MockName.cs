@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Simple.Mocking.SetUp
 {
-	static class MockName<T>
+    static class MockName<T>
 	{
 		public static string GetUniqueInScope(IMockNameScope scope)
 		{

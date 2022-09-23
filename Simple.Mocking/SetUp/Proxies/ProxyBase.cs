@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 
 namespace Simple.Mocking.SetUp.Proxies
 {
-	public abstract class ProxyBase<T> : IProxy
+    public abstract class ProxyBase<T> : IProxy
 	{
 		object baseObject;
 		IInvocationInterceptor invocationInterceptor;
@@ -26,20 +24,10 @@ namespace Simple.Mocking.SetUp.Proxies
 			this.invocationInterceptor = invocationInterceptor;
 		}
 
-		public object BaseObject
-		{
-			get { return baseObject; }
-		}
+		public object BaseObject => baseObject;
 
-		public Type ProxiedType
-		{
-			get { return typeof(T); }
-		}		
+		public Type ProxiedType => typeof(T);
 
-		public IInvocationInterceptor InvocationInterceptor
-		{
-			get { return invocationInterceptor; }
-		}		
-
+		public IInvocationInterceptor InvocationInterceptor => invocationInterceptor;
 	}
 }

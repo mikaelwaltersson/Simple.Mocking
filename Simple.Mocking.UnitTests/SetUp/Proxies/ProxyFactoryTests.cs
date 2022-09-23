@@ -1,39 +1,34 @@
 ﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 
 using NUnit.Framework;
 
 using Simple.Mocking.SetUp.Proxies;
 
-
 namespace Simple.Mocking.UnitTests.SetUp.Proxies
 {
-	[TestFixture]
+    [TestFixture]
 	public class ProxyFactoryTests : ProxyFactoryTestsBase
 	{	
 		[Test]
 		public void CantInvokeConstructorWithNullArgument()
 		{
-		    Assert.Throws<ArgumentNullException>(() => new ProxyFactory(null));
+		    Assert.Throws<ArgumentNullException>(() => new ProxyFactory(null!));
 		}
 
 		[Test]
 		public void CantInvokeCreateProxyWithNullArgument()
 		{
-            Assert.Throws<ArgumentNullException>(() => proxyFactory.CreateInterfaceProxy<EventHandler>(string.Empty, null));
-            Assert.Throws<ArgumentNullException>(() => proxyFactory.CreateInterfaceProxy<EventHandler>(null, invocationInterceptor));
-            Assert.Throws<ArgumentNullException>(() => proxyFactory.CreateDelegateProxy<EventHandler>(new object(), null));
-            Assert.Throws<ArgumentNullException>(() => proxyFactory.CreateDelegateProxy<EventHandler>(null, invocationInterceptor));
+            Assert.Throws<ArgumentNullException>(() => proxyFactory.CreateInterfaceProxy<EventHandler>(string.Empty, null!));
+            Assert.Throws<ArgumentNullException>(() => proxyFactory.CreateInterfaceProxy<EventHandler>(null!, invocationInterceptor));
+            Assert.Throws<ArgumentNullException>(() => proxyFactory.CreateDelegateProxy<EventHandler>(new object(), null!));
+            Assert.Throws<ArgumentNullException>(() => proxyFactory.CreateDelegateProxy<EventHandler>(null!, invocationInterceptor));
 		}
-
 
 		[Test]
 		public void InterfaceProxyImplementsIProxy()
 		{
 			var baseObject = new object();
-			var proxy = proxyFactory.CreateInterfaceProxy<IEmptyInterface>(baseObject, invocationInterceptor) as IProxy;
+			var proxy = (IProxy)proxyFactory.CreateInterfaceProxy<IEmptyInterface>(baseObject, invocationInterceptor);
 
 			Assert.IsNotNull(proxy);
 
@@ -41,7 +36,6 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			Assert.AreSame(baseObject, proxy.BaseObject);
 			Assert.AreSame(invocationInterceptor, proxy.InvocationInterceptor);
 		}
-
 
 		[Test]
 		public void CreatingTwoInterfaceProxiesWithSameInterfaceReusesType()
@@ -104,7 +98,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 				{
 					Assert.AreEqual(typeof(IInterfaceWithGenericMethod).GetMethod("Method"), invocation.Method);
 
-					var genericArguments = invocation.GenericArguments;
+					var genericArguments = invocation.GenericArguments!;
 
 					Assert.AreEqual(2, genericArguments.Count);
 					Assert.AreEqual(typeof(string), genericArguments[0]);
@@ -136,7 +130,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 				{
 					Assert.AreEqual(typeof(IInterfaceWithGenericMethodWithInterfaceTypeConstraints).GetMethod("Method"), invocation.Method);
 
-					var genericArguments = invocation.GenericArguments;
+					var genericArguments = invocation.GenericArguments!;
 
 					Assert.AreEqual(2, genericArguments.Count);
 					Assert.AreEqual(typeof(string), genericArguments[0]);
@@ -170,7 +164,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 				{
 					Assert.AreEqual(typeof(IInterfaceWithGenericMethodWithBaseTypeConstraint).GetMethod("Method"), invocation.Method);
 
-					var genericArguments = invocation.GenericArguments;
+					var genericArguments = invocation.GenericArguments!;
 
 					Assert.AreEqual(2, genericArguments.Count);
 					Assert.AreEqual(typeof(DerivedFromBaseTypeConstraintClass), genericArguments[0]);
@@ -191,7 +185,6 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			Assert.AreEqual(0, returnValue);
 			Assert.AreEqual(1, invocationInterceptor.InvocationCount);
 		}
-
 
 		[Test]
 		public void InvokeMethodOnGenericInterfaceProxy()
@@ -228,7 +221,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			invocationInterceptor.OnInvocationHandler =
 				invocation =>
 				{
-					Assert.AreEqual(typeof(IInterfaceWithEvent).GetEvent("OnEvent").GetAddMethod(), invocation.Method);
+					Assert.AreEqual(typeof(IInterfaceWithEvent).GetEvent("OnEvent")!.GetAddMethod(), invocation.Method);
 
 					var parameterValues = invocation.ParameterValues;
 
@@ -252,7 +245,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			invocationInterceptor.OnInvocationHandler =
 				invocation =>
 				{
-					Assert.AreEqual(typeof(IInterfaceWithEvent).GetEvent("OnEvent").GetRemoveMethod(), invocation.Method);
+					Assert.AreEqual(typeof(IInterfaceWithEvent).GetEvent("OnEvent")!.GetRemoveMethod(), invocation.Method);
 
 					var parameterValues = invocation.ParameterValues;
 
@@ -335,7 +328,6 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			Assert.AreEqual(1, invocationInterceptor.InvocationCount);
 		}
 
-
 		[Test]
 		public void DelegateProxyImplementsIProxy()
 		{
@@ -345,7 +337,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			Assert.IsNotNull(proxy);
 			Assert.IsInstanceOf(typeof(IProxy), proxy.Target);
 
-			var proxyTarget = (IProxy)proxy.Target;
+			var proxyTarget = (IProxy)proxy.Target!;
 
 			Assert.AreEqual(typeof(EventHandler), proxyTarget.ProxiedType);
 			Assert.AreEqual(baseObject, baseObject);
@@ -537,7 +529,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			invocationInterceptor.OnInvocationHandler =
 				invocation =>
 				{
-					Assert.AreEqual(typeof(IInterfaceWithProperty).GetProperty("Property").GetGetMethod(), invocation.Method);
+					Assert.AreEqual(typeof(IInterfaceWithProperty).GetProperty("Property")!.GetGetMethod(), invocation.Method);
 
 					var parameterValues = invocation.ParameterValues;
 
@@ -561,7 +553,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			invocationInterceptor.OnInvocationHandler =
 				invocation =>
 				{
-					Assert.AreEqual(typeof(IInterfaceWithProperty).GetProperty("Property").GetSetMethod(), invocation.Method);
+					Assert.AreEqual(typeof(IInterfaceWithProperty).GetProperty("Property")!.GetSetMethod(), invocation.Method);
 
 					var parameterValues = invocation.ParameterValues;
 
@@ -583,7 +575,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			invocationInterceptor.OnInvocationHandler =
 				invocation =>
 				{
-					Assert.AreEqual(typeof(IInterfaceWithIndexedProperty).GetProperty("Item").GetGetMethod(), invocation.Method);
+					Assert.AreEqual(typeof(IInterfaceWithIndexedProperty).GetProperty("Item")!.GetGetMethod(), invocation.Method);
 					
 					var parameterValues = invocation.ParameterValues;
 
@@ -608,7 +600,7 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 			invocationInterceptor.OnInvocationHandler =
 				invocation =>
 				{
-					Assert.AreEqual(typeof(IInterfaceWithIndexedProperty).GetProperty("Item").GetSetMethod(), invocation.Method);
+					Assert.AreEqual(typeof(IInterfaceWithIndexedProperty).GetProperty("Item")!.GetSetMethod(), invocation.Method);
 
 					var parameterValues = invocation.ParameterValues;
 
@@ -622,8 +614,6 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 
 			Assert.AreEqual(1, invocationInterceptor.InvocationCount);
 		}
-
-
 
 		public interface IInterfaceWithMethod
 		{
@@ -649,10 +639,5 @@ namespace Simple.Mocking.UnitTests.SetUp.Proxies
 		{
 			TArgument this[TArgument i] { get; set; }
 		}
-
-
 	}
-
-
-
 }

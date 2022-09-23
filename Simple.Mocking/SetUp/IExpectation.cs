@@ -1,17 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Simple.Mocking.SetUp.Proxies;
 
 namespace Simple.Mocking.SetUp
 {
-	interface IExpectation
+    interface IExpectation
 	{
-		bool TryMeet(IInvocation invocation, out Action action);
+		bool TryMeet(IInvocation invocation, out Action? action);
 
 		bool HasBeenMet { get; }
 	}
-
 }

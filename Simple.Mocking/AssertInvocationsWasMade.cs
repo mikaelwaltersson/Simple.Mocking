@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Simple.Mocking.Asserts;
+﻿using Simple.Mocking.Asserts;
 using Simple.Mocking.SetUp;
 using Simple.Mocking.Syntax;
 
@@ -18,10 +13,8 @@ namespace Simple.Mocking
             AssertExpectationScopeIsMet(mockInvocationInterceptor.ExpectationScope);
 		}
 
-        public static void MatchingExpectationsFor(ExpectationScope expectationScope)
-		{
-            AssertExpectationScopeIsMet(expectationScope);
-		}
+        public static void MatchingExpectationsFor(ExpectationScope expectationScope) =>
+		    AssertExpectationScopeIsMet(expectationScope);
 
 
         static void AssertExpectationScopeIsMet(IExpectationScope expectationScope)
@@ -30,52 +23,22 @@ namespace Simple.Mocking
                 throw new ExpectationsException(expectationScope, "All expectations has not been met, expected:");
         }
 
+        static IAssertInvocations BeginAssertions() => new AssertInvocations(null!);
 
-        static IAssertInvocations BeginAssertions()
-        {
-            return new AssertInvocations(null);
-        }
+        public static IAssertInvocationFor None => BeginAssertions().None;
+    
+        public static IAssertInvocationFor Once => BeginAssertions().Once;
 
-        public static IAssertInvocationFor None
-        {
-            get { return BeginAssertions().None; }
-        }
+        public static IAssertInvocationFor AtLeastOnce => BeginAssertions().AtLeastOnce;
 
-        public static IAssertInvocationFor Once
-        {
-            get { return BeginAssertions().Once; }
-        }
+        public static IAssertInvocationFor AtMostOnce => BeginAssertions().AtMostOnce;
 
-        public static IAssertInvocationFor AtLeastOnce
-        {
-            get { return BeginAssertions().AtLeastOnce; }
-        }
+        public static IAssertInvocationFor Exactly(int times) => BeginAssertions().Exactly(times);
 
-        public static IAssertInvocationFor AtMostOnce
-        {
-            get { return BeginAssertions().AtMostOnce; }
-        }
+        public static IAssertInvocationFor AtLeast(int times) => BeginAssertions().AtLeast(times);
 
-        public static IAssertInvocationFor Exactly(int times)
-        {
-            return BeginAssertions().Exactly(times);
-        }
+        public static IAssertInvocationFor AtMost(int times) => BeginAssertions().AtMost(times);
 
-        public static IAssertInvocationFor AtLeast(int times)
-        {
-            return BeginAssertions().AtLeast(times);
-        }
-
-        public static IAssertInvocationFor AtMost(int times)
-        {
-            return BeginAssertions().AtMost(times);
-        }
-
-        public static IAssertInvocationFor Between(int fromInclusive, int toInclusive)
-        {
-            return BeginAssertions().Between(fromInclusive, toInclusive);
-        }
-
-
+        public static IAssertInvocationFor Between(int fromInclusive, int toInclusive) => BeginAssertions().Between(fromInclusive, toInclusive);
     }
 }
