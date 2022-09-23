@@ -8,7 +8,7 @@ Easy to use framework for creating mock objects, fakes, stubs with an intuitive 
 * Easy to learn, small API
 
 **.NET Core version (2.0) released at September 23, 2022**  
-No feature changes, just upgraded to .NET Core 6.0.
+No feature changes, just upgraded to .NET Core 6.0 and enabled the `Nullable` language feature.
 
 
 **.NET Core version (2.0) released at September 2, 2019**  
